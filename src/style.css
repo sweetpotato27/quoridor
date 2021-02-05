@@ -32,6 +32,8 @@ footer, header, hgroup, menu, nav, section {
 }
 body {
 	line-height: 1;
+	display: flex;
+	justify-content: center;
 }
 ol, ul {
 	list-style: none;
@@ -52,74 +54,10 @@ table {
 /*
 */
 
-.html {
-    background-color: #882D60;
+.board { 
+	border-spacing:0; 
+	border-collapse:collapse; 
 }
-
-
-
-.body {
-    width: 100vw;
-    height: 100vh;
-}
-.maze-div {
-    margin: 10vh auto;
-    display: flex;
-    flex-direction: column;
-}
-.maze-div h1 {
-    /* margin: 0 auto; */
-    font-size: 27px;
-    font-weight: 100;
-    color: white;
-    padding: 0 0 0 17px;
-    margin: 17px auto;
-    letter-spacing: 10px;
-    /* font-family: 'Roboto',sans-serif; */
-}
-.maze-div h1:hover {
-    cursor: default;
-}
-.canvas-div {
-    margin-top: 5rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-.button-div {
-    width: 400px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-}
-.button {
-    margin: 10px auto;
-    font-size: 13px;
-    width: 86px;
-    display: inline-block;
-    padding: 0.35em 1.2em;
-    border: 0.1em solid #FFFFFF;
-    border-radius: 0.12em;
-    box-sizing: border-box;
-    text-decoration: none;
-    font-family: 'Roboto',sans-serif;
-    font-weight: 300;
-    color: #FFFFFF;
-    background-color: #000000;
-    text-align: center;
-    transition: all 0.2s;
-}
-.button:hover {
-    color: #000000;
-    background-color: #882D60;
-}
-.button:focus {
-    outline: none;
-}
-.canvas {
-    margin: 0 auto;
-}
-.canvas:focus {
-    outline: none;
-}
+.board th { padding: .5em; }
+.board td { border: 1px solid; width: 4em; height: 4em; }
+.board .floor { background: brown; }
