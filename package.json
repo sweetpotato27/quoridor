@@ -1,10 +1,12 @@
 {
-  "name": "Quoridor",
+  "name": "quoridor",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "main.js",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack"
   },
   "repository": {
     "type": "git",
@@ -16,5 +18,14 @@
   "bugs": {
     "url": "https://github.com/sweetpotato27/quoridor/issues"
   },
-  "homepage": "https://github.com/sweetpotato27/quoridor#readme"
+  "homepage": "https://github.com/sweetpotato27/quoridor#readme",
+  "devDependencies": {
+    "css-loader": "^5.0.1",
+    "style-loader": "^2.0.0",
+    "webpack": "^5.20.2",
+    "webpack-cli": "^4.5.0"
+  },
+  "dependencies": {
+    "lodash": "^4.17.20"
+  }
 }
