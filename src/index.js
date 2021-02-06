@@ -31,15 +31,15 @@ document.head.appendChild(headComponent());
 document.addEventListener("DOMContentLoaded", function () {
     setupBoard();
     document.addEventListener("keyup", (event) => {
-        let dir = event.key;
+        let dir = event.key.split("Arrow")[1];
         let player = document.getElementsByClassName('player')[0];
         let dest = player.id;
         let newPlayer;
         let newDest;
-        if(dir === "ArrowUp" || dir === "ArrowDown"
-        || dir === "ArrowRight" || dir === "ArrowLeft") {
+        if(dir === "Up" || dir === "Down"
+        || dir === "Right" || dir === "Left") {
 
-            newDest = validMove(dest, dir);
+            newDest = validMove(dest, dir.toLowerCase());
             newPlayer = document.getElementById(newDest);
             player.innerHTML = "";
             player.classList.remove("player");
@@ -50,19 +50,21 @@ document.addEventListener("DOMContentLoaded", function () {
     });
     let squares = document.getElementsByTagName("td");
     let wallPlacement = "";
+    let startEvent;
     let startPos = [-1, -1];
     let endPos;
     for (let i = 0; i < squares.length; i++) {
         squares[i].addEventListener("mousedown", (event) => {
             event.preventDefault();
+            startEvent =  event;
             startPos = [event.x, event.y];
             if (event.offsetX < 25) {
                 wallPlacement = "left";
             } else if (event.offsetX > 50) {
                 wallPlacement = "right";
-            } else if (event.offsetY < 25) {
+            } else if (event.offsetY < 32) {
                 wallPlacement = "top";
-            } else if (event.offsetY > 40) {
+            } else if (event.offsetY >= 32) {
                 wallPlacement = "bottom";
             }
         })
@@ -70,7 +72,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.addEventListener("mouseup", (event) =>{
         endPos = [event.x, event.y];
         if (startPos[0] !== -1) {
-            placeWall(event, startPos, endPos, wallPlacement);
+            placeWall(startEvent, startPos, endPos, wallPlacement);
         }
     });
 });
@@ -106,58 +108,143 @@ function setupBoard() {
 }
 
 function placeWall(event, start, end, wallPlacement) {
-    console.log(event);
     // console.log("_________________");
     // console.log(target);
     // console.log(start);
     // console.log(end);
-    // console.log(wallPlacement);
+    console.log(wallPlacement);
     // console.log("-----------------");
     //vertical or horizonal?
     // |start.x - end.x| > |start.y - end.y| = horizonal
     // |start.x - end.x| < |start.y - end.y| = vertical
     if (Math.abs(start[0] - end[0]) > Math.abs(start[1] - end[1])) {
-        if (wallPlacement === "") {
-            event.offsetY >= 30 ? wallPlacement = "bottom" : wallPlacement = "top";
+        if (wallPlacement !== "bottom" || wallPlacement !== "top") {
+            console.log("--------------");
+            console.log(wallPlacement)
+            event.offsetY >= 32 ? wallPlacement = "bottom" : wallPlacement = "top";
+            console.log(wallPlacement);
+            console.log("-------------");
         }
-        console.log("horizonal")
+        // horizontal
         if(wallPlacement === "top") {
             if (start[0] > end[0]) {
+                let next = event.target.id.split("");
                 //wall goes to the left
-                console.log("left");
+                // finds the index of letter in 'columns' then indexes one more
+                let index = findColumnIndex(columns, next[0]);
+                next[0] = columns[index - 1];
+                next = next.join("");
+                next = document.getElementById(next);
+                if (next !== null) {
+                    event.target.classList.add("wall-top");
+                    event.target.classList.remove("hall");
+                    next.classList.add("wall-top");
+                    next.classList.remove("hall");
+                }
+                
             } else {
                 //wall goes to the right
-                console.log("right");
+                let next = event.target.id.split("");
+                //wall goes to the left
+                // finds the index of letter in 'columns' then indexes one more
+                let index = findColumnIndex(columns, next[0]);
+                next[0] = columns[index + 1];
+                next = next.join("");
+                next = document.getElementById(next);
+                if (next !== null) {
+                    event.target.classList.add("wall-top");
+                    event.target.classList.remove("hall");
+                    next.classList.add("wall-top");
+                    next.classList.remove("hall");
+                }
             }
         } else if(wallPlacement === "bottom") {
             if (start[0] > end[0]) {
                 //wall goes to the left
-                console.log("left");
+                let next = event.target.id.split("");
+                // finds the index of letter in 'columns' then indexes one more
+                let index = findColumnIndex(columns, next[0]);
+                next[0] = columns[index - 1];
+                next = next.join("");
+                next = document.getElementById(next);
+                if (next !== null) {
+                    event.target.classList.add("wall-bottom");
+                    event.target.classList.remove("hall");
+                    next.classList.add("wall-bottom");
+                    next.classList.remove("hall");
+                }
             } else {
                 //wall goes to the right
-                console.log("right");
+                let next = event.target.id.split("");
+                // finds the index of letter in 'columns' then indexes one more
+                let index = findColumnIndex(columns, next[0]);
+                next[0] = columns[index + 1];
+                next = next.join("");
+                next = document.getElementById(next);
+                if (next !== null) {
+                    event.target.classList.add("wall-bottom");
+                    event.target.classList.remove("hall");
+                    next.classList.add("wall-bottom");
+                    next.classList.remove("hall");
+                }
             }
         }
     } else if (Math.abs(start[0] - end[0]) < Math.abs(start[1] - end[1])) {
-        if (wallPlacement === "") {
+        if (wallPlacement !== "right" || wallPlacement !== "left") {
             event.offsetX >= 30 ? wallPlacement = "right" : wallPlacement = "left";
         }
-        console.log("vertical")
+        // vertical
         if(wallPlacement === "right") {
             if (start[1] > end[1]) {
-                //wall goes to the up
-                console.log("up");
+                let next = event.target.id.split("");
+                // finds the index of letter in 'columns' then indexes one more
+                next[1] = parseInt(next[1]) - 1;
+                next = next.join("");
+                next = document.getElementById(next);
+                if (next !== null) {
+                    event.target.classList.add("wall-right");
+                    event.target.classList.remove("hall");
+                    next.classList.add("wall-right");
+                    next.classList.remove("hall");
+                }
             } else {
-                //wall goes to the down
-                console.log("down");
+                let next = event.target.id.split("");
+                // finds the index of letter in 'columns' then indexes one more
+                next[1] = parseInt(next[1]) + 1;
+                next = next.join("");
+                next = document.getElementById(next);
+                if (next !== null) {
+                    event.target.classList.add("wall-right");
+                    event.target.classList.remove("hall");
+                    next.classList.add("wall-right");
+                    next.classList.remove("hall");
+                }
             }
         } else if(wallPlacement === "left") {
             if (start[1] > end[1]) {
-                //wall goes to the up
-                console.log("up");
+                let next = event.target.id.split("");
+                // finds the index of letter in 'columns' then indexes one more
+                next[1] = parseInt(next[1]) - 1;
+                next = next.join("");
+                next = document.getElementById(next);
+                if (next !== null) {
+                    event.target.classList.add("wall-left");
+                    event.target.classList.remove("hall");
+                    next.classList.add("wall-left");
+                    next.classList.remove("hall");
+                }
             } else {
-                //wall goes to the down
-                console.log("down");
+                let next = event.target.id.split("");
+                // finds the index of letter in 'columns' then indexes one more
+                next[1] = parseInt(next[1]) + 1;
+                next = next.join("");
+                next = document.getElementById(next);
+                if (next !== null) {
+                    event.target.classList.add("wall-left");
+                    event.target.classList.remove("hall");
+                    next.classList.add("wall-left");
+                    next.classList.remove("hall");
+                }
             }
         }
     }
@@ -166,7 +253,7 @@ function placeWall(event, start, end, wallPlacement) {
 
 function validMove(dest, dir) {
     let newDest = "xx";
-    if(dir === "ArrowUp") {
+    if(dir === "up") {
         //if valid move move up
         // turn into an array for easy change
         newDest = newDest.split("");
@@ -180,7 +267,7 @@ function validMove(dest, dir) {
             return newDest;
         }
 
-    } else if(dir === "ArrowDown") {
+    } else if(dir === "down") {
         //if valid move move up
         newDest = newDest.split("");
         dest = dest.split("");
@@ -193,7 +280,7 @@ function validMove(dest, dir) {
             return newDest;
         }
 
-    } else if(dir === "ArrowRight") {
+    } else if(dir === "right") {
         //if valid move move up
         // turn into an array for easy change
         newDest = newDest.split("");
@@ -209,7 +296,7 @@ function validMove(dest, dir) {
             return newDest;
         };
 
-    } else if (dir === "ArrowLeft") {
+    } else if (dir === "left") {
         //if valid move move up
         // turn into an array for easy change
         newDest = newDest.split("");
