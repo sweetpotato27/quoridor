@@ -28,68 +28,22 @@ document.head.appendChild(headComponent());
 
 document.addEventListener("DOMContentLoaded", function () {
     document.addEventListener("keyup", (event) => {
-        const columns = ["a","b","c","d","e","f","g","h","i"]
+        let dir = event.key;
         let player = document.getElementsByClassName('player')[0];
+        let dest = player.id;
         let newPlayer;
-        let newDest = "";
-        if(event.key === "ArrowUp" || event.key === "ArrowDown"
-            || event.key === "ArrowRight" || event.key === "ArrowLeft") {
-            if(event.key === "ArrowUp") {
-                let dest = player.id;
-                //if valid move move up
-                if(true) {
-                    // turn into an array for easy change
-                    newDest = newDest.split("");
-                    dest = dest.split("");
-                    newDest[0] = dest[0];
-                    newDest[1] = parseInt(dest[1]) - 1;
-                    newDest = newDest.join("");
-                }
-                console.log(newDest);
-            } else if(event.key === "ArrowDown") {
-                let dest = player.id;
-                //if valid move move up
-                if(true) {
-                    // turn into an array for easy change
-                    newDest = newDest.split("");
-                    dest = dest.split("");
-                    newDest[0] = dest[0];
-                    newDest[1] = parseInt(dest[1]) + 1;
-                    newDest = newDest.join("");
-                }
-                console.log(newDest);
-            } else if(event.key === "ArrowRight") {
-                let dest = player.id;
-                //if valid move move up
-                if(true) {
-                    // turn into an array for easy change
-                    newDest = newDest.split("");
-                    dest = dest.split("");
-                    // finds the index of letter in 'columns' then indexes one more
-                    newDest[0] = columns[findColumnIndex(columns, dest[0]) + 1];
-                    newDest[1] = dest[1];
-                    newDest = newDest.join("");
-                }
-                console.log(newDest);
-            } else if (event.key === "ArrowLeft") {
-                let dest = player.id;
-                //if valid move move up
-                if(true) {
-                    // turn into an array for easy change
-                    newDest = newDest.split("");
-                    dest = dest.split("");
-                    // finds the index of letter in 'columns' then indexes one more
-                    newDest[0] = columns[findColumnIndex(columns, dest[0]) - 1];
-                    newDest[1] = dest[1];
-                    newDest = newDest.join("");
-                }
-                console.log(newDest);
-            }
+        let newDest;
+        if(dir === "ArrowUp" || dir === "ArrowDown"
+        || dir === "ArrowRight" || dir === "ArrowLeft") {
+
+            newDest = validMove(dest, dir);
+            console.log(newDest);
             newPlayer = document.getElementById(newDest);
             player.innerHTML = "";
             player.classList.remove("player");
             newPlayer.innerHTML = "X";
             newPlayer.classList.add("player");
+
         }
     });
 });
@@ -102,7 +56,66 @@ function findColumnIndex(arr, target) {
     }
 }
 
-function validMove(dest) {
+function validMove(dest, dir) {
+    const columns = ["a","b","c","d","e","f","g","h","i"];
+    let newDest = "xx";
+    if(dir === "ArrowUp") {
+        //if valid move move up
+        // turn into an array for easy change
+        newDest = newDest.split("");
+        dest = dest.split("");
+        newDest[0] = dest[0];
+        newDest[1] = parseInt(dest[1]) - 1;
+        if (newDest[1] < 1) {
+            return dest.join("");
+        } else {
+            newDest = newDest.join("");
+            return newDest;
+        }
+
+    } else if(dir === "ArrowDown") {
+        //if valid move move up
+        newDest = newDest.split("");
+        dest = dest.split("");
+        newDest[0] = dest[0];
+        newDest[1] = parseInt(dest[1]) + 1;
+        if (newDest[1] > 9) {
+            return dest.join("");
+        } else {
+            newDest = newDest.join("");
+            return newDest;
+        }
+
+    } else if(dir === "ArrowRight") {
+        //if valid move move up
+        // turn into an array for easy change
+        newDest = newDest.split("");
+        dest = dest.split("");
+        // finds the index of letter in 'columns' then indexes one more
+        newDest[0] = columns[findColumnIndex(columns, dest[0]) + 1];
+        newDest[1] = dest[1];
+        if (newDest[1] < 0) {
+            return dest.join("");
+        } else {
+            newDest = newDest.join("");
+            return newDest;
+        };
+
+    } else if (dir === "ArrowLeft") {
+        //if valid move move up
+        // turn into an array for easy change
+        newDest = newDest.split("");
+        dest = dest.split("");
+        // finds the index of letter in 'columns' then indexes one more
+        newDest[0] = columns[findColumnIndex(columns, dest[0]) - 1];
+        newDest[1] = dest[1];
+        if (newDest[1] < 0) {
+            return dest.join("");
+        } else {
+            newDest = newDest.join("");
+            return newDest;
+        }
+    }
 
 }
 
