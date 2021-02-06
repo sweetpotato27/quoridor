@@ -59,5 +59,24 @@ table {
 	border-collapse:collapse; 
 }
 .board th { padding: .5em; }
-.board td { border: 1px solid; width: 4em; height: 4em; }
+.board .hall { border: 1px solid; width: 4em; height: 4em; }
 .board .floor { background: brown; }
+.board td:hover {
+	background: lightcoral;
+}
+
+.wall-top {
+	border-top: 5px solid #000;
+}
+
+.wall-bottom {
+	border-bottom: 5px solid #000;
+}
+
+.wall-right {
+	border-right: 5px solid #000;
+}
+
+.wall-left {
+	border-left: 5px solid #000;
+}
