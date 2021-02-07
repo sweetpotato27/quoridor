@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.addEventListener("keyup", (event) => {
         let dir = event.key.split("Arrow")[1];
         let player = document.getElementsByClassName('player')[0];
-        let dest = player.id;
+        let dest = player;
         let newPlayer;
         let newDest;
         if(dir === "Up" || dir === "Down"
@@ -414,8 +414,10 @@ function placeWall(event, start, end, wallPlacement) {
 
 
 function validMove(dest, dir) {
+    console.log(dest, dir);
     let newDest = "xx";
-    if(dir === "up") {
+    if(dir === "up" && !dest.classList.contains("wall-top")) {
+        dest = dest.id;
         //if valid move move up
         // turn into an array for easy change
         newDest = newDest.split("");
@@ -429,7 +431,8 @@ function validMove(dest, dir) {
             return newDest;
         }
 
-    } else if(dir === "down") {
+    } else if(dir === "down" && !dest.classList.contains("wall-bottom")) {
+        dest = dest.id;
         //if valid move move up
         newDest = newDest.split("");
         dest = dest.split("");
@@ -442,7 +445,8 @@ function validMove(dest, dir) {
             return newDest;
         }
 
-    } else if(dir === "right") {
+    } else if(dir === "right" && !dest.classList.contains("wall-right")) {
+        dest = dest.id;
         //if valid move move up
         // turn into an array for easy change
         newDest = newDest.split("");
@@ -458,7 +462,8 @@ function validMove(dest, dir) {
             return newDest;
         };
 
-    } else if (dir === "left") {
+    } else if (dir === "left" && !dest.classList.contains("wall-left")) {
+        dest = dest.id;
         //if valid move move up
         // turn into an array for easy change
         newDest = newDest.split("");
@@ -474,6 +479,7 @@ function validMove(dest, dir) {
             return newDest;
         }
     }
+    return dest.id;
 
 }
 
