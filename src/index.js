@@ -108,84 +108,149 @@ function setupBoard() {
 }
 
 function placeWall(event, start, end, wallPlacement) {
-    // console.log("_________________");
-    // console.log(target);
-    // console.log(start);
-    // console.log(end);
-    console.log(wallPlacement);
-    // console.log("-----------------");
     //vertical or horizonal?
     // |start.x - end.x| > |start.y - end.y| = horizonal
     // |start.x - end.x| < |start.y - end.y| = vertical
     if (Math.abs(start[0] - end[0]) > Math.abs(start[1] - end[1])) {
         if (wallPlacement !== "bottom" || wallPlacement !== "top") {
-            console.log("--------------");
-            console.log(wallPlacement)
             event.offsetY >= 32 ? wallPlacement = "bottom" : wallPlacement = "top";
-            console.log(wallPlacement);
-            console.log("-------------");
         }
         // horizontal
         if(wallPlacement === "top") {
             if (start[0] > end[0]) {
-                let next = event.target.id.split("");
                 //wall goes to the left
+                console.log("wall to the left")
+                console.log("-----------------")
+                //three walls are needed to be made in addition to the initially
+                // selected wall.  4 in total.
+                // ex. if d2 is selected and dragged to the right on top then...
+                //     top walls will be built on d2 and e2 and,
+                //     bottom walls will be build on d1 and e1.
+                let wallOne = event.target.id.split("");
+                let wallTwo = event.target.id.split("");
+                let wallThree = event.target.id.split("");
                 // finds the index of letter in 'columns' then indexes one more
-                let index = findColumnIndex(columns, next[0]);
-                next[0] = columns[index - 1];
-                next = next.join("");
-                next = document.getElementById(next);
-                if (next !== null) {
+                let index = findColumnIndex(columns, wallOne[0]);
+                //wall one = e2
+                wallOne[0] = columns[index - 1];
+                wallOne = wallOne.join("");
+                wallOne = document.getElementById(wallOne);
+                //wall two = d1
+                wallTwo[1] = parseInt(wallTwo[1]) - 1;
+                wallTwo = wallTwo.join("");
+                wallTwo = document.getElementById(wallTwo);
+                //wall three = e1
+                index = findColumnIndex(columns, wallThree[0]);
+                wallThree[0] = columns[index - 1];
+                wallThree[1] = parseInt(wallThree[1]) - 1;
+                wallThree = wallThree.join("");
+                wallThree = document.getElementById(wallThree);
+
+                if (wallOne !== null && wallTwo !== null && wallThree !== null) {
                     event.target.classList.add("wall-top");
                     event.target.classList.remove("hall");
-                    next.classList.add("wall-top");
-                    next.classList.remove("hall");
+                    wallOne.classList.add("wall-top");
+                    wallOne.classList.remove("hall");
+                    wallTwo.classList.add("wall-bottom");
+                    wallTwo.classList.remove("hall");
+                    wallThree.classList.add("wall-bottom");
+                    wallThree.classList.remove("hall");
                 }
                 
             } else {
                 //wall goes to the right
-                let next = event.target.id.split("");
-                //wall goes to the left
+                console.log("wall to the right")
+                console.log("-----------------")
+                let wallOne = event.target.id.split("");
+                let wallTwo = event.target.id.split("");
+                let wallThree = event.target.id.split("");
                 // finds the index of letter in 'columns' then indexes one more
-                let index = findColumnIndex(columns, next[0]);
-                next[0] = columns[index + 1];
-                next = next.join("");
-                next = document.getElementById(next);
-                if (next !== null) {
-                    event.target.classList.add("wall-top");
+                let index = findColumnIndex(columns, wallOne[0]);
+                wallOne[0] = columns[index + 1];
+                wallOne = wallOne.join("");
+                wallOne = document.getElementById(wallOne);
+                //wall two 
+                wallTwo[1] = parseInt(wallTwo[1]) - 1;
+                wallTwo = wallTwo.join("");
+                wallTwo = document.getElementById(wallTwo);
+                //wall three 
+                index = findColumnIndex(columns, wallThree[0]);
+                wallThree[0] = columns[index + 1];
+                wallThree[1] = parseInt(wallThree[1]) - 1;
+                wallThree = wallThree.join("");
+                wallThree = document.getElementById(wallThree);
+                if (wallOne !== null && wallTwo !== null && wallThree !== null) {
                     event.target.classList.remove("hall");
-                    next.classList.add("wall-top");
-                    next.classList.remove("hall");
+                    event.target.classList.add("wall-top");
+                    wallOne.classList.remove("hall");
+                    wallOne.classList.add("wall-top");
+                    wallTwo.classList.add("wall-bottom");
+                    wallTwo.classList.remove("hall");
+                    wallThree.classList.add("wall-bottom");
+                    wallThree.classList.remove("hall");
                 }
             }
         } else if(wallPlacement === "bottom") {
             if (start[0] > end[0]) {
                 //wall goes to the left
-                let next = event.target.id.split("");
+                let wallOne = event.target.id.split("");
+                let wallTwo = event.target.id.split("");
+                let wallThree = event.target.id.split("");
                 // finds the index of letter in 'columns' then indexes one more
-                let index = findColumnIndex(columns, next[0]);
-                next[0] = columns[index - 1];
-                next = next.join("");
-                next = document.getElementById(next);
-                if (next !== null) {
+                let index = findColumnIndex(columns, wallOne[0]);
+                wallOne[0] = columns[index - 1];
+                wallOne = wallOne.join("");
+                wallOne = document.getElementById(wallOne);
+                 //wall two 
+                wallTwo[1] = parseInt(wallTwo[1]) + 1;
+                wallTwo = wallTwo.join("");
+                wallTwo = document.getElementById(wallTwo);
+                //wall three 
+                index = findColumnIndex(columns, wallThree[0]);
+                wallThree[0] = columns[index - 1];
+                wallThree[1] = parseInt(wallThree[1]) + 1;
+                wallThree = wallThree.join("");
+                wallThree = document.getElementById(wallThree);
+                console.log(wallOne, wallTwo, wallThree);
+                if (wallOne !== null && wallTwo !== null && wallThree !== null) {
                     event.target.classList.add("wall-bottom");
                     event.target.classList.remove("hall");
-                    next.classList.add("wall-bottom");
-                    next.classList.remove("hall");
+                    wallOne.classList.add("wall-bottom");
+                    wallOne.classList.remove("hall");
+                    wallTwo.classList.add("wall-top");
+                    wallTwo.classList.remove("hall");
+                    wallThree.classList.add("wall-top");
+                    wallThree.classList.remove("hall");
                 }
             } else {
                 //wall goes to the right
-                let next = event.target.id.split("");
+                let wallOne = event.target.id.split("");
+                let wallTwo = event.target.id.split("");
+                let wallThree = event.target.id.split("");
                 // finds the index of letter in 'columns' then indexes one more
-                let index = findColumnIndex(columns, next[0]);
-                next[0] = columns[index + 1];
-                next = next.join("");
-                next = document.getElementById(next);
-                if (next !== null) {
+                let index = findColumnIndex(columns, wallOne[0]);
+                wallOne[0] = columns[index + 1];
+                wallOne = wallOne.join("");
+                wallOne = document.getElementById(wallOne);
+                //wall two 
+                wallTwo[1] = parseInt(wallTwo[1]) + 1;
+                wallTwo = wallTwo.join("");
+                wallTwo = document.getElementById(wallTwo);
+                //wall three 
+                index = findColumnIndex(columns, wallThree[0]);
+                wallThree[0] = columns[index + 1];
+                wallThree[1] = parseInt(wallThree[1]) + 1;
+                wallThree = wallThree.join("");
+                wallThree = document.getElementById(wallThree);
+                if (wallOne !== null && wallTwo !== null && wallThree !== null) {
                     event.target.classList.add("wall-bottom");
                     event.target.classList.remove("hall");
-                    next.classList.add("wall-bottom");
-                    next.classList.remove("hall");
+                    wallOne.classList.add("wall-bottom");
+                    wallOne.classList.remove("hall");
+                    wallTwo.classList.add("wall-top");
+                    wallTwo.classList.remove("hall");
+                    wallThree.classList.add("wall-top");
+                    wallThree.classList.remove("hall");
                 }
             }
         }
@@ -196,54 +261,133 @@ function placeWall(event, start, end, wallPlacement) {
         // vertical
         if(wallPlacement === "right") {
             if (start[1] > end[1]) {
-                let next = event.target.id.split("");
+                // GOING UP
+                //three walls are needed to be made in addition to the initially
+                // selected wall.  4 in total.
+                // ex. if d2 is selected and dragged up on the right side then...
+                //     right walls will be built on d2 and d1 and,
+                //     walls walls will be build on e2 and e1.
+                let wallOne = event.target.id.split("");
+                let wallTwo = event.target.id.split("");
+                let wallThree = event.target.id.split("");
+                let index;
                 // finds the index of letter in 'columns' then indexes one more
-                next[1] = parseInt(next[1]) - 1;
-                next = next.join("");
-                next = document.getElementById(next);
-                if (next !== null) {
+                wallOne[1] = parseInt(wallOne[1]) - 1;
+                wallOne = wallOne.join("");
+                wallOne = document.getElementById(wallOne);
+                //wall two 
+                index = findColumnIndex(columns, wallTwo[0]);
+                wallTwo[0] = columns[index + 1];
+                wallTwo = wallTwo.join("");
+                wallTwo = document.getElementById(wallTwo);
+                //wall three 
+                index = findColumnIndex(columns, wallThree[0]);
+                wallThree[0] = columns[index + 1];
+                wallThree[1] = parseInt(wallThree[1]) - 1;
+                wallThree = wallThree.join("");
+                wallThree = document.getElementById(wallThree);
+                if (wallOne !== null && wallTwo !== null && wallThree !== null) {
                     event.target.classList.add("wall-right");
                     event.target.classList.remove("hall");
-                    next.classList.add("wall-right");
-                    next.classList.remove("hall");
+                    wallOne.classList.add("wall-right");
+                    wallOne.classList.remove("hall");
+                    wallTwo.classList.add("wall-left");
+                    wallTwo.classList.remove("hall");
+                    wallThree.classList.add("wall-left");
+                    wallThree.classList.remove("hall");
                 }
             } else {
-                let next = event.target.id.split("");
+                let wallOne = event.target.id.split("");
+                let wallTwo = event.target.id.split("");
+                let wallThree = event.target.id.split("");
+                let index;
                 // finds the index of letter in 'columns' then indexes one more
-                next[1] = parseInt(next[1]) + 1;
-                next = next.join("");
-                next = document.getElementById(next);
-                if (next !== null) {
+                wallOne[1] = parseInt(wallOne[1]) + 1;
+                wallOne = wallOne.join("");
+                wallOne = document.getElementById(wallOne);
+                //wall two 
+                index = findColumnIndex(columns, wallTwo[0]);
+                wallTwo[0] = columns[index + 1];
+                wallTwo = wallTwo.join("");
+                wallTwo = document.getElementById(wallTwo);
+                //wall three 
+                index = findColumnIndex(columns, wallThree[0]);
+                wallThree[0] = columns[index + 1];
+                wallThree[1] = parseInt(wallThree[1]) + 1;
+                wallThree = wallThree.join("");
+                wallThree = document.getElementById(wallThree);
+                if (wallOne !== null && wallTwo !== null && wallThree !== null) {
                     event.target.classList.add("wall-right");
                     event.target.classList.remove("hall");
-                    next.classList.add("wall-right");
-                    next.classList.remove("hall");
+                    wallOne.classList.add("wall-right");
+                    wallOne.classList.remove("hall");
+                    wallTwo.classList.add("wall-left");
+                    wallTwo.classList.remove("hall");
+                    wallThree.classList.add("wall-left");
+                    wallThree.classList.remove("hall");
                 }
             }
         } else if(wallPlacement === "left") {
             if (start[1] > end[1]) {
-                let next = event.target.id.split("");
+                let wallOne = event.target.id.split("");
+                let wallTwo = event.target.id.split("");
+                let wallThree = event.target.id.split("");
+                let index;
                 // finds the index of letter in 'columns' then indexes one more
-                next[1] = parseInt(next[1]) - 1;
-                next = next.join("");
-                next = document.getElementById(next);
-                if (next !== null) {
+                wallOne[1] = parseInt(wallOne[1]) - 1;
+                wallOne = wallOne.join("");
+                wallOne = document.getElementById(wallOne);
+                //wall two 
+                index = findColumnIndex(columns, wallTwo[0]);
+                wallTwo[0] = columns[index - 1];
+                wallTwo = wallTwo.join("");
+                wallTwo = document.getElementById(wallTwo);
+                //wall three 
+                index = findColumnIndex(columns, wallThree[0]);
+                wallThree[0] = columns[index - 1];
+                wallThree[1] = parseInt(wallThree[1]) - 1;
+                wallThree = wallThree.join("");
+                wallThree = document.getElementById(wallThree);
+                console.log(wallOne, wallTwo, wallThree);
+                if (wallOne !== null && wallTwo !== null && wallThree !== null) {
                     event.target.classList.add("wall-left");
                     event.target.classList.remove("hall");
-                    next.classList.add("wall-left");
-                    next.classList.remove("hall");
+                    wallOne.classList.add("wall-left");
+                    wallOne.classList.remove("hall");
+                    wallTwo.classList.add("wall-right");
+                    wallTwo.classList.remove("hall");
+                    wallThree.classList.add("wall-right");
+                    wallThree.classList.remove("hall");
                 }
             } else {
-                let next = event.target.id.split("");
+                let wallOne = event.target.id.split("");
+                let wallTwo = event.target.id.split("");
+                let wallThree = event.target.id.split("");
+                let index;
                 // finds the index of letter in 'columns' then indexes one more
-                next[1] = parseInt(next[1]) + 1;
-                next = next.join("");
-                next = document.getElementById(next);
-                if (next !== null) {
+                wallOne[1] = parseInt(wallOne[1]) + 1;
+                wallOne = wallOne.join("");
+                wallOne = document.getElementById(wallOne);
+                //wall two 
+                index = findColumnIndex(columns, wallTwo[0]);
+                wallTwo[0] = columns[index - 1];
+                wallTwo = wallTwo.join("");
+                wallTwo = document.getElementById(wallTwo);
+                //wall three 
+                index = findColumnIndex(columns, wallThree[0]);
+                wallThree[0] = columns[index - 1];
+                wallThree[1] = parseInt(wallThree[1]) + 1;
+                wallThree = wallThree.join("");
+                wallThree = document.getElementById(wallThree);
+                if (wallOne !== null && wallTwo !== null && wallThree !== null) {
                     event.target.classList.add("wall-left");
                     event.target.classList.remove("hall");
-                    next.classList.add("wall-left");
-                    next.classList.remove("hall");
+                    wallOne.classList.add("wall-left");
+                    wallOne.classList.remove("hall");
+                    wallTwo.classList.add("wall-right");
+                    wallTwo.classList.remove("hall");
+                    wallThree.classList.add("wall-right");
+                    wallThree.classList.remove("hall");
                 }
             }
         }

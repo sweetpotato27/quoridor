@@ -47,36 +47,46 @@ q:before, q:after {
 	content: none;
 }
 table {
-	border-collapse: collapse;
-	border-spacing: 0;
+	/* border-collapse: collapse;
+	border-spacing: 0; */
 }
 
 /*
 */
+.wall-top {
+	border-top: 5px solid #000;
+	z-index: 9;
+}
+
+.wall-bottom {
+	border-bottom: 5px solid #000;
+	z-index: 9;
+}
+
+.wall-right {
+	border-right: 5px solid #000;
+	z-index: 9;
+}
+
+.wall-left {
+	border-left: 5px solid #000;
+	z-index: 9;
+}
 
 .board { 
 	border-spacing:0; 
 	border-collapse:collapse; 
 }
 .board th { padding: .5em; }
-.board .hall { border: 1px solid; width: 4em; height: 4em; }
-.board .floor { background: brown; }
+.hall { 
+	border: 5px solid brown; 
+	width: 4em; height: 4em; 
+	z-index: 5;
+}
+.board .floor { 
+	background: brown; 
+	margin: 1px;
+}
 .board td:hover {
 	background: lightcoral;
-}
-
-.wall-top {
-	border-top: 5px solid #000;
-}
-
-.wall-bottom {
-	border-bottom: 5px solid #000;
-}
-
-.wall-right {
-	border-right: 5px solid #000;
-}
-
-.wall-left {
-	border-left: 5px solid #000;
 }
