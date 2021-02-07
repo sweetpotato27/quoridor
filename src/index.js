@@ -119,8 +119,6 @@ function placeWall(event, start, end, wallPlacement) {
         if(wallPlacement === "top") {
             if (start[0] > end[0]) {
                 //wall goes to the left
-                console.log("wall to the left")
-                console.log("-----------------")
                 //three walls are needed to be made in addition to the initially
                 // selected wall.  4 in total.
                 // ex. if d2 is selected and dragged to the right on top then...
@@ -146,7 +144,9 @@ function placeWall(event, start, end, wallPlacement) {
                 wallThree = wallThree.join("");
                 wallThree = document.getElementById(wallThree);
 
-                if (wallOne !== null && wallTwo !== null && wallThree !== null) {
+                if ((wallOne !== null && wallTwo !== null && wallThree !== null) &&
+                    (!wallOne.classList.contains("wall-top") && !wallTwo.classList.contains("wall-bottom") 
+                    && !wallThree.classList.contains("wall-bottom"))) {
                     event.target.classList.add("wall-top");
                     event.target.classList.remove("hall");
                     wallOne.classList.add("wall-top");
@@ -155,12 +155,11 @@ function placeWall(event, start, end, wallPlacement) {
                     wallTwo.classList.remove("hall");
                     wallThree.classList.add("wall-bottom");
                     wallThree.classList.remove("hall");
+                    console.log("WALL PLACED")
                 }
                 
             } else {
                 //wall goes to the right
-                console.log("wall to the right")
-                console.log("-----------------")
                 let wallOne = event.target.id.split("");
                 let wallTwo = event.target.id.split("");
                 let wallThree = event.target.id.split("");
@@ -179,7 +178,9 @@ function placeWall(event, start, end, wallPlacement) {
                 wallThree[1] = parseInt(wallThree[1]) - 1;
                 wallThree = wallThree.join("");
                 wallThree = document.getElementById(wallThree);
-                if (wallOne !== null && wallTwo !== null && wallThree !== null) {
+                if ((wallOne !== null && wallTwo !== null && wallThree !== null) &&
+                    (!wallOne.classList.contains("wall-top") && !wallTwo.classList.contains("wall-bottom") 
+                    && !wallThree.classList.contains("wall-bottom"))) {
                     event.target.classList.remove("hall");
                     event.target.classList.add("wall-top");
                     wallOne.classList.remove("hall");
@@ -188,6 +189,7 @@ function placeWall(event, start, end, wallPlacement) {
                     wallTwo.classList.remove("hall");
                     wallThree.classList.add("wall-bottom");
                     wallThree.classList.remove("hall");
+                    console.log("WALL PLACED")
                 }
             }
         } else if(wallPlacement === "bottom") {
@@ -211,8 +213,9 @@ function placeWall(event, start, end, wallPlacement) {
                 wallThree[1] = parseInt(wallThree[1]) + 1;
                 wallThree = wallThree.join("");
                 wallThree = document.getElementById(wallThree);
-                console.log(wallOne, wallTwo, wallThree);
-                if (wallOne !== null && wallTwo !== null && wallThree !== null) {
+                if ((wallOne !== null && wallTwo !== null && wallThree !== null) &&
+                    (!wallOne.classList.contains("wall-bottom") && !wallTwo.classList.contains("wall-top") 
+                    && !wallThree.classList.contains("wall-top"))) {
                     event.target.classList.add("wall-bottom");
                     event.target.classList.remove("hall");
                     wallOne.classList.add("wall-bottom");
@@ -221,6 +224,7 @@ function placeWall(event, start, end, wallPlacement) {
                     wallTwo.classList.remove("hall");
                     wallThree.classList.add("wall-top");
                     wallThree.classList.remove("hall");
+                    console.log("WALL PLACED")
                 }
             } else {
                 //wall goes to the right
@@ -242,7 +246,9 @@ function placeWall(event, start, end, wallPlacement) {
                 wallThree[1] = parseInt(wallThree[1]) + 1;
                 wallThree = wallThree.join("");
                 wallThree = document.getElementById(wallThree);
-                if (wallOne !== null && wallTwo !== null && wallThree !== null) {
+                if ((wallOne !== null && wallTwo !== null && wallThree !== null) &&
+                    (!wallOne.classList.contains("wall-bottom") && !wallTwo.classList.contains("wall-top") 
+                    && !wallThree.classList.contains("wall-top"))) {
                     event.target.classList.add("wall-bottom");
                     event.target.classList.remove("hall");
                     wallOne.classList.add("wall-bottom");
@@ -251,6 +257,7 @@ function placeWall(event, start, end, wallPlacement) {
                     wallTwo.classList.remove("hall");
                     wallThree.classList.add("wall-top");
                     wallThree.classList.remove("hall");
+                    console.log("WALL PLACED")
                 }
             }
         }
@@ -286,7 +293,9 @@ function placeWall(event, start, end, wallPlacement) {
                 wallThree[1] = parseInt(wallThree[1]) - 1;
                 wallThree = wallThree.join("");
                 wallThree = document.getElementById(wallThree);
-                if (wallOne !== null && wallTwo !== null && wallThree !== null) {
+                if ((wallOne !== null && wallTwo !== null && wallThree !== null) &&
+                    (!wallOne.classList.contains("wall-right") && !wallTwo.classList.contains("wall-left") 
+                    && !wallThree.classList.contains("wall-left"))) {
                     event.target.classList.add("wall-right");
                     event.target.classList.remove("hall");
                     wallOne.classList.add("wall-right");
@@ -295,6 +304,7 @@ function placeWall(event, start, end, wallPlacement) {
                     wallTwo.classList.remove("hall");
                     wallThree.classList.add("wall-left");
                     wallThree.classList.remove("hall");
+                    console.log("WALL PLACED")
                 }
             } else {
                 let wallOne = event.target.id.split("");
@@ -316,7 +326,9 @@ function placeWall(event, start, end, wallPlacement) {
                 wallThree[1] = parseInt(wallThree[1]) + 1;
                 wallThree = wallThree.join("");
                 wallThree = document.getElementById(wallThree);
-                if (wallOne !== null && wallTwo !== null && wallThree !== null) {
+                if ((wallOne !== null && wallTwo !== null && wallThree !== null) &&
+                    (!wallOne.classList.contains("wall-right") && !wallTwo.classList.contains("wall-left") 
+                    && !wallThree.classList.contains("wall-left"))) {
                     event.target.classList.add("wall-right");
                     event.target.classList.remove("hall");
                     wallOne.classList.add("wall-right");
@@ -325,6 +337,7 @@ function placeWall(event, start, end, wallPlacement) {
                     wallTwo.classList.remove("hall");
                     wallThree.classList.add("wall-left");
                     wallThree.classList.remove("hall");
+                    console.log("WALL PLACED")
                 }
             }
         } else if(wallPlacement === "left") {
@@ -348,8 +361,9 @@ function placeWall(event, start, end, wallPlacement) {
                 wallThree[1] = parseInt(wallThree[1]) - 1;
                 wallThree = wallThree.join("");
                 wallThree = document.getElementById(wallThree);
-                console.log(wallOne, wallTwo, wallThree);
-                if (wallOne !== null && wallTwo !== null && wallThree !== null) {
+                if ((wallOne !== null && wallTwo !== null && wallThree !== null) &&
+                    (!wallOne.classList.contains("wall-left") && !wallTwo.classList.contains("wall-right") 
+                    && !wallThree.classList.contains("wall-right"))) {
                     event.target.classList.add("wall-left");
                     event.target.classList.remove("hall");
                     wallOne.classList.add("wall-left");
@@ -358,6 +372,7 @@ function placeWall(event, start, end, wallPlacement) {
                     wallTwo.classList.remove("hall");
                     wallThree.classList.add("wall-right");
                     wallThree.classList.remove("hall");
+                    console.log("WALL PLACED")
                 }
             } else {
                 let wallOne = event.target.id.split("");
@@ -379,7 +394,9 @@ function placeWall(event, start, end, wallPlacement) {
                 wallThree[1] = parseInt(wallThree[1]) + 1;
                 wallThree = wallThree.join("");
                 wallThree = document.getElementById(wallThree);
-                if (wallOne !== null && wallTwo !== null && wallThree !== null) {
+                if ((wallOne !== null && wallTwo !== null && wallThree !== null) &&
+                    (!wallOne.classList.contains("wall-left") && !wallTwo.classList.contains("wall-right") 
+                    && !wallThree.classList.contains("wall-right"))) {
                     event.target.classList.add("wall-left");
                     event.target.classList.remove("hall");
                     wallOne.classList.add("wall-left");
@@ -388,6 +405,7 @@ function placeWall(event, start, end, wallPlacement) {
                     wallTwo.classList.remove("hall");
                     wallThree.classList.add("wall-right");
                     wallThree.classList.remove("hall");
+                    console.log("WALL PLACED")
                 }
             }
         }
