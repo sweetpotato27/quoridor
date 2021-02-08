@@ -143,7 +143,7 @@ function placeWall(event, start, end, wallPlacement) {
                 let wallTwo = event.target.id.split("");
                 let wallThree = event.target.id.split("");
                 // finds the index of letter in 'columns' then indexes one more
-                let index = findColumnIndex(columns, wallOne[0]);
+                let index = findIndex(columns, wallOne[0]);
                 //wall one = e2
                 wallOne[0] = columns[index - 1];
                 wallOne = wallOne.join("");
@@ -153,7 +153,7 @@ function placeWall(event, start, end, wallPlacement) {
                 wallTwo = wallTwo.join("");
                 wallTwo = document.getElementById(wallTwo);
                 //wall three = e1
-                index = findColumnIndex(columns, wallThree[0]);
+                index = findIndex(columns, wallThree[0]);
                 wallThree[0] = columns[index - 1];
                 wallThree[1] = parseInt(wallThree[1]) - 1;
                 wallThree = wallThree.join("");
@@ -205,7 +205,7 @@ function placeWall(event, start, end, wallPlacement) {
                 let wallTwo = event.target.id.split("");
                 let wallThree = event.target.id.split("");
                 // finds the index of letter in 'columns' then indexes one more
-                let index = findColumnIndex(columns, wallOne[0]);
+                let index = findIndex(columns, wallOne[0]);
                 wallOne[0] = columns[index + 1];
                 wallOne = wallOne.join("");
                 wallOne = document.getElementById(wallOne);
@@ -214,7 +214,7 @@ function placeWall(event, start, end, wallPlacement) {
                 wallTwo = wallTwo.join("");
                 wallTwo = document.getElementById(wallTwo);
                 //wall three 
-                index = findColumnIndex(columns, wallThree[0]);
+                index = findIndex(columns, wallThree[0]);
                 wallThree[0] = columns[index + 1];
                 wallThree[1] = parseInt(wallThree[1]) - 1;
                 wallThree = wallThree.join("");
@@ -266,7 +266,7 @@ function placeWall(event, start, end, wallPlacement) {
                 let wallTwo = event.target.id.split("");
                 let wallThree = event.target.id.split("");
                 // finds the index of letter in 'columns' then indexes one more
-                let index = findColumnIndex(columns, wallOne[0]);
+                let index = findIndex(columns, wallOne[0]);
                 wallOne[0] = columns[index - 1];
                 wallOne = wallOne.join("");
                 wallOne = document.getElementById(wallOne);
@@ -275,7 +275,7 @@ function placeWall(event, start, end, wallPlacement) {
                 wallTwo = wallTwo.join("");
                 wallTwo = document.getElementById(wallTwo);
                 //wall three 
-                index = findColumnIndex(columns, wallThree[0]);
+                index = findIndex(columns, wallThree[0]);
                 wallThree[0] = columns[index - 1];
                 wallThree[1] = parseInt(wallThree[1]) + 1;
                 wallThree = wallThree.join("");
@@ -325,7 +325,7 @@ function placeWall(event, start, end, wallPlacement) {
                 let wallTwo = event.target.id.split("");
                 let wallThree = event.target.id.split("");
                 // finds the index of letter in 'columns' then indexes one more
-                let index = findColumnIndex(columns, wallOne[0]);
+                let index = findIndex(columns, wallOne[0]);
                 wallOne[0] = columns[index + 1];
                 wallOne = wallOne.join("");
                 wallOne = document.getElementById(wallOne);
@@ -334,7 +334,7 @@ function placeWall(event, start, end, wallPlacement) {
                 wallTwo = wallTwo.join("");
                 wallTwo = document.getElementById(wallTwo);
                 //wall three 
-                index = findColumnIndex(columns, wallThree[0]);
+                index = findIndex(columns, wallThree[0]);
                 wallThree[0] = columns[index + 1];
                 wallThree[1] = parseInt(wallThree[1]) + 1;
                 wallThree = wallThree.join("");
@@ -402,12 +402,12 @@ function placeWall(event, start, end, wallPlacement) {
                 wallOne = wallOne.join("");
                 wallOne = document.getElementById(wallOne);
                 //wall two 
-                index = findColumnIndex(columns, wallTwo[0]);
+                index = findIndex(columns, wallTwo[0]);
                 wallTwo[0] = columns[index + 1];
                 wallTwo = wallTwo.join("");
                 wallTwo = document.getElementById(wallTwo);
                 //wall three 
-                index = findColumnIndex(columns, wallThree[0]);
+                index = findIndex(columns, wallThree[0]);
                 wallThree[0] = columns[index + 1];
                 wallThree[1] = parseInt(wallThree[1]) - 1;
                 wallThree = wallThree.join("");
@@ -461,12 +461,12 @@ function placeWall(event, start, end, wallPlacement) {
                 wallOne = wallOne.join("");
                 wallOne = document.getElementById(wallOne);
                 //wall two 
-                index = findColumnIndex(columns, wallTwo[0]);
+                index = findIndex(columns, wallTwo[0]);
                 wallTwo[0] = columns[index + 1];
                 wallTwo = wallTwo.join("");
                 wallTwo = document.getElementById(wallTwo);
                 //wall three 
-                index = findColumnIndex(columns, wallThree[0]);
+                index = findIndex(columns, wallThree[0]);
                 wallThree[0] = columns[index + 1];
                 wallThree[1] = parseInt(wallThree[1]) + 1;
                 wallThree = wallThree.join("");
@@ -524,12 +524,12 @@ function placeWall(event, start, end, wallPlacement) {
                 wallOne = wallOne.join("");
                 wallOne = document.getElementById(wallOne);
                 //wall two 
-                index = findColumnIndex(columns, wallTwo[0]);
+                index = findIndex(columns, wallTwo[0]);
                 wallTwo[0] = columns[index - 1];
                 wallTwo = wallTwo.join("");
                 wallTwo = document.getElementById(wallTwo);
                 //wall three 
-                index = findColumnIndex(columns, wallThree[0]);
+                index = findIndex(columns, wallThree[0]);
                 wallThree[0] = columns[index - 1];
                 wallThree[1] = parseInt(wallThree[1]) - 1;
                 wallThree = wallThree.join("");
@@ -583,12 +583,12 @@ function placeWall(event, start, end, wallPlacement) {
                 wallOne = wallOne.join("");
                 wallOne = document.getElementById(wallOne);
                 //wall two 
-                index = findColumnIndex(columns, wallTwo[0]);
+                index = findIndex(columns, wallTwo[0]);
                 wallTwo[0] = columns[index - 1];
                 wallTwo = wallTwo.join("");
                 wallTwo = document.getElementById(wallTwo);
                 //wall three 
-                index = findColumnIndex(columns, wallThree[0]);
+                index = findIndex(columns, wallThree[0]);
                 wallThree[0] = columns[index - 1];
                 wallThree[1] = parseInt(wallThree[1]) + 1;
                 wallThree = wallThree.join("");
@@ -678,7 +678,7 @@ function validMove(dest, dir) {
         newDest = newDest.split("");
         dest = dest.split("");
         // finds the index of letter in 'columns' then indexes one more
-        let index = findColumnIndex(columns, dest[0]);
+        let index = findIndex(columns, dest[0]);
         newDest[0] = columns[index + 1];
         newDest[1] = dest[1];
         if (index > 7) {
@@ -695,7 +695,7 @@ function validMove(dest, dir) {
         newDest = newDest.split("");
         dest = dest.split("");
         // finds the index of letter in 'columns' then indexes one more
-        let index = findColumnIndex(columns, dest[0]);
+        let index = findIndex(columns, dest[0]);
         newDest[0] = columns[index - 1];
         newDest[1] = dest[1];
         if (index < 1) {
@@ -709,11 +709,6 @@ function validMove(dest, dir) {
 
 }
 
-function findPath(player, goal) {
-    // should return a boolean depending on if the path to 
-    // goal from the player is blocked by walls or reachable.
-    player = "e9";
-}
 
 function bfs(root) {
     let goal = ["a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1", "i1"];
@@ -749,7 +744,7 @@ function bfs(root) {
         }
         if ((!ele.classList.contains("wall-right") && (v.split("")[0] !== "i"))) {
             let id = v.split("");
-            let idx = findColumnIndex(columns, id[0]);
+            let idx = findIndex(columns, id[0]);
             id[0] = columns[idx + 1];
             id = id.join("");
             if (!discovered.includes(id)) {
@@ -759,7 +754,7 @@ function bfs(root) {
         }
         if ((!ele.classList.contains("wall-left") && (v.split("")[0] !== "a"))) {
             let id = v.split("");
-            let idx = findColumnIndex(columns, id[0]);
+            let idx = findIndex(columns, id[0]);
             id[0] = columns[idx - 1];
             id = id.join("");
             if (!discovered.includes(id)) {
@@ -774,7 +769,8 @@ function bfs(root) {
 
 
 
-function findColumnIndex(arr, target) {
+function findIndex(arr, target) {
+    //find index given target value
     for(let i = 0; i < arr.length; i++) {
         if(arr[i] === target) {
             return i;
