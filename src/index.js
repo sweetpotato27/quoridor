@@ -84,6 +84,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.addEventListener("mouseup", (event) =>{
         endPos = [event.x, event.y];
         if (startPos[0] !== -1) {
+            console.log(startPos);
             placeWall(startEvent, startPos, endPos, wallPlacement);
         }
     });
