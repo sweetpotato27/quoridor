@@ -40,6 +40,10 @@ document.addEventListener("DOMContentLoaded", function () {
         || dir === "Right" || dir === "Left") {
 
             newDest = validMove(dest, dir.toLowerCase());
+            // WIN CONDITION FOR BOTTOM STARTING PLAYER
+            if (newDest.split("")[1] === "1") {
+                console.log("YOU WIN");
+            }
             newPlayer = document.getElementById(newDest);
             player.innerHTML = "";
             player.classList.remove("player");
@@ -414,7 +418,6 @@ function placeWall(event, start, end, wallPlacement) {
 
 
 function validMove(dest, dir) {
-    console.log(dest, dir);
     let newDest = "xx";
     if(dir === "up" && !dest.classList.contains("wall-top")) {
         dest = dest.id;
