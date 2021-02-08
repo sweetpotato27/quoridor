@@ -46,13 +46,15 @@ q:before, q:after {
 	content: '';
 	content: none;
 }
+
+/*
+*/
+
+
 table {
 	/* border-collapse: collapse;
 	border-spacing: 0; */
 }
-
-/*
-*/
 .wall-top {
 	border-top: 5px solid #000;
 	z-index: 9;
@@ -89,4 +91,10 @@ table {
 }
 .board td:hover {
 	background: lightcoral;
+}
+
+
+.player {
+	line-height: 60px;
+	text-align: center;
 }
