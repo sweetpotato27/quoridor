@@ -1,6 +1,7 @@
 import _, { throttle } from 'lodash';
 import './style.css';
 import Icon from './icon.png';
+import './queue';
 
 const columns = ["a","b","c","d","e","f","g","h","i"];
 
@@ -43,6 +44,9 @@ document.addEventListener("DOMContentLoaded", function () {
             // WIN CONDITION FOR BOTTOM STARTING PLAYER
             if (newDest.split("")[1] === "1") {
                 console.log("YOU WIN");
+                setTimeout(() => {
+                    location.reload();
+                }, 1000);
             }
             newPlayer = document.getElementById(newDest);
             player.innerHTML = "";
@@ -50,6 +54,10 @@ document.addEventListener("DOMContentLoaded", function () {
             newPlayer.innerHTML = "X";
             newPlayer.classList.add("player");
 
+        }
+
+        if (event.key === " ") {
+            console.log(bfs(player.id));
         }
     });
     let squares = document.getElementsByTagName("td");
@@ -109,9 +117,11 @@ function setupBoard() {
         }
         board.appendChild(tr);
     }
+
 }
 
 function placeWall(event, start, end, wallPlacement) {
+    let player = document.getElementsByClassName("player")[0].id;
     //vertical or horizonal?
     // |start.x - end.x| > |start.y - end.y| = horizonal
     // |start.x - end.x| < |start.y - end.y| = vertical
@@ -151,15 +161,41 @@ function placeWall(event, start, end, wallPlacement) {
                 if ((wallOne !== null && wallTwo !== null && wallThree !== null) &&
                     (!wallOne.classList.contains("wall-top") && !wallTwo.classList.contains("wall-bottom") 
                     && !wallThree.classList.contains("wall-bottom"))) {
-                    event.target.classList.add("wall-top");
-                    event.target.classList.remove("hall");
-                    wallOne.classList.add("wall-top");
-                    wallOne.classList.remove("hall");
-                    wallTwo.classList.add("wall-bottom");
-                    wallTwo.classList.remove("hall");
-                    wallThree.classList.add("wall-bottom");
-                    wallThree.classList.remove("hall");
-                    console.log("WALL PLACED")
+                        event.target.classList.remove("hall");
+                        event.target.classList.add("wall-top", "wall");
+                        wallOne.classList.remove("hall");
+                        wallOne.classList.add("wall-top", "wall");
+                        wallTwo.classList.remove("hall");
+                        wallTwo.classList.add("wall-bottom", "wall");
+                        wallThree.classList.remove("hall");
+                        wallThree.classList.add("wall-bottom", "wall");
+                    let isValid = bfs(player);
+                    if (isValid === undefined) {
+                        if(!event.target.classList.contains("hall")&&(!event.target.classList.contains("wall"))){
+                            event.target.classList.add("hall");
+                            event.target.classList.remove("hall");
+                        }
+                        event.target.classList.remove("wall-top");
+                        if(!wallOne.classList.contains("hall")&&(!wallOne.classList.contains("wall"))){
+                            wallOne.classList.add("hall");
+                            wallOne.classList.remove("hall");
+                        }
+                        wallOne.classList.remove("wall-top");
+                        if(!wallTwo.classList.contains("hall")&&(!wallTwo.classList.contains("wall"))){
+                            wallTwo.classList.add("hall");
+                            wallTwo.classList.remove("hall");
+                        }
+                        wallTwo.classList.remove("wall-bottom");
+                        if(!wallThree.classList.contains("hall")&&(!wallThree.classList.contains("wall"))){
+                            wallThree.classList.add("hall");
+                            wallThree.classList.remove("hall");
+                        }
+                        wallThree.classList.remove("wall-bottom");
+                        console.log("wall placement canceled")
+                        
+                    } else {
+                        console.log("WALL PLACED")
+                    }
                 }
                 
             } else {
@@ -186,14 +222,40 @@ function placeWall(event, start, end, wallPlacement) {
                     (!wallOne.classList.contains("wall-top") && !wallTwo.classList.contains("wall-bottom") 
                     && !wallThree.classList.contains("wall-bottom"))) {
                     event.target.classList.remove("hall");
-                    event.target.classList.add("wall-top");
+                    event.target.classList.add("wall-top", "wall");
                     wallOne.classList.remove("hall");
-                    wallOne.classList.add("wall-top");
-                    wallTwo.classList.add("wall-bottom");
+                    wallOne.classList.add("wall-top", "wall");
                     wallTwo.classList.remove("hall");
-                    wallThree.classList.add("wall-bottom");
+                    wallTwo.classList.add("wall-bottom", "wall");
                     wallThree.classList.remove("hall");
-                    console.log("WALL PLACED")
+                    wallThree.classList.add("wall-bottom", "wall");
+                    let isValid = bfs(player);
+                    if (isValid === undefined) {
+                        if(!event.target.classList.contains("hall")&&(!event.target.classList.contains("wall"))){
+                            event.target.classList.add("hall");
+                            event.target.classList.remove("hall");
+                        }
+                        event.target.classList.remove("wall-top");
+                        if(!wallOne.classList.contains("hall")&&(!wallOne.classList.contains("wall"))){
+                            wallOne.classList.add("hall");
+                            wallOne.classList.remove("hall");
+                        }
+                        wallOne.classList.remove("wall-top");
+                        if(!wallTwo.classList.contains("hall")&&(!wallTwo.classList.contains("wall"))){
+                            wallTwo.classList.add("hall");
+                            wallTwo.classList.remove("hall");
+                        }
+                        wallTwo.classList.remove("wall-bottom");
+                        if(!wallThree.classList.contains("hall")&&(!wallThree.classList.contains("wall"))){
+                            wallThree.classList.add("hall");
+                            wallThree.classList.remove("hall");
+                        }
+                        wallThree.classList.remove("wall-bottom");
+                        console.log("wall placement canceled")
+                        
+                    } else {
+                        console.log("WALL PLACED")
+                    }
                 }
             }
         } else if(wallPlacement === "bottom") {
@@ -220,15 +282,41 @@ function placeWall(event, start, end, wallPlacement) {
                 if ((wallOne !== null && wallTwo !== null && wallThree !== null) &&
                     (!wallOne.classList.contains("wall-bottom") && !wallTwo.classList.contains("wall-top") 
                     && !wallThree.classList.contains("wall-top"))) {
-                    event.target.classList.add("wall-bottom");
-                    event.target.classList.remove("hall");
-                    wallOne.classList.add("wall-bottom");
-                    wallOne.classList.remove("hall");
-                    wallTwo.classList.add("wall-top");
-                    wallTwo.classList.remove("hall");
-                    wallThree.classList.add("wall-top");
-                    wallThree.classList.remove("hall");
-                    console.log("WALL PLACED")
+                        event.target.classList.remove("hall");
+                        event.target.classList.add("wall-bottom", "wall");
+                        wallOne.classList.remove("hall");
+                        wallOne.classList.add("wall-bottom", "wall");
+                        wallTwo.classList.remove("hall");
+                        wallTwo.classList.add("wall-top", "wall");
+                        wallThree.classList.remove("hall");
+                        wallThree.classList.add("wall-top", "wall");
+                    let isValid = bfs(player);
+                    if (isValid === undefined) {
+                        if(!event.target.classList.contains("hall")&&(!event.target.classList.contains("wall"))){
+                            event.target.classList.add("hall");
+                            event.target.classList.remove("hall");
+                        }
+                        event.target.classList.remove("wall-bottom");
+                        if(!wallOne.classList.contains("hall")&&(!wallOne.classList.contains("wall"))){
+                            wallOne.classList.add("hall");
+                            wallOne.classList.remove("hall");
+                        }
+                        wallOne.classList.remove("wall-bottom");
+                        if(!wallTwo.classList.contains("hall")&&(!wallTwo.classList.contains("wall"))){
+                            wallTwo.classList.add("hall");
+                            wallTwo.classList.remove("hall");
+                        }
+                        wallTwo.classList.remove("wall-top");
+                        if(!wallThree.classList.contains("hall")&&(!wallThree.classList.contains("wall"))){
+                            wallThree.classList.add("hall");
+                            wallThree.classList.remove("hall");
+                        }
+                        wallThree.classList.remove("wall-top");
+                        console.log("wall placement canceled")
+                        
+                    } else {
+                        console.log("WALL PLACED")
+                    }
                 }
             } else {
                 //wall goes to the right
@@ -253,15 +341,41 @@ function placeWall(event, start, end, wallPlacement) {
                 if ((wallOne !== null && wallTwo !== null && wallThree !== null) &&
                     (!wallOne.classList.contains("wall-bottom") && !wallTwo.classList.contains("wall-top") 
                     && !wallThree.classList.contains("wall-top"))) {
-                    event.target.classList.add("wall-bottom");
-                    event.target.classList.remove("hall");
-                    wallOne.classList.add("wall-bottom");
-                    wallOne.classList.remove("hall");
-                    wallTwo.classList.add("wall-top");
-                    wallTwo.classList.remove("hall");
-                    wallThree.classList.add("wall-top");
-                    wallThree.classList.remove("hall");
-                    console.log("WALL PLACED")
+                        event.target.classList.remove("hall");
+                        event.target.classList.add("wall-bottom", "wall");
+                        wallOne.classList.remove("hall");
+                        wallOne.classList.add("wall-bottom", "wall");
+                        wallTwo.classList.remove("hall");
+                        wallTwo.classList.add("wall-top", "wall");
+                        wallThree.classList.remove("hall");
+                        wallThree.classList.add("wall-top", "wall");
+                    let isValid = bfs(player);
+                    if (isValid === undefined) {
+                        if(!event.target.classList.contains("hall")&&(!event.target.classList.contains("wall"))){
+                            event.target.classList.add("hall");
+                            event.target.classList.remove("hall");
+                        }
+                        event.target.classList.remove("wall-bottom");
+                        if(!wallOne.classList.contains("hall")&&(!wallOne.classList.contains("wall"))){
+                            wallOne.classList.add("hall");
+                            wallOne.classList.remove("hall");
+                        }
+                        wallOne.classList.remove("wall-bottom");
+                        if(!wallTwo.classList.contains("hall")&&(!wallTwo.classList.contains("wall"))){
+                            wallTwo.classList.add("hall");
+                            wallTwo.classList.remove("hall");
+                        }
+                        wallTwo.classList.remove("wall-top");
+                        if(!wallThree.classList.contains("hall")&&(!wallThree.classList.contains("wall"))){
+                            wallThree.classList.add("hall");
+                            wallThree.classList.remove("hall");
+                        }
+                        wallThree.classList.remove("wall-top");
+                        console.log("wall placement canceled")
+                        
+                    } else {
+                        console.log("WALL PLACED")
+                    }
                 }
             }
         }
@@ -300,15 +414,41 @@ function placeWall(event, start, end, wallPlacement) {
                 if ((wallOne !== null && wallTwo !== null && wallThree !== null) &&
                     (!wallOne.classList.contains("wall-right") && !wallTwo.classList.contains("wall-left") 
                     && !wallThree.classList.contains("wall-left"))) {
-                    event.target.classList.add("wall-right");
-                    event.target.classList.remove("hall");
-                    wallOne.classList.add("wall-right");
-                    wallOne.classList.remove("hall");
-                    wallTwo.classList.add("wall-left");
-                    wallTwo.classList.remove("hall");
-                    wallThree.classList.add("wall-left");
-                    wallThree.classList.remove("hall");
-                    console.log("WALL PLACED")
+                        event.target.classList.remove("hall");
+                        event.target.classList.add("wall-right", "wall");
+                        wallOne.classList.remove("hall");
+                        wallOne.classList.add("wall-right", "wall");
+                        wallTwo.classList.remove("hall");
+                        wallTwo.classList.add("wall-left", "wall");
+                        wallThree.classList.remove("hall");
+                        wallThree.classList.add("wall-left", "wall");
+                    let isValid = bfs(player);
+                    if (isValid === undefined) {
+                        if(!event.target.classList.contains("hall")&&(!event.target.classList.contains("wall"))){
+                            event.target.classList.add("hall");
+                            event.target.classList.remove("hall");
+                        }
+                        event.target.classList.remove("wall-right");
+                        if(!wallOne.classList.contains("hall")&&(!wallOne.classList.contains("wall"))){
+                            wallOne.classList.add("hall");
+                            wallOne.classList.remove("hall");
+                        }
+                        wallOne.classList.remove("wall-right");
+                        if(!wallTwo.classList.contains("hall")&&(!wallTwo.classList.contains("wall"))){
+                            wallTwo.classList.add("hall");
+                            wallTwo.classList.remove("hall");
+                        }
+                        wallTwo.classList.remove("wall-left");
+                        if(!wallThree.classList.contains("hall")&&(!wallThree.classList.contains("wall"))){
+                            wallThree.classList.add("hall");
+                            wallThree.classList.remove("hall");
+                        }
+                        wallThree.classList.remove("wall-left");
+                        console.log("wall placement canceled")
+                        
+                    } else {
+                        console.log("WALL PLACED")
+                    }
                 }
             } else {
                 let wallOne = event.target.id.split("");
@@ -333,15 +473,43 @@ function placeWall(event, start, end, wallPlacement) {
                 if ((wallOne !== null && wallTwo !== null && wallThree !== null) &&
                     (!wallOne.classList.contains("wall-right") && !wallTwo.classList.contains("wall-left") 
                     && !wallThree.classList.contains("wall-left"))) {
-                    event.target.classList.add("wall-right");
+
                     event.target.classList.remove("hall");
-                    wallOne.classList.add("wall-right");
+                    event.target.classList.add("wall-right", "wall");
                     wallOne.classList.remove("hall");
-                    wallTwo.classList.add("wall-left");
+                    wallOne.classList.add("wall-right", "wall");
                     wallTwo.classList.remove("hall");
-                    wallThree.classList.add("wall-left");
+                    wallTwo.classList.add("wall-left", "wall");
                     wallThree.classList.remove("hall");
-                    console.log("WALL PLACED")
+                    wallThree.classList.add("wall-left", "wall");
+
+                    let isValid = bfs(player);
+                    if (isValid === undefined) {
+                        if(!event.target.classList.contains("hall")&&(!event.target.classList.contains("wall"))){
+                            event.target.classList.add("hall");
+                            event.target.classList.remove("hall");
+                        }
+                        event.target.classList.remove("wall-right");
+                        if(!wallOne.classList.contains("hall")&&(!wallOne.classList.contains("wall"))){
+                            wallOne.classList.add("hall");
+                            wallOne.classList.remove("hall");
+                        }
+                        wallOne.classList.remove("wall-right");
+                        if(!wallTwo.classList.contains("hall")&&(!wallTwo.classList.contains("wall"))){
+                            wallTwo.classList.add("hall");
+                            wallTwo.classList.remove("hall");
+                        }
+                        wallTwo.classList.remove("wall-left");
+                        if(!wallThree.classList.contains("hall")&&(!wallThree.classList.contains("wall"))){
+                            wallThree.classList.add("hall");
+                            wallThree.classList.remove("hall");
+                        }
+                        wallThree.classList.remove("wall-left");
+                        console.log("wall placement canceled")
+                        
+                    } else {
+                        console.log("WALL PLACED")
+                    }
                 }
             }
         } else if(wallPlacement === "left") {
@@ -368,15 +536,41 @@ function placeWall(event, start, end, wallPlacement) {
                 if ((wallOne !== null && wallTwo !== null && wallThree !== null) &&
                     (!wallOne.classList.contains("wall-left") && !wallTwo.classList.contains("wall-right") 
                     && !wallThree.classList.contains("wall-right"))) {
-                    event.target.classList.add("wall-left");
-                    event.target.classList.remove("hall");
-                    wallOne.classList.add("wall-left");
-                    wallOne.classList.remove("hall");
-                    wallTwo.classList.add("wall-right");
-                    wallTwo.classList.remove("hall");
-                    wallThree.classList.add("wall-right");
-                    wallThree.classList.remove("hall");
-                    console.log("WALL PLACED")
+                        event.target.classList.remove("hall");
+                        event.target.classList.add("wall-left", "wall");
+                        wallOne.classList.remove("hall");
+                        wallOne.classList.add("wall-left", "wall");
+                        wallTwo.classList.remove("hall");
+                        wallTwo.classList.add("wall-right", "wall");
+                        wallThree.classList.remove("hall");
+                        wallThree.classList.add("wall-right", "wall");
+                    let isValid = bfs(player);
+                    if (isValid === undefined) {
+                        if(!event.target.classList.contains("hall")&&(!event.target.classList.contains("wall"))){
+                            event.target.classList.add("hall");
+                            event.target.classList.remove("hall");
+                        }
+                        event.target.classList.remove("wall-left");
+                        if(!wallOne.classList.contains("hall")&&(!wallOne.classList.contains("wall"))){
+                            wallOne.classList.add("hall");
+                            wallOne.classList.remove("hall");
+                        }
+                        wallOne.classList.remove("wall-left");
+                        if(!wallTwo.classList.contains("hall")&&(!wallTwo.classList.contains("wall"))){
+                            wallTwo.classList.add("hall");
+                            wallTwo.classList.remove("hall");
+                        }
+                        wallTwo.classList.remove("wall-right");
+                        if(!wallThree.classList.contains("hall")&&(!wallThree.classList.contains("wall"))){
+                            wallThree.classList.add("hall");
+                            wallThree.classList.remove("hall");
+                        }
+                        wallThree.classList.remove("wall-right");
+                        console.log("wall placement canceled")
+                        
+                    } else {
+                        console.log("WALL PLACED")
+                    }
                 }
             } else {
                 let wallOne = event.target.id.split("");
@@ -401,15 +595,41 @@ function placeWall(event, start, end, wallPlacement) {
                 if ((wallOne !== null && wallTwo !== null && wallThree !== null) &&
                     (!wallOne.classList.contains("wall-left") && !wallTwo.classList.contains("wall-right") 
                     && !wallThree.classList.contains("wall-right"))) {
-                    event.target.classList.add("wall-left");
+                    event.target.classList.add("wall-left", "wall");
                     event.target.classList.remove("hall");
-                    wallOne.classList.add("wall-left");
+                    wallOne.classList.add("wall-left", "wall");
                     wallOne.classList.remove("hall");
-                    wallTwo.classList.add("wall-right");
+                    wallTwo.classList.add("wall-right", "wall");
                     wallTwo.classList.remove("hall");
-                    wallThree.classList.add("wall-right");
+                    wallThree.classList.add("wall-right", "wall");
                     wallThree.classList.remove("hall");
-                    console.log("WALL PLACED")
+                    let isValid = bfs(player);
+                    if (isValid === undefined) {
+                        if(!event.target.classList.contains("hall")&&(!event.target.classList.contains("wall"))){
+                            event.target.classList.add("hall");
+                            event.target.classList.remove("hall");
+                        }
+                        event.target.classList.remove("wall-left");
+                        if(!wallOne.classList.contains("hall")&&(!wallOne.classList.contains("wall"))){
+                            wallOne.classList.add("hall");
+                            wallOne.classList.remove("hall");
+                        }
+                        wallOne.classList.remove("wall-left");
+                        if(!wallTwo.classList.contains("hall")&&(!wallTwo.classList.contains("wall"))){
+                            wallTwo.classList.add("hall");
+                            wallTwo.classList.remove("hall");
+                        }
+                        wallTwo.classList.remove("wall-right");
+                        if(!wallThree.classList.contains("hall")&&(!wallThree.classList.contains("wall"))){
+                            wallThree.classList.add("hall");
+                            wallThree.classList.remove("hall");
+                        }
+                        wallThree.classList.remove("wall-right");
+                        console.log("wall placement canceled")
+                        
+                    } else {
+                        console.log("WALL PLACED")
+                    }
                 }
             }
         }
@@ -418,6 +638,8 @@ function placeWall(event, start, end, wallPlacement) {
 
 
 function validMove(dest, dir) {
+    //takes a current destination and a desired direction
+    //outputs a new destination or the same that it received.
     let newDest = "xx";
     if(dir === "up" && !dest.classList.contains("wall-top")) {
         dest = dest.id;
@@ -485,6 +707,71 @@ function validMove(dest, dir) {
     return dest.id;
 
 }
+
+function findPath(player, goal) {
+    // should return a boolean depending on if the path to 
+    // goal from the player is blocked by walls or reachable.
+    player = "e9";
+}
+
+function bfs(root) {
+    let goal = ["a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1", "i1"];
+    //should only use id's in the format above ... "a1"
+
+    let Q = []; //array of id
+    let discovered = []; //array of id
+    Q.push(root);
+    while (Q.length > 0) {
+        let v = Q.shift(); // id
+        let ele = document.getElementById(v); // ele
+        if (goal.includes(v)) {
+            return v;
+        }
+        // finding all possible directions
+        if ((!ele.classList.contains("wall-top") && (v.split("")[1] > 1))){
+            let id = v.split("");
+            id[1] = parseInt(id[1]) - 1;
+            id = id.join("");
+            if (!discovered.includes(id)) {
+                discovered.push(id);
+                Q.push(id);
+            }
+        }
+        if ((!ele.classList.contains("wall-bottom") && (v.split("")[1] < 9))) {
+            let id = v.split("");
+            id[1] = parseInt(id[1]) + 1;
+            id = id.join("");
+            if (!discovered.includes(id)) {
+                discovered.push(id);
+                Q.push(id);
+            }
+        }
+        if ((!ele.classList.contains("wall-right") && (v.split("")[0] !== "i"))) {
+            let id = v.split("");
+            let idx = findColumnIndex(columns, id[0]);
+            id[0] = columns[idx + 1];
+            id = id.join("");
+            if (!discovered.includes(id)) {
+                discovered.push(id);
+                Q.push(id);
+            }
+        }
+        if ((!ele.classList.contains("wall-left") && (v.split("")[0] !== "a"))) {
+            let id = v.split("");
+            let idx = findColumnIndex(columns, id[0]);
+            id[0] = columns[idx - 1];
+            id = id.join("");
+            if (!discovered.includes(id)) {
+                discovered.push(id);
+                Q.push(id);
+            }
+        }
+        
+    }
+
+}
+
+
 
 function findColumnIndex(arr, target) {
     for(let i = 0; i < arr.length; i++) {

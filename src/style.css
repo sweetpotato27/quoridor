@@ -93,6 +93,11 @@ table {
 	background: lightcoral;
 }
 
+td {
+	width: 74px;
+	height: 74px;
+}
+
 
 .player {
 	line-height: 60px;
