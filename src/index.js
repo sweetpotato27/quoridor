@@ -1,7 +1,6 @@
 import _, { throttle } from 'lodash';
 import './style.css';
 import Icon from './icon.png';
-import './queue';
 
 const columns = ["a","b","c","d","e","f","g","h","i"];
 
@@ -35,12 +34,14 @@ document.addEventListener("DOMContentLoaded", function () {
         let dir = event.key.split("Arrow")[1];
         let player = document.getElementsByClassName('player')[0];
         let dest = player;
+        let result;
         let newPlayer;
         let newDest;
         if(dir === "Up" || dir === "Down"
         || dir === "Right" || dir === "Left") {
 
-            newDest = validMove(dest, dir.toLowerCase());
+            result = validMove(dest, dir.toLowerCase());
+            newDest = result[0];
             // WIN CONDITION FOR BOTTOM STARTING PLAYER
             if (newDest.split("")[1] === "1") {
                 console.log("YOU WIN");
@@ -57,7 +58,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         if (event.key === " ") {
-            console.log(bfs(player.id));
+            findNextMove(player.id);
         }
     });
     let squares = document.getElementsByTagName("td");
@@ -84,9 +85,15 @@ document.addEventListener("DOMContentLoaded", function () {
     document.addEventListener("mouseup", (event) =>{
         endPos = [event.x, event.y];
         if (startPos[0] !== -1) {
-            console.log(startPos);
-            placeWall(startEvent, startPos, endPos, wallPlacement);
+            if((Math.abs(startPos[0] - endPos[0]) > 74) || 
+                (Math.abs(startPos[1] - endPos[1]) > 74)) {
+
+                placeWall(startEvent, startPos, endPos, wallPlacement);
+
+            }
         }
+        endPos = [-1, -1];
+        startPos = [-1, -1];
     });
 });
 
@@ -170,7 +177,7 @@ function placeWall(event, start, end, wallPlacement) {
                         wallTwo.classList.add("wall-bottom", "wall");
                         wallThree.classList.remove("hall");
                         wallThree.classList.add("wall-bottom", "wall");
-                    let isValid = bfs(player);
+                    let isValid = bfs(player, ["a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1", "i1"]);
                     if (isValid === undefined) {
                         if(!event.target.classList.contains("hall")&&(!event.target.classList.contains("wall"))){
                             event.target.classList.add("hall");
@@ -230,7 +237,7 @@ function placeWall(event, start, end, wallPlacement) {
                     wallTwo.classList.add("wall-bottom", "wall");
                     wallThree.classList.remove("hall");
                     wallThree.classList.add("wall-bottom", "wall");
-                    let isValid = bfs(player);
+                    let isValid = bfs(player, ["a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1", "i1"]);
                     if (isValid === undefined) {
                         if(!event.target.classList.contains("hall")&&(!event.target.classList.contains("wall"))){
                             event.target.classList.add("hall");
@@ -291,7 +298,7 @@ function placeWall(event, start, end, wallPlacement) {
                         wallTwo.classList.add("wall-top", "wall");
                         wallThree.classList.remove("hall");
                         wallThree.classList.add("wall-top", "wall");
-                    let isValid = bfs(player);
+                    let isValid = bfs(player, ["a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1", "i1"]);
                     if (isValid === undefined) {
                         if(!event.target.classList.contains("hall")&&(!event.target.classList.contains("wall"))){
                             event.target.classList.add("hall");
@@ -350,7 +357,7 @@ function placeWall(event, start, end, wallPlacement) {
                         wallTwo.classList.add("wall-top", "wall");
                         wallThree.classList.remove("hall");
                         wallThree.classList.add("wall-top", "wall");
-                    let isValid = bfs(player);
+                    let isValid = bfs(player, ["a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1", "i1"]);
                     if (isValid === undefined) {
                         if(!event.target.classList.contains("hall")&&(!event.target.classList.contains("wall"))){
                             event.target.classList.add("hall");
@@ -423,7 +430,7 @@ function placeWall(event, start, end, wallPlacement) {
                         wallTwo.classList.add("wall-left", "wall");
                         wallThree.classList.remove("hall");
                         wallThree.classList.add("wall-left", "wall");
-                    let isValid = bfs(player);
+                    let isValid = bfs(player, ["a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1", "i1"]);
                     if (isValid === undefined) {
                         if(!event.target.classList.contains("hall")&&(!event.target.classList.contains("wall"))){
                             event.target.classList.add("hall");
@@ -484,7 +491,7 @@ function placeWall(event, start, end, wallPlacement) {
                     wallThree.classList.remove("hall");
                     wallThree.classList.add("wall-left", "wall");
 
-                    let isValid = bfs(player);
+                    let isValid = bfs(player, ["a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1", "i1"]);
                     if (isValid === undefined) {
                         if(!event.target.classList.contains("hall")&&(!event.target.classList.contains("wall"))){
                             event.target.classList.add("hall");
@@ -545,7 +552,7 @@ function placeWall(event, start, end, wallPlacement) {
                         wallTwo.classList.add("wall-right", "wall");
                         wallThree.classList.remove("hall");
                         wallThree.classList.add("wall-right", "wall");
-                    let isValid = bfs(player);
+                    let isValid = bfs(player, ["a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1", "i1"]);
                     if (isValid === undefined) {
                         if(!event.target.classList.contains("hall")&&(!event.target.classList.contains("wall"))){
                             event.target.classList.add("hall");
@@ -604,7 +611,7 @@ function placeWall(event, start, end, wallPlacement) {
                     wallTwo.classList.remove("hall");
                     wallThree.classList.add("wall-right", "wall");
                     wallThree.classList.remove("hall");
-                    let isValid = bfs(player);
+                    let isValid = bfs(player, ["a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1", "i1"]);
                     if (isValid === undefined) {
                         if(!event.target.classList.contains("hall")&&(!event.target.classList.contains("wall"))){
                             event.target.classList.add("hall");
@@ -640,7 +647,7 @@ function placeWall(event, start, end, wallPlacement) {
 
 function validMove(dest, dir) {
     //takes a current destination and a desired direction
-    //outputs a new destination or the same that it received.
+    //returns a new destination and true or the same that it received and false.
     let newDest = "xx";
     if(dir === "up" && !dest.classList.contains("wall-top")) {
         dest = dest.id;
@@ -651,10 +658,10 @@ function validMove(dest, dir) {
         newDest[0] = dest[0];
         newDest[1] = parseInt(dest[1]) - 1;
         if (newDest[1] < 1) {
-            return dest.join("");
+            return [dest.join(""), false];
         } else {
             newDest = newDest.join("");
-            return newDest;
+            return [newDest, true];
         }
 
     } else if(dir === "down" && !dest.classList.contains("wall-bottom")) {
@@ -665,10 +672,10 @@ function validMove(dest, dir) {
         newDest[0] = dest[0];
         newDest[1] = parseInt(dest[1]) + 1;
         if (newDest[1] > 9) {
-            return dest.join("");
+            return [dest.join(""), false];
         } else {
             newDest = newDest.join("");
-            return newDest;
+            return [newDest, true];
         }
 
     } else if(dir === "right" && !dest.classList.contains("wall-right")) {
@@ -682,10 +689,10 @@ function validMove(dest, dir) {
         newDest[0] = columns[index + 1];
         newDest[1] = dest[1];
         if (index > 7) {
-            return dest.join("");
+            return [dest.join(""), false];
         } else {
             newDest = newDest.join("");
-            return newDest;
+            return [newDest, true];
         };
 
     } else if (dir === "left" && !dest.classList.contains("wall-left")) {
@@ -699,28 +706,32 @@ function validMove(dest, dir) {
         newDest[0] = columns[index - 1];
         newDest[1] = dest[1];
         if (index < 1) {
-            return dest.join("");
+            return [dest.join(""), false];
         } else {
             newDest = newDest.join("");
-            return newDest;
+            return [newDest, true];
         }
     }
-    return dest.id;
+    return [dest.id, false];
 
 }
 
 
-function bfs(root) {
-    let goal = ["a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1", "i1"];
+function bfs(root, goal) {
+    //should return a list of shortest paths to each value in goal[]
+    //  index =  0     1     2     3     4     5     6     7     8
     //should only use id's in the format above ... "a1"
-
+    let hashmap = new Map(); 
     let Q = []; //array of id
     let discovered = []; //array of id
+    hashmap.set(root, null)
     Q.push(root);
+    discovered.push(root);
     while (Q.length > 0) {
         let v = Q.shift(); // id
         let ele = document.getElementById(v); // ele
         if (goal.includes(v)) {
+            console.log(traverseHashmap(hashmap, v));
             return v;
         }
         // finding all possible directions
@@ -731,6 +742,7 @@ function bfs(root) {
             if (!discovered.includes(id)) {
                 discovered.push(id);
                 Q.push(id);
+                hashmap.set(id, v)
             }
         }
         if ((!ele.classList.contains("wall-bottom") && (v.split("")[1] < 9))) {
@@ -740,6 +752,7 @@ function bfs(root) {
             if (!discovered.includes(id)) {
                 discovered.push(id);
                 Q.push(id);
+                hashmap.set(id, v)
             }
         }
         if ((!ele.classList.contains("wall-right") && (v.split("")[0] !== "i"))) {
@@ -750,6 +763,7 @@ function bfs(root) {
             if (!discovered.includes(id)) {
                 discovered.push(id);
                 Q.push(id);
+                hashmap.set(id, v)
             }
         }
         if ((!ele.classList.contains("wall-left") && (v.split("")[0] !== "a"))) {
@@ -760,13 +774,135 @@ function bfs(root) {
             if (!discovered.includes(id)) {
                 discovered.push(id);
                 Q.push(id);
+                hashmap.set(id, v)
+            }
+        }
+    }
+}
+
+function dfs(root, goal) {
+    //should return a list of shortest paths to each value in goal[]
+    //  index =  0     1     2     3     4     5     6     7     8
+    //should only use id's in the format above ... "a1"
+    let shortestPaths = []; //an array of path[]'s
+    let path = []; //array of the path in steps ex. [e9, e8, e7,..., e2, e1]
+    let S = []; //array of id
+    let discovered = []; //array of id
+    
+    S.push(root);
+    while (S.length > 0) { 
+        console.log(S);
+        let v = S.pop(); // id
+        let ele = document.getElementById(v); // ele
+        ele.style.backgroundColor = "green";
+        if (goal.includes(v)) {
+            path.push(v);
+            return v;
+        }
+        // finding all possible directions
+        if ((!ele.classList.contains("wall-top") && (v.split("")[1] > 1))){
+            let id = v.split("");
+            id[1] = parseInt(id[1]) - 1;
+            id = id.join("");
+            if (!discovered.includes(id)) {
+                discovered.push(id);
+                S.push(id);
+            }
+        } else if ((!ele.classList.contains("wall-right") && (v.split("")[0] !== "i"))) {
+            let id = v.split("");
+            let idx = findIndex(columns, id[0]);
+            id[0] = columns[idx + 1];
+            id = id.join("");
+            if (!discovered.includes(id)) {
+                discovered.push(id);
+                S.push(id);
+            }
+        } else if ((!ele.classList.contains("wall-left") && (v.split("")[0] !== "a"))) {
+            let id = v.split("");
+            let idx = findIndex(columns, id[0]);
+            id[0] = columns[idx - 1];
+            id = id.join("");
+            if (!discovered.includes(id)) {
+                discovered.push(id);
+                S.push(id);
+            }
+        } else if ((!ele.classList.contains("wall-bottom") && (v.split("")[1] < 9))) {
+            let id = v.split("");
+            id[1] = parseInt(id[1]) + 1;
+            id = id.join("");
+            if (!discovered.includes(id)) {
+                discovered.push(id);
+                S.push(id);
             }
         }
         
     }
-
+    return path;
 }
 
+function recursiveDFS(start, end) {
+    let discovered = [];
+    console.log(start, end)
+    if( end.includes(start) ) {
+        return true;
+    }
+
+    discovered.push(start);
+
+    let neighbors = [];
+    // finding all possible directions
+    let ele = document.getElementById(start); // ele
+    ele.style.backgroundColor = "green";
+    if ((!ele.classList.contains("wall-top") && (start.split("")[1] > 1))){
+        let id = start.split("");
+        id[1] = parseInt(id[1]) - 1;
+        id = id.join("");
+        if (!discovered.includes(id)) {
+            discovered.push(id);
+            neighbors.push(id);
+        }
+    }
+    if ((!ele.classList.contains("wall-right") && (start.split("")[0] !== "i"))) {
+        let id = start.split("");
+        let idx = findIndex(columns, id[0]);
+        id[0] = columns[idx + 1];
+        id = id.join("");
+        if (!discovered.includes(id)) {
+            discovered.push(id);
+            neighbors.push(id);
+        }
+    }
+    if ((!ele.classList.contains("wall-bottom") && (start.split("")[1] < 9))) {
+        let id = start.split("");
+        id[1] = parseInt(id[1]) + 1;
+        id = id.join("");
+        if (!discovered.includes(id)) {
+            discovered.push(id);
+            neighbors.push(id);
+        }
+    }
+    if ((!ele.classList.contains("wall-left") && (start.split("")[0] !== "a"))) {
+        let id = start.split("");
+        let idx = findIndex(columns, id[0]);
+        id[0] = columns[idx - 1];
+        id = id.join("");
+        if (!discovered.includes(id)) {
+            discovered.push(id);
+            neighbors.push(id);
+        }
+    }
+    for (let i = 0; i < neighbors.length; i++) {
+        if (recursiveDFS(neighbors[i], end)) return true;
+    }
+    return false;
+}
+
+function findNextMove(player, goal) {
+    let targetGoal = [];
+    let path = [];
+    targetGoal.push(bfs(player, ["a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1", "i1"]));
+    console.log(bfs(player, targetGoal));
+}
 
 
 function findIndex(arr, target) {
@@ -776,6 +912,16 @@ function findIndex(arr, target) {
             return i;
         }
     }
+}
+
+function traverseHashmap(hash, start) {
+    let node = hash.get(start);
+    let path = [];
+    while (node) {
+        path.push(node)
+        node = hash.get(node);
+    }
+    return path.reverse();
 }
 
 

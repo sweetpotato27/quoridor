@@ -52,8 +52,8 @@ q:before, q:after {
 
 
 table {
-	/* border-collapse: collapse;
-	border-spacing: 0; */
+	/* border-collapse: collapse; */
+	border-spacing: 1;
 }
 .wall-top {
 	border-top: 5px solid #000;
@@ -76,8 +76,8 @@ table {
 }
 
 .board { 
-	border-spacing:0; 
-	border-collapse:collapse; 
+	border-spacing: 0; 
+	border-collapse: collapse; 
 }
 .board th { padding: .5em; }
 .hall { 
@@ -89,9 +89,9 @@ table {
 	background: brown; 
 	margin: 1px;
 }
-.board td:hover {
+/* .board td:hover {
 	background: lightcoral;
-}
+} */
 
 td {
 	width: 74px;
