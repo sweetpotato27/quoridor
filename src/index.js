@@ -1,18 +1,18 @@
 import _, { throttle } from 'lodash';
 import './style.css';
 import Icon from './icon.png';
+const Game = require("./game");
+
+const readline = require('readline');
+
+const reader = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+
+
 
 const columns = ["a","b","c","d","e","f","g","h","i"];
-
-function component() {
-    const element = document.createElement('div');
-
-    // Lodash, now imported by this script
-    element.innerHTML = _.join(['Hello', 'Quoridor'], ' ');
-    element.classList.add('hello');
-
-    return element;
-}
 
 function headComponent() {
     
@@ -30,6 +30,12 @@ document.head.appendChild(headComponent());
 
 document.addEventListener("DOMContentLoaded", function () {
     setupBoard();
+    
+    let game = new Game();
+    console.log(game);
+    game.start(reader, completion);
+    game.printBoard();
+
     document.addEventListener("keyup", (event) => {
         let dir = event.key.split("Arrow")[1];
         let player = document.getElementsByClassName('player')[0];
@@ -97,8 +103,28 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
+function completion() {
+  reader.question("Play again? y or n: ", restartGame => {
+    if (restartGame === "y") {
+      g = new Game();
+      g.run(reader, completion);
+    } else {
+      reader.close();
+    }
+  });
+};
+
+
 function setupBoard() {
-    let board = document.getElementById("table");
+
+    let body = document.getElementsByTagName("body")[0];
+    let div = document.createElement("div");
+    let table = document.createElement("table");
+    div.classList.add("board");
+    table.setAttribute("id" , "table");
+    div.appendChild(table);
+    body.appendChild(div);
+
     for(let i = 0; i < 10; i++) {
         let tr = document.createElement("tr");
         for(let j = 0; j < 10; j++) {
@@ -121,9 +147,13 @@ function setupBoard() {
                     td.classList.add("player");
                     td.innerHTML = "X";
                 }
+                if (i === 1 && j === 5) {
+                    td.classList.add("boss");
+                    td.innerHTML = "O";
+                }
             }
         }
-        board.appendChild(tr);
+        table.appendChild(tr);
     }
 
 }
@@ -731,8 +761,9 @@ function bfs(root, goal) {
         let v = Q.shift(); // id
         let ele = document.getElementById(v); // ele
         if (goal.includes(v)) {
-            console.log(traverseHashmap(hashmap, v));
-            return v;
+            let path = [];
+            path = traverseHashmap(hashmap, v);
+            return [v, path];
         }
         // finding all possible directions
         if ((!ele.classList.contains("wall-top") && (v.split("")[1] > 1))){
@@ -780,128 +811,18 @@ function bfs(root, goal) {
     }
 }
 
-function dfs(root, goal) {
-    //should return a list of shortest paths to each value in goal[]
-    //  index =  0     1     2     3     4     5     6     7     8
-    //should only use id's in the format above ... "a1"
-    let shortestPaths = []; //an array of path[]'s
-    let path = []; //array of the path in steps ex. [e9, e8, e7,..., e2, e1]
-    let S = []; //array of id
-    let discovered = []; //array of id
-    
-    S.push(root);
-    while (S.length > 0) { 
-        console.log(S);
-        let v = S.pop(); // id
-        let ele = document.getElementById(v); // ele
-        ele.style.backgroundColor = "green";
-        if (goal.includes(v)) {
-            path.push(v);
-            return v;
-        }
-        // finding all possible directions
-        if ((!ele.classList.contains("wall-top") && (v.split("")[1] > 1))){
-            let id = v.split("");
-            id[1] = parseInt(id[1]) - 1;
-            id = id.join("");
-            if (!discovered.includes(id)) {
-                discovered.push(id);
-                S.push(id);
-            }
-        } else if ((!ele.classList.contains("wall-right") && (v.split("")[0] !== "i"))) {
-            let id = v.split("");
-            let idx = findIndex(columns, id[0]);
-            id[0] = columns[idx + 1];
-            id = id.join("");
-            if (!discovered.includes(id)) {
-                discovered.push(id);
-                S.push(id);
-            }
-        } else if ((!ele.classList.contains("wall-left") && (v.split("")[0] !== "a"))) {
-            let id = v.split("");
-            let idx = findIndex(columns, id[0]);
-            id[0] = columns[idx - 1];
-            id = id.join("");
-            if (!discovered.includes(id)) {
-                discovered.push(id);
-                S.push(id);
-            }
-        } else if ((!ele.classList.contains("wall-bottom") && (v.split("")[1] < 9))) {
-            let id = v.split("");
-            id[1] = parseInt(id[1]) + 1;
-            id = id.join("");
-            if (!discovered.includes(id)) {
-                discovered.push(id);
-                S.push(id);
-            }
-        }
-        
-    }
-    return path;
-}
-
-function recursiveDFS(start, end) {
-    let discovered = [];
-    console.log(start, end)
-    if( end.includes(start) ) {
-        return true;
-    }
-
-    discovered.push(start);
-
-    let neighbors = [];
-    // finding all possible directions
-    let ele = document.getElementById(start); // ele
-    ele.style.backgroundColor = "green";
-    if ((!ele.classList.contains("wall-top") && (start.split("")[1] > 1))){
-        let id = start.split("");
-        id[1] = parseInt(id[1]) - 1;
-        id = id.join("");
-        if (!discovered.includes(id)) {
-            discovered.push(id);
-            neighbors.push(id);
-        }
-    }
-    if ((!ele.classList.contains("wall-right") && (start.split("")[0] !== "i"))) {
-        let id = start.split("");
-        let idx = findIndex(columns, id[0]);
-        id[0] = columns[idx + 1];
-        id = id.join("");
-        if (!discovered.includes(id)) {
-            discovered.push(id);
-            neighbors.push(id);
-        }
-    }
-    if ((!ele.classList.contains("wall-bottom") && (start.split("")[1] < 9))) {
-        let id = start.split("");
-        id[1] = parseInt(id[1]) + 1;
-        id = id.join("");
-        if (!discovered.includes(id)) {
-            discovered.push(id);
-            neighbors.push(id);
-        }
-    }
-    if ((!ele.classList.contains("wall-left") && (start.split("")[0] !== "a"))) {
-        let id = start.split("");
-        let idx = findIndex(columns, id[0]);
-        id[0] = columns[idx - 1];
-        id = id.join("");
-        if (!discovered.includes(id)) {
-            discovered.push(id);
-            neighbors.push(id);
-        }
-    }
-    for (let i = 0; i < neighbors.length; i++) {
-        if (recursiveDFS(neighbors[i], end)) return true;
-    }
-    return false;
-}
 
 function findNextMove(player, goal) {
     let targetGoal = [];
     let path = [];
-    targetGoal.push(bfs(player, ["a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1", "i1"]));
-    console.log(bfs(player, targetGoal));
+    let nextMove = "";
+    let bfsResult = bfs(player, ["a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1", "i1"]);
+    targetGoal = bfsResult[0];
+    path = bfsResult[1];
+    console.log(targetGoal);
+    console.log(path);
+    nextMove = path[1];
+    console.log(nextMove);
 }
 
 

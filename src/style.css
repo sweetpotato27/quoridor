@@ -77,7 +77,7 @@ table {
 
 .board { 
 	border-spacing: 0; 
-	border-collapse: collapse; 
+	/* border-collapse: collapse;  */
 }
 .board th { padding: .5em; }
 .hall { 
@@ -89,9 +89,10 @@ table {
 	background: brown; 
 	margin: 1px;
 }
-/* .board td:hover {
+
+.board td:hover {
 	background: lightcoral;
-} */
+}
 
 td {
 	width: 74px;
@@ -100,6 +101,10 @@ td {
 
 
 .player {
+	line-height: 60px;
+	text-align: center;
+}
+.boss {
 	line-height: 60px;
 	text-align: center;
 }
