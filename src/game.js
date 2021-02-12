@@ -4,6 +4,7 @@ const Board = require("./board");
 class Game {
     constructor() {
         this.board = new Board();
+        this.grid = this.board.grid;
         this.currentPlayer = "noone";
         this.player1 = [4, 8];
         this.player2 = [4, 0];
@@ -13,30 +14,23 @@ class Game {
 
     /////////////////////////////////
     isOver() {
-        if (this.winner() != null) {
+        if (this.winner() !== null) {
             return true;
+        } else {
+            return false;
         }
-
-        for (let rowIdx = 0; rowIdx < this.height; rowIdx++) {
-            for (let colIdx = 0; colIdx < this.width; colIdx++) {
-                if (this.grid([rowIdx, colIdx])) {
-                    return false;
-                }
-            }
-        }
-
-        return true;
     }
 
     winner() {
         let winner = null;
         for(let i = 0; i < this.grid[0].length; i++) {
-            if(this.grid[0][i].player === "player1") {
+            // document.getElementById(`${i + 1}1`).style.backgroundColor = "green";
+            if(this.grid[i][0].player === "player1") {
                 winner = "player1"
             }
         }
         for(let i = 0; i < this.grid[8].length; i++) {
-            if(this.grid[0][i].player === "player2") {
+            if(this.grid[i][8].player === "player2") {
                 winner = "player2"
             }
         }
@@ -157,10 +151,6 @@ class Game {
     printBoard() {
         console.log(this.board);
 
-    }
-
-    winner() {
-        return this.board.winner();
     }
 
 }

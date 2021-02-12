@@ -21,6 +21,9 @@ class GameView {
 
     show() {
         this.showBoard();
+        if (this.game.isOver()) {
+            console.log("WINNER");
+        }
     }
 
     showBoard() {
