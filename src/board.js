@@ -9,38 +9,7 @@ class Board {
         this.winner = false;
     }
 
-    isOver() {
-        if (this.winner() != null) {
-            return true;
-        }
-
-        for (let rowIdx = 0; rowIdx < this.height; rowIdx++) {
-            for (let colIdx = 0; colIdx < this.width; colIdx++) {
-                if (this.grid([rowIdx, colIdx])) {
-                    return false;
-                }
-            }
-        }
-
-        return true;
-  }
-
-    setPlayers(player1, player2) {
-        if(!!player2) {
-            this.grid[0][4].setModel("person");
-        } else {
-            this.grid[0][4].setModel("ai");
-        }
-        if(!!player1) {
-            this.grid[8][4].setModel("person");
-        } else {
-            this.grid[8][4].setModel("ai");
-        }
-        this.grid[0][4].setPlayer("player2");
-        this.grid[8][4].setPlayer("player1");
-    }
-
-    get players() {
+    getPlayers() {
         let player2;
         let player1;
         for (let i = 0; i < this.height; i++) {
@@ -56,6 +25,24 @@ class Board {
         return player1, player2;
     }
 
+    setPlayers(player1, p1Pos, player2, p2Pos) {
+        let gridSquare2 = this.grid[p2Pos[0]] [p2Pos[1]];
+        let gridSquare1 = this.grid[p1Pos[0]] [p1Pos[1]];
+        if(!!player2) {
+            gridSquare2.model = "person";
+        } else {
+            gridSquare2.model = "ai";
+        }
+        if(!!player1) {
+            gridSquare1.model = "person";
+        } else {
+            gridSquare1.model = "ai";
+        }
+        gridSquare2.player = "player2";
+        gridSquare1.player = "player1";
+    }
+
+
     static makeGrid(width, height) {
         const grid = [];
 
@@ -68,6 +55,14 @@ class Board {
         }
 
         return grid;
+    }
+
+    static validPos(x, y) {
+        if ((x < 0 || y < 0) || (x > 8 || y > 8)) {
+            return false;
+        } else {
+            return true;
+        }
     }
 }
 

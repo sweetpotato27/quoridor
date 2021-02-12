@@ -5,7 +5,11 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 module.exports = {
     mode: 'development',
     entry: {
-        index: './src/index.js'
+        index: './src/index.js',
+        gameview: './src/game_view.js',
+        game: './src/game.js',
+        board: './src/board.js',
+        square: './src/square.js',
     },
     plugins: [
         new CleanWebpackPlugin({ cleanStaleWebpackAssets: false }),

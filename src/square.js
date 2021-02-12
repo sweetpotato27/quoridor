@@ -12,22 +12,6 @@ class Square {
         this.model = "noone"
     }
 
-    getX() {
-        return this.x;
-    }
-
-    getY() {
-        return this.y;
-    }
-
-    getPlayer() {
-        return this.player;
-    }
-
-    getModel() {
-        return this.model;
-    }
-
     getNorth() {
         return this.walls.North;
     }
@@ -39,14 +23,6 @@ class Square {
     }
     getWest() {
         return this.walls.West;
-    }
-
-    setPlayer(status) {
-        this.player = status;
-    }
-    
-    setModel(status) {
-        this.Model = status;
     }
 
     setNorth(bool) {

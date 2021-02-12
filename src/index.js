@@ -1,14 +1,15 @@
 import _, { throttle } from 'lodash';
 import './style.css';
 import Icon from './icon.png';
+const GameView = require("./game_view");
 const Game = require("./game");
 
-const readline = require('readline');
+// const readline = require('readline');
 
-const reader = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-});
+// const reader = readline.createInterface({
+//     input: process.stdin,
+//     output: process.stdout
+// });
 
 
 
@@ -29,12 +30,15 @@ document.head.appendChild(headComponent());
 
 
 document.addEventListener("DOMContentLoaded", function () {
-    setupBoard();
-    
     let game = new Game();
-    console.log(game);
-    game.start(reader, completion);
-    game.printBoard();
+    // setupBoard();
+    let gameView = new GameView(game);
+    game.start();
+    gameView.show();
+    // console.log(game);
+    // game.start(reader, completion);
+    // game.printBoard();
+    // game.board.grid[0][0].x = 12123;
 
     document.addEventListener("keyup", (event) => {
         let dir = event.key.split("Arrow")[1];
@@ -43,29 +47,29 @@ document.addEventListener("DOMContentLoaded", function () {
         let result;
         let newPlayer;
         let newDest;
-        if(dir === "Up" || dir === "Down"
-        || dir === "Right" || dir === "Left") {
+        // if(dir === "Up" || dir === "Down"
+        // || dir === "Right" || dir === "Left") {
 
-            result = validMove(dest, dir.toLowerCase());
-            newDest = result[0];
-            // WIN CONDITION FOR BOTTOM STARTING PLAYER
-            if (newDest.split("")[1] === "1") {
-                console.log("YOU WIN");
-                setTimeout(() => {
-                    location.reload();
-                }, 1000);
-            }
-            newPlayer = document.getElementById(newDest);
-            player.innerHTML = "";
-            player.classList.remove("player");
-            newPlayer.innerHTML = "X";
-            newPlayer.classList.add("player");
+        //     result = validMove(dest, dir.toLowerCase());
+        //     newDest = result[0];
+        //     // WIN CONDITION FOR BOTTOM STARTING PLAYER
+        //     if (newDest.split("")[1] === "1") {
+        //         console.log("YOU WIN");
+        //         setTimeout(() => {
+        //             location.reload();
+        //         }, 1000);
+        //     }
+        //     newPlayer = document.getElementById(newDest);
+        //     player.innerHTML = "";
+        //     player.classList.remove("player");
+        //     newPlayer.innerHTML = "X";
+        //     newPlayer.classList.add("player");
 
-        }
+        // }
 
-        if (event.key === " ") {
-            findNextMove(player.id);
-        }
+        // if (event.key === " ") {
+        //     findNextMove(player.id);
+        // }
     });
     let squares = document.getElementsByTagName("td");
     let wallPlacement = "";
@@ -115,48 +119,48 @@ function completion() {
 };
 
 
-function setupBoard() {
+// function setupBoard() {
 
-    let body = document.getElementsByTagName("body")[0];
-    let div = document.createElement("div");
-    let table = document.createElement("table");
-    div.classList.add("board");
-    table.setAttribute("id" , "table");
-    div.appendChild(table);
-    body.appendChild(div);
+//     let body = document.getElementsByTagName("body")[0];
+//     let div = document.createElement("div");
+//     let table = document.createElement("table");
+//     div.classList.add("board");
+//     table.setAttribute("id" , "table");
+//     div.appendChild(table);
+//     body.appendChild(div);
 
-    for(let i = 0; i < 10; i++) {
-        let tr = document.createElement("tr");
-        for(let j = 0; j < 10; j++) {
-            let th = document.createElement("th");
-            let td = document.createElement("td");
-            if(i === 0 && j === 0) {
-                th.innerHTML = ""
-                tr.appendChild(th);
-            } else if (i === 0) {
-                th.innerHTML = columns[j - 1]
-                tr.appendChild(th);
-            } else if (i > 0 && j === 0) {
-                th.innerHTML = i
-                tr.appendChild(th);
-            } else {
-                td.id = `${columns[j - 1]}${i}`;
-                td.classList.add("floor", "hall");
-                tr.appendChild(td);
-                if(i === 9 && j === 5) {
-                    td.classList.add("player");
-                    td.innerHTML = "X";
-                }
-                if (i === 1 && j === 5) {
-                    td.classList.add("boss");
-                    td.innerHTML = "O";
-                }
-            }
-        }
-        table.appendChild(tr);
-    }
+//     for(let i = 0; i < 10; i++) {
+//         let tr = document.createElement("tr");
+//         for(let j = 0; j < 10; j++) {
+//             let th = document.createElement("th");
+//             let td = document.createElement("td");
+//             if(i === 0 && j === 0) {
+//                 th.innerHTML = ""
+//                 tr.appendChild(th);
+//             } else if (i === 0) {
+//                 th.innerHTML = columns[j - 1]
+//                 tr.appendChild(th);
+//             } else if (i > 0 && j === 0) {
+//                 th.innerHTML = i
+//                 tr.appendChild(th);
+//             } else {
+//                 td.id = `${columns[j - 1]}${i}`;
+//                 td.classList.add("floor", "hall");
+//                 tr.appendChild(td);
+//                 if(i === 9 && j === 5) {
+//                     td.classList.add("player");
+//                     td.innerHTML = "X";
+//                 }
+//                 if (i === 1 && j === 5) {
+//                     td.classList.add("boss");
+//                     td.innerHTML = "O";
+//                 }
+//             }
+//         }
+//         table.appendChild(tr);
+//     }
 
-}
+// }
 
 function placeWall(event, start, end, wallPlacement) {
     let player = document.getElementsByClassName("player")[0].id;
