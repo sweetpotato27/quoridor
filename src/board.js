@@ -42,6 +42,19 @@ class Board {
         gridSquare1.player = "player1";
     }
 
+    checkNeighbors(square) {
+        console.log(`checking ${square}'s neighbors...`);
+        let neighbors = [];
+        let x = square[0];
+        let y = square[1];
+        neighbors.push([x, y - 1]);  // north
+        neighbors.push([x + 1, y]);  // east
+        neighbors.push([x, y + 1]);  // south
+        neighbors.push([x - 1, y]);  // west
+        console.log(neighbors);
+        return neighbors;
+    }
+
 
     static makeGrid(width, height) {
         const grid = [];
@@ -58,6 +71,7 @@ class Board {
     }
 
     static validPos(x, y) {
+        // validation to check the ends of the board
         if ((x < 0 || y < 0) || (x > 8 || y > 8)) {
             return false;
         } else {

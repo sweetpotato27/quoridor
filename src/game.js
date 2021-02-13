@@ -8,11 +8,11 @@ class Game {
         this.currentPlayer = "noone";
         this.player1 = [4, 8];
         this.player2 = [4, 0];
+        this.placingWall = false;
 
         this.movePlayer = this.movePlayer.bind(this);
     }
 
-    /////////////////////////////////
     isOver() {
         if (this.winner() !== null) {
             return true;
@@ -36,9 +36,8 @@ class Game {
         }
         return winner;
     }
-    ///////////////////////////////
 
-    takeTurn(action, dir = null) {
+    takeTurn(action, dir = null, event) {
         // movement or wall placement?
 
         if (action === "move") {
@@ -48,11 +47,23 @@ class Game {
         }
 
         if (action === "placeWall") {
-
+            this.placingWall = true;
+            // calls this.placeWall()
+            this.placeWall(event);
+            //    the previous solution to placing walls seems bloated but once its implemented its fluid...
+            //    I am thinking of having the place wall button morph into a north east south west button...
+            //       might be better if client selects the cells they wish to place a wall before button morphs
+            //       that way only north south or east west buttons will spawn
+            //    selecting cells will be fluid with mouse click or less fluid with key pressing coordinates
         }
 
         
         console.log(this.currentPlayer + "'s turn.");
+    }
+
+    placeWall(event) {
+        console.log(event);
+        console.log("placing wall...");
     }
 
     movePlayer(dir) {
@@ -78,18 +89,28 @@ class Game {
             newY = player[1];
         }
 
+
         // gives to this.board to validate
         valid = Board.validPos(newX, newY);
-
+        
         // if valid then sets player new x and y
         //    swaps turns
         if (valid) {
+
             let oldSquare = this.board.grid[player[0]][player[1]];
             let newSquare = this.board.grid[newX][newY];
-            oldSquare.player = "noone";
-            this.setPlayerPos(this.currentPlayer, [newX, newY]);
-            newSquare.player = this.currentPlayer;
-            this.swapTurn();
+
+            //validation to check for player collision         
+            if (newSquare.player !== "empty") {
+                console.log("COLLSION");
+            } else {
+                oldSquare.player = "empty";
+                this.setPlayerPos(this.currentPlayer, [newX, newY]);
+                newSquare.player = this.currentPlayer;
+                this.swapTurn();
+            }
+
+
         } else {
             // else then does nothing or sends error message
             //    does not swap turns
@@ -108,36 +129,6 @@ class Game {
     start() {
         this.board.setPlayers(true, this.player1, false, this.player2);
         this.currentPlayer = "player1";
-        
-        // let count = 0
-
-
-        // this.promptMove(reader, move => {
-        //     try {
-        //         this.playMove(move);
-        //         count = count + 1;
-        //         console.log("turn = " + count);
-        //     } catch (e) {
-        //         if (e instanceof MoveError) {
-        //         console.log(e.msg);
-        //         } else {
-        //         throw e;
-        //         }
-        //     }
-
-        //     if (this.isOver()) {
-        //         this.board.print();
-        //         if (this.winner()) {
-        //         console.log(`${this.winner()} has won!`);
-        //         } else {
-        //         console.log('NO ONE WINS!');
-        //         }
-        //         gameCompletionCallback();
-        //     } else {
-        //         // continue loop
-        //         this.run(reader, gameCompletionCallback);
-        //     }
-        // });
     }
 
     swapTurn() {

@@ -41,32 +41,6 @@ document.addEventListener("DOMContentLoaded", function () {
     // game.board.grid[0][0].x = 12123;
 
     document.addEventListener("keyup", (event) => {
-        let dir = event.key.split("Arrow")[1];
-        let player = document.getElementsByClassName('player')[0];
-        let dest = player;
-        let result;
-        let newPlayer;
-        let newDest;
-        // if(dir === "Up" || dir === "Down"
-        // || dir === "Right" || dir === "Left") {
-
-        //     result = validMove(dest, dir.toLowerCase());
-        //     newDest = result[0];
-        //     // WIN CONDITION FOR BOTTOM STARTING PLAYER
-        //     if (newDest.split("")[1] === "1") {
-        //         console.log("YOU WIN");
-        //         setTimeout(() => {
-        //             location.reload();
-        //         }, 1000);
-        //     }
-        //     newPlayer = document.getElementById(newDest);
-        //     player.innerHTML = "";
-        //     player.classList.remove("player");
-        //     newPlayer.innerHTML = "X";
-        //     newPlayer.classList.add("player");
-
-        // }
-
         // if (event.key === " ") {
         //     findNextMove(player.id);
         // }
@@ -107,60 +81,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-function completion() {
-  reader.question("Play again? y or n: ", restartGame => {
-    if (restartGame === "y") {
-      g = new Game();
-      g.run(reader, completion);
-    } else {
-      reader.close();
-    }
-  });
-};
 
-
-// function setupBoard() {
-
-//     let body = document.getElementsByTagName("body")[0];
-//     let div = document.createElement("div");
-//     let table = document.createElement("table");
-//     div.classList.add("board");
-//     table.setAttribute("id" , "table");
-//     div.appendChild(table);
-//     body.appendChild(div);
-
-//     for(let i = 0; i < 10; i++) {
-//         let tr = document.createElement("tr");
-//         for(let j = 0; j < 10; j++) {
-//             let th = document.createElement("th");
-//             let td = document.createElement("td");
-//             if(i === 0 && j === 0) {
-//                 th.innerHTML = ""
-//                 tr.appendChild(th);
-//             } else if (i === 0) {
-//                 th.innerHTML = columns[j - 1]
-//                 tr.appendChild(th);
-//             } else if (i > 0 && j === 0) {
-//                 th.innerHTML = i
-//                 tr.appendChild(th);
-//             } else {
-//                 td.id = `${columns[j - 1]}${i}`;
-//                 td.classList.add("floor", "hall");
-//                 tr.appendChild(td);
-//                 if(i === 9 && j === 5) {
-//                     td.classList.add("player");
-//                     td.innerHTML = "X";
-//                 }
-//                 if (i === 1 && j === 5) {
-//                     td.classList.add("boss");
-//                     td.innerHTML = "O";
-//                 }
-//             }
-//         }
-//         table.appendChild(tr);
-//     }
-
-// }
 
 function placeWall(event, start, end, wallPlacement) {
     let player = document.getElementsByClassName("player")[0].id;

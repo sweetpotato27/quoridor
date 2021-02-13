@@ -8,7 +8,7 @@ class Square {
         }
         this.x = x;
         this.y = y; 
-        this.player = "undiscovered";
+        this.player = "empty";
         this.model = "noone"
     }
 
