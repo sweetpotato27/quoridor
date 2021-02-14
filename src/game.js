@@ -8,7 +8,7 @@ class Game {
         this.currentPlayer = "noone";
         this.player1 = [4, 8];
         this.player2 = [4, 0];
-        this.placingWall = false;
+        this.state = "not placing wall";
 
         this.movePlayer = this.movePlayer.bind(this);
     }
@@ -37,7 +37,7 @@ class Game {
         return winner;
     }
 
-    takeTurn(action, dir = null, event) {
+    takeTurn(action, dir = null, event, squareA = null, squareB = null) {
         // movement or wall placement?
 
         if (action === "move") {
@@ -47,9 +47,8 @@ class Game {
         }
 
         if (action === "placeWall") {
-            this.placingWall = true;
             // calls this.placeWall()
-            this.placeWall(event);
+            this.placeWall(dir, event, squareA, squareB);
             //    the previous solution to placing walls seems bloated but once its implemented its fluid...
             //    I am thinking of having the place wall button morph into a north east south west button...
             //       might be better if client selects the cells they wish to place a wall before button morphs
@@ -61,9 +60,48 @@ class Game {
         console.log(this.currentPlayer + "'s turn.");
     }
 
-    placeWall(event) {
-        console.log(event);
+    placeWall(dir, event, squareA, squareB) {
+        console.log(this.grid);
+        console.log(dir);
+        console.log(squareA, squareB);
         console.log("placing wall...");
+        /*
+        get Square and set the specific walls to true 
+        get neighbors and sset specific walls to true... opposite wall
+        */
+        let sqrA = this.grid[squareA[1]-1][squareA[0]-1];
+        let sqrB = this.grid[squareB[1]-1][squareB[0]-1];
+        let neighborsA = this.board.checkNeighbors([sqrA.x, sqrA.y]);
+        let neighborsB = this.board.checkNeighbors([sqrB.x, sqrB.y]);
+
+        if(dir === "North"){
+            sqrA.walls.North = true;
+            sqrB.walls.North = true;
+            /* sets the north neighbors south wall to true */
+            this.grid[neighborsA[0][1]][neighborsA[0][0]].walls.South = true;
+            this.grid[neighborsB[0][1]][neighborsB[0][0]].walls.South = true;
+        }
+        if(dir === "East"){
+            sqrA.walls.East = true;
+            sqrB.walls.East = true;
+            /* sets the East neighbors West wall to true */
+            this.grid[neighborsA[0][1]][neighborsA[0][0]].walls.West = true;
+            this.grid[neighborsB[0][1]][neighborsB[0][0]].walls.West = true;
+        }
+        if(dir === "South"){
+            sqrA.walls.South = true;
+            sqrB.walls.South = true;
+            /* sets the South neighbors North wall to true */
+            this.grid[neighborsA[0][1]][neighborsA[0][0]].walls.North = true;
+            this.grid[neighborsB[0][1]][neighborsB[0][0]].walls.North = true;
+        }
+        if(dir === "West"){
+            sqrA.walls.West = true;
+            sqrB.walls.West = true;
+            /* sets the West neighbors East wall to true */
+            this.grid[neighborsA[0][1]][neighborsA[0][0]].walls.East = true;
+            this.grid[neighborsB[0][1]][neighborsB[0][0]].walls.East = true;
+        }
     }
 
     movePlayer(dir) {

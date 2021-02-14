@@ -27,12 +27,26 @@ class GameView {
             {
                 let square = this.grid[j][i];
                 let id = (j + 1).toString() + (i + 1).toString();
+                let ele = document.getElementById(id);
                 if(square.player === "player1") {
-                    document.getElementById(`${id}`).innerHTML = "X";
+                    ele.innerHTML = "X";
                 } else if(square.player === "player2") {
-                    document.getElementById(`${id}`).innerHTML = "O";
+                    ele.innerHTML = "O";
                 } else {
-                    document.getElementById(`${id}`).innerHTML = "";
+                    ele.innerHTML = "";
+                }
+                /* update walls */
+                if (!!square.walls.North) {
+                    ele.classList.add('wall-top');
+                }
+                if (!!square.walls.East) {
+                    ele.classList.add('wall-right');
+                }
+                if (!!square.walls.South) {
+                    ele.classList.add('wall-bottom');
+                }
+                if (!!square.walls.West) {
+                    ele.classList.add('wall-left');
                 }
             }
         }
@@ -51,27 +65,44 @@ class GameView {
         });
 
         this.body.addEventListener("click", (event) => {
-            //if in the placing wall state this capture square clicks
-            if (!!this.game.placingWall) {
-                let count = 0;
-                let container = [];
-                if (event.target.classList.contains("floor")) {
-                    count = count + 1;
-                    console.log("square clicked");
-                    container = this.handleSquareClick(event);
-                }
-            } else {
-                if (event.target.classList.contains("button")) {
-                    // else listen for the place wall button
-                    if(event.target.innerHTML === "Place a wall") {
+            /* 
+                The click event is used for a state machine.
+                Depending on the state of placing a wall dictates
+                what will happen when a click event triggers.
+                State is stored in this.game.state 
+                State Machine is:
+                [not placing wall] => [selecting squares] => [selecting wall type] => [not placing wall]
+                                                                      ||
+                                                                      \/
+                                                                {wall is created}
+            */ 
+
+            let state = this.game.state;
+            let classList = event.target.classList;
+            let innerHTML = event.target.innerHTML;
+
+            if (state === "not placing wall") {
+                if (classList.contains("button")) {
+                    if(innerHTML === "Place a wall") {
                         this.handlePlaceWallButton(event);
                         console.log("wall button clicked");
                     }
-                    if((event.target.innerHTML === "North") || (event.target.innerHTML === "East")
-                       || (event.target.innerHTML === "South") || (event.target.innerHTML === "West")) {
-                        console.log(event.target.innerHTML);
-                    }
                 } 
+            }
+            if (state === "selecting squares") {
+                if (classList.contains("floor")) {
+                    console.log("square clicked");
+                    this.handleSquareClick(event);
+                }
+            } 
+            if (state === "selecting wall type") {
+                if (classList.contains("button")) {
+                    if((innerHTML === "North") || (innerHTML === "East")
+                       || (innerHTML === "South") || (innerHTML === "West")) {
+
+                        this.handleWallTypeButton(innerHTML, event);
+                    }
+                }
             }
         }, false);
     } 
@@ -79,6 +110,7 @@ class GameView {
     handlePlaceWallButton(event) {
         // delete btn element and replace with instructions to
         // click two distinct squares
+        this.game.state = "selecting squares";
         let btn = event.target;
         let parent = btn.parentElement;
         let clickInstruct = document.createElement("p");
@@ -93,9 +125,6 @@ class GameView {
     handleSquareClick(event) {
         //wait for client to click two valid squares
         let target = event.target;
-        console.log(target);
-        console.log(target.id);
-        console.log(this.neighbors);
 
         if ((target.classList.contains("floor")) && (this.squareA === null)) {
             this.squareA = target.id;
@@ -113,27 +142,40 @@ class GameView {
             this.highlight(this.neighbors);
 
         } else if ((target.classList.contains("floor")) && (this.squareA !== null) && (this.squareB === null)) {
-            console.log(!!this.neighbors.includes(target.id));
-            if(!this.neighbors.includes(target.id)) {
+            if(!!this.neighbors.includes(target.id)) {
                 this.squareB = target.id;
             }
         }
 
         if (this.squareA !== null && this.squareB !== null) {
-            console.log(this.squareA, this.squareB);
             // should create two buttons depending on squareA and squareB orientation
             this.body.getElementsByClassName("clickInstruct")[0].remove();
-            // check here if squareA and squareB are neighbors and if they are horizontal or vertical
-            // squareA = "11" and needs to be [0, 0]
-            let squareA = this.squareA.split("");
-            squareA[0] = parseInt(squareA[0]) - 1;
-            squareA[1] = parseInt(squareA[1]) - 1;
-            this.board.checkNeighbors(squareA);
-            this.createButton("North");
-            this.createButton("East");
-            this.createButton("South");
-            this.createButton("West");
+            
+            if(this.squareA.split("")[1] === this.squareB.split("")[1]) {
+                console.log("horizontal");
+                this.createButton("North");
+                this.createButton("South");
+            }
+            if(this.squareA.split("")[0] === this.squareB.split("")[0]) {
+                console.log("vertical");
+                this.createButton("East");
+                this.createButton("West");
+            }
+            this.game.state = "selecting wall type";
+            
         }
+    }
+
+    handleWallTypeButton(dir, event) {
+        /* 
+        calls this.game.takeTurn(action, dir, event);
+        should remove wall type buttons and add place a wall button
+        switch state back to not placing wall here???
+        or in this.game
+        WHERE DOES WALL PLACEMENT VALIDATION HAPPEN??????????????????????
+        */
+        this.game.takeTurn("placeWall", dir, event, this.squareA, this.squareB);
+        this.show();
     }
 
     highlight(array) {
@@ -144,7 +186,6 @@ class GameView {
             let id = array[i].join("").toString();
             this.neighbors[i] = id;
             let ele = document.getElementById(`${id}`);
-            console.log(ele);
             ele.style.backgroundColor = "green";
         }
     }

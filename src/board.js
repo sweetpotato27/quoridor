@@ -43,10 +43,11 @@ class Board {
     }
 
     checkNeighbors(square) {
+        /* requires [[num][num]] */
         console.log(`checking ${square}'s neighbors...`);
         let neighbors = [];
         let x = square[0];
-        let y = square[1];
+        let y  = square[1];
         neighbors.push([x, y - 1]);  // north
         neighbors.push([x + 1, y]);  // east
         neighbors.push([x, y + 1]);  // south
