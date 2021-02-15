@@ -26,7 +26,7 @@ class GameView {
             for (let j = 0; j < this.grid[i].length; j++)
             {
                 let square = this.grid[j][i];
-                let id = (j + 1).toString() + (i + 1).toString();
+                let id = (i).toString() + (j).toString();
                 let ele = document.getElementById(id);
                 if(square.player === "player1") {
                     ele.innerHTML = "X";
@@ -37,15 +37,23 @@ class GameView {
                 }
                 /* update walls */
                 if (!!square.walls.North) {
+                    console.log(square);
+                    console.log(id);
+                    console.log((j).toString());
+                    console.log((i).toString());
+                    ele.classList.remove('hall');
                     ele.classList.add('wall-top');
                 }
                 if (!!square.walls.East) {
+                    ele.classList.remove('hall');
                     ele.classList.add('wall-right');
                 }
                 if (!!square.walls.South) {
+                    ele.classList.remove('hall');
                     ele.classList.add('wall-bottom');
                 }
                 if (!!square.walls.West) {
+                    ele.classList.remove('hall');
                     ele.classList.add('wall-left');
                 }
             }
@@ -55,7 +63,6 @@ class GameView {
     setupEventListeners() {
         this.body.addEventListener("keyup", (event) => {
             let code = event.code;
-            console.log(code);
             if (!this.game.placingWall) {
                 if ((code === "ArrowUp") || (code === "ArrowRight") || (code === "ArrowDown") || (code === "ArrowLeft")) {
                     this.game.takeTurn("move", code.split("Arrow")[1].toLowerCase(), event);
@@ -84,14 +91,14 @@ class GameView {
             if (state === "not placing wall") {
                 if (classList.contains("button")) {
                     if(innerHTML === "Place a wall") {
+
                         this.handlePlaceWallButton(event);
-                        console.log("wall button clicked");
                     }
                 } 
             }
             if (state === "selecting squares") {
                 if (classList.contains("floor")) {
-                    console.log("square clicked");
+
                     this.handleSquareClick(event);
                 }
             } 
@@ -118,8 +125,6 @@ class GameView {
         clickInstruct.innerHTML = "Click two distinct squares..."
         btn.remove();
         parent.appendChild(clickInstruct);
-
-        this.game.placingWall = true;
     }
 
     handleSquareClick(event) {
@@ -129,10 +134,10 @@ class GameView {
         if ((target.classList.contains("floor")) && (this.squareA === null)) {
             this.squareA = target.id;
             //parse squareA
-            // squareA = "11" and needs to be [0, 0]
+            // squareA = "00" and needs to be [0, 0]
             let square = this.squareA.split("");
-            square[0] = parseInt(square[0]) - 1;
-            square[1] = parseInt(square[1]) - 1;
+            square[0] = parseInt(square[0]);
+            square[1] = parseInt(square[1]);
             //get neighbors
             // returns [[north],[east],[south],[west]]
             this.neighbors = this.board.checkNeighbors(square);
@@ -181,8 +186,8 @@ class GameView {
     highlight(array) {
         //highlight and also changes this.neighbors to be able to be read as an array of strings
         for (let i = 0; i < array.length; i++) {
-            array[i][0] = array[i][0] + 1;
-            array[i][1] = array[i][1] + 1;
+            array[i][0] = array[i][0];
+            array[i][1] = array[i][1];
             let id = array[i].join("").toString();
             this.neighbors[i] = id;
             let ele = document.getElementById(`${id}`);
@@ -222,22 +227,22 @@ class GameView {
                     th.innerHTML = ""
                     tr.appendChild(th);
                 } else if (i === 0) {
-                    th.innerHTML = j
+                    th.innerHTML = j - 1
                     tr.appendChild(th);
                 } else if (i > 0 && j === 0) {
-                    th.innerHTML = i
+                    th.innerHTML = i - 1
                     tr.appendChild(th);
                 } else {
-                    td.id = `${j}${i}`;
+                    td.id = `${j - 1}${i - 1}`;
                     td.classList.add("floor", "hall");
                     tr.appendChild(td);
-                    let square = this.game.board.grid[j-1][i-1];
-                    if (square.player === "player1") {
-                        td.style.backgroundColor = "white";
-                    }
-                    if (square.player === "player2") {
-                        td.style.backgroundColor = "black";
-                    }
+                    // let square = this.game.board.grid[j-1][i-1];
+                    // if (square.player === "player1") {
+                    //     td.style.backgroundColor = "white";
+                    // }
+                    // if (square.player === "player2") {
+                    //     td.style.backgroundColor = "black";
+                    // }
                 }
             }
             board.appendChild(tr);

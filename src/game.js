@@ -61,51 +61,47 @@ class Game {
     }
 
     placeWall(dir, event, squareA, squareB) {
-        console.log(this.grid);
-        console.log(dir);
-        console.log(squareA, squareB);
-        console.log("placing wall...");
         /*
         get Square and set the specific walls to true 
         get neighbors and sset specific walls to true... opposite wall
         */
-        let sqrA = this.grid[squareA[1]-1][squareA[0]-1];
-        let sqrB = this.grid[squareB[1]-1][squareB[0]-1];
+        let sqrA = this.grid[squareA[1]][squareA[0]];
+        let sqrB = this.grid[squareB[1]][squareB[0]];
         let neighborsA = this.board.checkNeighbors([sqrA.x, sqrA.y]);
         let neighborsB = this.board.checkNeighbors([sqrB.x, sqrB.y]);
 
         if(dir === "North"){
+            console.log(sqrA, sqrB);
             sqrA.walls.North = true;
             sqrB.walls.North = true;
             /* sets the north neighbors south wall to true */
-            this.grid[neighborsA[0][1]][neighborsA[0][0]].walls.South = true;
-            this.grid[neighborsB[0][1]][neighborsB[0][0]].walls.South = true;
+            // this.grid[neighborsA[0][1]][neighborsA[0][0]].walls.South = true;
+            // this.grid[neighborsB[0][1]][neighborsB[0][0]].walls.South = true;
         }
         if(dir === "East"){
             sqrA.walls.East = true;
             sqrB.walls.East = true;
             /* sets the East neighbors West wall to true */
-            this.grid[neighborsA[0][1]][neighborsA[0][0]].walls.West = true;
-            this.grid[neighborsB[0][1]][neighborsB[0][0]].walls.West = true;
+            // this.grid[neighborsA[0][1]][neighborsA[0][0]].walls.West = true;
+            // this.grid[neighborsB[0][1]][neighborsB[0][0]].walls.West = true;
         }
         if(dir === "South"){
             sqrA.walls.South = true;
             sqrB.walls.South = true;
             /* sets the South neighbors North wall to true */
-            this.grid[neighborsA[0][1]][neighborsA[0][0]].walls.North = true;
-            this.grid[neighborsB[0][1]][neighborsB[0][0]].walls.North = true;
+            // this.grid[neighborsA[0][1]][neighborsA[0][0]].walls.North = true;
+            // this.grid[neighborsB[0][1]][neighborsB[0][0]].walls.North = true;
         }
         if(dir === "West"){
             sqrA.walls.West = true;
             sqrB.walls.West = true;
             /* sets the West neighbors East wall to true */
-            this.grid[neighborsA[0][1]][neighborsA[0][0]].walls.East = true;
-            this.grid[neighborsB[0][1]][neighborsB[0][0]].walls.East = true;
+            // this.grid[neighborsA[0][1]][neighborsA[0][0]].walls.East = true;
+            // this.grid[neighborsB[0][1]][neighborsB[0][0]].walls.East = true;
         }
     }
 
     movePlayer(dir) {
-        console.log(dir);
         // takes current player current pos
         // calculates future pos with dir
         let player;

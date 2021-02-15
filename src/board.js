@@ -26,8 +26,8 @@ class Board {
     }
 
     setPlayers(player1, p1Pos, player2, p2Pos) {
-        let gridSquare2 = this.grid[p2Pos[0]] [p2Pos[1]];
-        let gridSquare1 = this.grid[p1Pos[0]] [p1Pos[1]];
+        let gridSquare2 = this.grid[p2Pos[1]] [p2Pos[0]];
+        let gridSquare1 = this.grid[p1Pos[1]] [p1Pos[0]];
         if(!!player2) {
             gridSquare2.model = "person";
         } else {
@@ -44,7 +44,6 @@ class Board {
 
     checkNeighbors(square) {
         /* requires [[num][num]] */
-        console.log(`checking ${square}'s neighbors...`);
         let neighbors = [];
         let x = square[0];
         let y  = square[1];
@@ -52,7 +51,6 @@ class Board {
         neighbors.push([x + 1, y]);  // east
         neighbors.push([x, y + 1]);  // south
         neighbors.push([x - 1, y]);  // west
-        console.log(neighbors);
         return neighbors;
     }
 
