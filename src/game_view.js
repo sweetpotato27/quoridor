@@ -22,7 +22,6 @@ class GameView {
     }
 
     showBoard() {
-        console.log(this.grid);
         for(let rowIdx = 0; rowIdx  < this.grid.length; rowIdx++) {
             for (let colIdx = 0; colIdx < this.grid[rowIdx].length; colIdx++)
             {
@@ -34,7 +33,7 @@ class GameView {
                 } else if(square.player === "player2") {
                     ele.innerHTML = "O";
                 } else {
-                    ele.innerHTML = "";
+                    ele.innerHTML = " ";
                 }
                 /* update walls */
                 if (!!square.walls.North) {
@@ -84,7 +83,6 @@ class GameView {
             let state = this.game.state;
             let classList = event.target.classList;
             let innerHTML = event.target.innerHTML;
-            console.log(state);
             if (state === "not placing wall") {
                 if (classList.contains("button")) {
                     if(innerHTML === "Place a wall") {
@@ -114,7 +112,6 @@ class GameView {
     handlePlaceWallButton(event) {
         // delete btn element and replace with instructions to
         // click two distinct squares
-        console.log("here")
         this.game.state = "selecting squares";
         let btn = event.target;
         this.body.getElementsByClassName("clickInstruct")[0].classList.remove("hide");
@@ -187,7 +184,6 @@ class GameView {
 
     highlight(array) {
         //highlight and also changes this.neighbors to be able to be read as an array of strings
-        console.log(array);
         for (let i = 0; i < array.length; i++) {
             // array[i][0] = array[i][0];
             // array[i][1] = array[i][1];
@@ -260,13 +256,6 @@ class GameView {
                     td.id = `${rowIdx - 1}${colIdx - 1}`;
                     td.classList.add("floor", "hall");
                     tr.appendChild(td);
-                    // let square = this.game.board.grid[j-1][i-1];
-                    // if (square.player === "player1") {
-                    //     td.style.backgroundColor = "white";
-                    // }
-                    // if (square.player === "player2") {
-                    //     td.style.backgroundColor = "black";
-                    // }
                 }
             }
             board.appendChild(tr);

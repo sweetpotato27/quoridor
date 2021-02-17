@@ -9,22 +9,6 @@ class Board {
         this.winner = false;
     }
 
-    // getPlayers() {
-    //     let player2;
-    //     let player1;
-    //     for (let i = 0; i < this.height; i++) {
-    //         for (let j = 0; j < this.width; j++) {
-    //             if (this.grid[j, i].getPlayer === "player2") {
-    //                 player2 = [j, i];
-    //             } 
-    //             if (this.grid[j, i].getPlayer === "player1") {
-    //                 player1 = [j, i];
-    //             } 
-    //         }
-    //     }
-    //     return player1, player2;
-    // }
-
     setPlayers(player1, p1Pos, player2, p2Pos) {
         /* p1Pos & p2Pos = [row, col] */
         let gridSquare2 = this.grid[p2Pos[0]][p2Pos[1]];
@@ -58,6 +42,35 @@ class Board {
         return neighbors;
     }
 
+    isWalled(dir, rowIdx, colIdx) {
+        /* 
+         returns true if path is blocked by wall
+         returns false if path is free
+        */
+       
+        let square = this.grid[rowIdx][colIdx];
+        if(dir === "up") {
+            if(square.walls.North) {
+                return true;
+            }
+        } else if (dir === "right") {
+            if(square.walls.East) {
+                return true;
+            }
+        } else if (dir === "down") {
+            if(square.walls.South) {
+                return true;
+            }
+        } else if (dir === "left") {
+            if(square.walls.West) {
+                return true;
+            }
+        } else {
+
+        }
+        return false;
+    }
+
 
     static makeGrid(width, height) {
         const grid = [];
@@ -72,14 +85,16 @@ class Board {
         return grid;
     }
 
-    static validPos(colIdx, rowIdx) {
+    static isValidPos(colIdx, rowIdx) {
         // validation to check the ends of the board
         if ((colIdx < 0 || rowIdx < 0) || (colIdx > 8 || rowIdx > 8)) {
             return false;
+        } else if (false) {
         } else {
             return true;
         }
     }
+
 }
 
 module.exports = Board;

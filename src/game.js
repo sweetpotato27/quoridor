@@ -62,7 +62,6 @@ class Game {
     }
 
     placeWall(dir, event, squareA, squareB) {
-        console.log(squareA, squareB);
         /*
         squareA & squareB = [rowIdx, colIdx]
         get Square and set the specific walls to true 
@@ -75,12 +74,12 @@ class Game {
         let neighborsB = this.board.checkNeighbors([sqrB.rowIdx, sqrB.colIdx]);
 
         if(dir === "North"){
-            console.log(neighborsB)
             sqrA.walls.North = true;
             sqrB.walls.North = true;
             /* sets the north neighbors south wall to true */
             this.grid[neighborsA[0][0]][neighborsA[0][1]].walls.South = true;
             this.grid[neighborsB[0][0]][neighborsB[0][1]].walls.South = true;
+            this.swapTurn();
         }
         if(dir === "East"){
             sqrA.walls.East = true;
@@ -88,6 +87,7 @@ class Game {
             /* sets the East neighbors West wall to true */
             this.grid[neighborsA[1][0]][neighborsA[1][1]].walls.West = true;
             this.grid[neighborsB[1][0]][neighborsB[1][1]].walls.West = true;
+            this.swapTurn();
         }
         if(dir === "South"){
             sqrA.walls.South = true;
@@ -95,6 +95,7 @@ class Game {
             /* sets the South neighbors North wall to true */
             this.grid[neighborsA[2][0]][neighborsA[2][1]].walls.North = true;
             this.grid[neighborsB[2][0]][neighborsB[2][1]].walls.North = true;
+            this.swapTurn();
         }
         if(dir === "West"){
             sqrA.walls.West = true;
@@ -102,6 +103,7 @@ class Game {
             /* sets the West neighbors East wall to true */
             this.grid[neighborsA[3][0]][neighborsA[3][1]].walls.East = true;
             this.grid[neighborsB[3][0]][neighborsB[3][1]].walls.East = true;
+            this.swapTurn();
         }
     }
 
@@ -112,7 +114,8 @@ class Game {
         this.currentPlayer === "player1" ? player = this.player1 : player = this.player2
         let newColIdx;
         let newRowIdx;
-        let valid;
+        let isWalled;
+        let isValid;
         if (dir === "up") {
             newColIdx = player[1];
             newRowIdx = player[0] - 1;
@@ -127,13 +130,16 @@ class Game {
             newRowIdx = player[0];
         }
 
-
+        /*
+        check for walls
+         */
+        isWalled = this.board.isWalled(dir, player[0], player[1]);
         // gives to this.board to validate
-        valid = Board.validPos(newColIdx, newRowIdx);
+        isValid = Board.isValidPos(newColIdx, newRowIdx);
         
         // if valid then sets player new x and y
         //    swaps turns
-        if (valid) {
+        if (isValid && !isWalled) {
 
             let oldSquare = this.board.grid[player[0]][player[1]];
             let newSquare = this.board.grid[newRowIdx][newColIdx];
