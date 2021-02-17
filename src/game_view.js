@@ -104,6 +104,10 @@ class GameView {
 
                         this.handlePlaceWallButton(event);
                     }
+
+                    if(innerHTML === "Move character") {
+                        this.handleMovementButton(event);
+                    }
                 } 
             }
             if (state === "selecting squares") {
@@ -205,6 +209,19 @@ class GameView {
         this.show();
     }
 
+    handleMovementButton(event) {
+        let availableMoves;
+        let player = this.game.currentPlayer === "player1" ? this.game.player1 : this.game.player2;
+        let rowIdx = parseInt(player[0]);
+        let colIdx = parseInt(player[1]);
+        availableMoves = this.board.checkNeighbors([rowIdx, colIdx]);
+        for (let i = 0; i < availableMoves.length; i++) {
+            console.log(availableMoves[i]);
+            let ele = document.getElementById(availableMoves[i].join(""));
+            ele.style.backgroundColor = "green";
+        }
+    }
+
     highlight(array) {
         //highlight and also changes this.neighbors to be able to be read as an array of strings
         for (let i = 0; i < array.length; i++) {
@@ -234,12 +251,14 @@ class GameView {
         div.appendChild(board);
         div.classList.add("table");
         board.setAttribute("id" , "board");
-
-        //build walls button
         let cntrlDiv = document.createElement("div");
         cntrlDiv.classList.add("controller-div");
         div.appendChild(cntrlDiv);
+
+        //build walls button
         this.createButton("Place a wall");
+        //movement button
+        this.createButton("Move character");
         ////////////////////
         /* instruction for clicking squares */
         let clickInstruct = document.createElement("p");
