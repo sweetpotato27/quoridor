@@ -77,10 +77,19 @@ class GameView {
                 what will happen when a click event triggers.
                 State is stored in this.game.state 
                 State Machine is:
-                [not placing wall] => [selecting squares] => [selecting wall type] => [not placing wall]
-                                                                      ||
-                                                                      \/
-                                                                {wall is created}
+                [not placing wall] == clicks Place a wall >> [selecting squares] => [selecting wall type] => [not placing wall]
+                                                                                            ||
+                                                                                            \/
+                                                                                        {wall is created}
+                !! undeveloped !!
+                Player movement will be integrated into the state machine as well
+                *** maybe change [not placing wall] to [not doing anything]
+
+                [not doing anything] == clicks Move character >> [select desired square]
+                                                                    ||
+                                                                    \/
+                                                                {move player}
+
             */ 
 
             let state = this.game.state;
@@ -152,13 +161,21 @@ class GameView {
             
             if(this.squareA.split("")[0] === this.squareB.split("")[0]) {
                 console.log("horizontal");
-                this.body.getElementsByClassName("north")[0].classList.remove("hide");
-                this.body.getElementsByClassName("south")[0].classList.remove("hide");
+                if(this.squareA.split("")[0] > 0) {
+                    this.body.getElementsByClassName("north")[0].classList.remove("hide");
+                }
+                if(this.squareA.split("")[0] < 8) {
+                    this.body.getElementsByClassName("south")[0].classList.remove("hide");
+                }
             }
             if(this.squareA.split("")[1] === this.squareB.split("")[1]) {
                 console.log("vertical");
-                this.body.getElementsByClassName("west")[0].classList.remove("hide");
-                this.body.getElementsByClassName("east")[0].classList.remove("hide");
+                if(this.squareA.split("")[1] > 0) {
+                    this.body.getElementsByClassName("west")[0].classList.remove("hide");
+                }
+                if(this.squareA.split("")[1] < 8) {
+                    this.body.getElementsByClassName("east")[0].classList.remove("hide");
+                }
             }
             this.game.state = "selecting wall type";
             
