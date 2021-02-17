@@ -84,7 +84,7 @@ class GameView {
             let state = this.game.state;
             let classList = event.target.classList;
             let innerHTML = event.target.innerHTML;
-
+            console.log(state);
             if (state === "not placing wall") {
                 if (classList.contains("button")) {
                     if(innerHTML === "Place a wall") {
@@ -114,14 +114,11 @@ class GameView {
     handlePlaceWallButton(event) {
         // delete btn element and replace with instructions to
         // click two distinct squares
+        console.log("here")
         this.game.state = "selecting squares";
         let btn = event.target;
-        let parent = btn.parentElement;
-        let clickInstruct = document.createElement("p");
-        clickInstruct.classList.add("clickInstruct");
-        clickInstruct.innerHTML = "Click two distinct squares..."
-        btn.remove();
-        parent.appendChild(clickInstruct);
+        this.body.getElementsByClassName("clickInstruct")[0].classList.remove("hide");
+        btn.classList.add("hide");
     }
 
     handleSquareClick(event) {
@@ -141,7 +138,7 @@ class GameView {
             // for(let i = 0; i < this.neighbors.length; i++) {
             //     this.neighbors[i] = this.neighbors[i][0].toString() + this.neighbors[i][1].toString();
             // }
-            this.highlight(this.neighbors);
+            this.highlight(this.neighbors);  // NEED TO CHANGE  SHOULD BE A CLASS TOGGLE
 
         } else if ((target.classList.contains("floor")) && (this.squareA !== null) && (this.squareB === null)) {
             if(!!this.neighbors.includes(target.id)) {
@@ -151,17 +148,17 @@ class GameView {
 
         if (this.squareA !== null && this.squareB !== null) {
             // should create two buttons depending on squareA and squareB orientation
-            this.body.getElementsByClassName("clickInstruct")[0].remove();
+            this.body.getElementsByClassName("clickInstruct")[0].classList.add("hide");
             
-            if(this.squareA.split("")[1] === this.squareB.split("")[1]) {
-                console.log("horizontal");
-                this.createButton("North");
-                this.createButton("South");
-            }
             if(this.squareA.split("")[0] === this.squareB.split("")[0]) {
+                console.log("horizontal");
+                this.body.getElementsByClassName("north")[0].classList.remove("hide");
+                this.body.getElementsByClassName("south")[0].classList.remove("hide");
+            }
+            if(this.squareA.split("")[1] === this.squareB.split("")[1]) {
                 console.log("vertical");
-                this.createButton("East");
-                this.createButton("West");
+                this.body.getElementsByClassName("west")[0].classList.remove("hide");
+                this.body.getElementsByClassName("east")[0].classList.remove("hide");
             }
             this.game.state = "selecting wall type";
             
@@ -177,18 +174,29 @@ class GameView {
         WHERE DOES WALL PLACEMENT VALIDATION HAPPEN??????????????????????
         */
         this.game.takeTurn("placeWall", dir, event, this.squareA, this.squareB);
+        this.body.getElementsByClassName("north")[0].classList.add("hide");
+        this.body.getElementsByClassName("east")[0].classList.add("hide");
+        this.body.getElementsByClassName("south")[0].classList.add("hide");
+        this.body.getElementsByClassName("west")[0].classList.add("hide");
+        this.body.getElementsByClassName("button")[0].classList.remove("hide");
+        this.squareA = null;
+        this.squareB = null;
+        this.game.state = "not placing wall";
         this.show();
     }
 
     highlight(array) {
         //highlight and also changes this.neighbors to be able to be read as an array of strings
+        console.log(array);
         for (let i = 0; i < array.length; i++) {
-            array[i][0] = array[i][0];
-            array[i][1] = array[i][1];
+            // array[i][0] = array[i][0];
+            // array[i][1] = array[i][1];
             let id = array[i].join("").toString();
             this.neighbors[i] = id;
             let ele = document.getElementById(`${id}`);
-            ele.style.backgroundColor = "green";
+            if (ele !== null) {
+                // ele.style.backgroundColor = "green";
+            }
         }
     }
 
@@ -214,6 +222,25 @@ class GameView {
         div.appendChild(cntrlDiv);
         this.createButton("Place a wall");
         ////////////////////
+        /* instruction for clicking squares */
+        let clickInstruct = document.createElement("p");
+        clickInstruct.classList.add("clickInstruct");
+        clickInstruct.innerHTML = "Click two distinct squares..."
+        clickInstruct.classList.add("hide");
+        cntrlDiv.appendChild(clickInstruct);
+        /* wall type buttons */
+        let north = this.createButton("North");
+        let east = this.createButton("East");
+        let south = this.createButton("South");
+        let west = this.createButton("West");
+        north.classList.add("hide", "north");
+        east.classList.add("hide", "east");
+        south.classList.add("hide", "south");
+        west.classList.add("hide", "west");
+        cntrlDiv.appendChild(north);
+        cntrlDiv.appendChild(south);
+        cntrlDiv.appendChild(west);
+        cntrlDiv.appendChild(east);
 
         for(let rowIdx = 0; rowIdx < 10; rowIdx++) {
             let tr = document.createElement("tr");

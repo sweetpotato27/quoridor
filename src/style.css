@@ -50,6 +50,10 @@ q:before, q:after {
 /*
 */
 
+.hide {
+	display: none;
+}
+
 
 table {
 	/* border-collapse: collapse; */

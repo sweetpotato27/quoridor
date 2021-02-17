@@ -46,15 +46,15 @@ class Board {
     checkNeighbors(square) {
         /* 
         requires [[num][num]] 
-        square = [colIdx, rowIdx]
+        square = [rowIdx, colIdx]
         */
         let neighbors = [];
-        let colIdx = square[0];
-        let rowIdx  = square[1];
-        neighbors.push([colIdx, rowIdx - 1]);  // north
-        neighbors.push([colIdx + 1, rowIdx]);  // east
-        neighbors.push([colIdx, rowIdx + 1]);  // south
-        neighbors.push([colIdx - 1, rowIdx]);  // west
+        let colIdx = square[1];
+        let rowIdx  = square[0];
+        neighbors.push([rowIdx - 1, colIdx]);  // north
+        neighbors.push([rowIdx, colIdx + 1]);  // east
+        neighbors.push([rowIdx + 1, colIdx]);  // south
+        neighbors.push([rowIdx, colIdx - 1]);  // west
         return neighbors;
     }
 
