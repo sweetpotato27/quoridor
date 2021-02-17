@@ -65,6 +65,9 @@ class GameView {
                 }
                 this.show();
             }
+            if(code === "Space") {
+                this.game.findPath();
+            }
         });
 
         this.body.addEventListener("click", (event) => {

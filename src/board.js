@@ -72,6 +72,89 @@ class Board {
     }
 
 
+    bfs(root, goal = ["00","01","02","03","04","05","06","07","08"]) {
+        /* 
+        root === [rowIdx, colIdx]
+
+        this function is so crusty 
+        */
+
+
+        let hashmap = new Map(); 
+        let Q = []; //array of [row, col]
+        let discovered = []; //array of id
+        hashmap.set(root, null)
+        Q.push(root);
+        discovered.push(root.join(""));
+        while (Q.length > 0) {
+            console.log(Q);
+            let v = Q.shift(); // pos
+            let id = v.join("");
+            let square = this.grid[v[0]][v[1]]; //square
+            if (goal.includes(id)) {
+                let path = [];
+                path = this.traverseHashmap(hashmap, v.join(""));
+                return [v.join(""), path];
+            }
+            // finding all possible directions
+            
+            if ((!square.walls.North && (parseInt(v[0]) > 0))){
+                let newV = v.join("").split("");
+                newV[0] = parseInt(newV[0]) - 1;
+                id = newV.join("");
+                if (!discovered.includes(id)) {
+                    discovered.push(id);
+                    Q.push(newV);
+                    hashmap.set(newV.join(""), v.join(""));
+                }
+            }
+            if ((!square.walls.South && (parseInt(v[0]) < 8))) {
+                let newV = v.join("").split("");
+                newV[0] = parseInt(newV[0]) + 1;
+                id = newV.join("");
+                if (!discovered.includes(id)) {
+                    discovered.push(id);
+                    Q.push(newV);
+                    hashmap.set(newV.join(""), v.join(""));
+                }
+            }
+            if ((!square.walls.East && (parseInt(v[1]) < 8))) {
+                let newV = v.join("").split("");
+                newV[1] = parseInt(newV[1]) + 1;
+                id = newV.join("");
+                if (!discovered.includes(id)) {
+                    discovered.push(id);
+                    Q.push(newV);
+                    hashmap.set(newV.join(""), v.join(""));
+                }
+            }
+            if ((!square.walls.West && (parseInt(v[1]) > 0))) {
+                let newV = v.join("").split("");
+                newV[1] = parseInt(newV[1]) - 1;
+                id = newV.join("");
+                if (!discovered.includes(id)) {
+                    discovered.push(id);
+                    Q.push(newV);
+                    hashmap.set(newV.join(""), v.join(""));
+                }
+            }
+        }
+        console.log(discovered);
+        return "no path found";
+    }
+
+    traverseHashmap(hash, start) {
+        console.log("here");
+        let node = hash.get(start);
+        let path = [];
+        while (node) {
+            path.push(node)
+            node = hash.get(node);
+        }
+        return path.reverse();
+    }
+
+
     static makeGrid(width, height) {
         const grid = [];
 
