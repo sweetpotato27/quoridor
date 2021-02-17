@@ -22,11 +22,12 @@ class GameView {
     }
 
     showBoard() {
-        for(let i = 0; i  < this.grid.length; i++) {
-            for (let j = 0; j < this.grid[i].length; j++)
+        console.log(this.grid);
+        for(let rowIdx = 0; rowIdx  < this.grid.length; rowIdx++) {
+            for (let colIdx = 0; colIdx < this.grid[rowIdx].length; colIdx++)
             {
-                let square = this.grid[j][i];
-                let id = (i).toString() + (j).toString();
+                let square = this.grid[rowIdx][colIdx];
+                let id = (rowIdx).toString() + (colIdx).toString();
                 let ele = document.getElementById(id);
                 if(square.player === "player1") {
                     ele.innerHTML = "X";
@@ -37,10 +38,6 @@ class GameView {
                 }
                 /* update walls */
                 if (!!square.walls.North) {
-                    console.log(square);
-                    console.log(id);
-                    console.log((j).toString());
-                    console.log((i).toString());
                     ele.classList.remove('hall');
                     ele.classList.add('wall-top');
                 }
@@ -218,22 +215,22 @@ class GameView {
         this.createButton("Place a wall");
         ////////////////////
 
-        for(let i = 0; i < 10; i++) {
+        for(let rowIdx = 0; rowIdx < 10; rowIdx++) {
             let tr = document.createElement("tr");
-            for(let j = 0; j < 10; j++) {
+            for(let colIdx = 0; colIdx < 10; colIdx++) {
                 let th = document.createElement("th");
                 let td = document.createElement("td");
-                if(i === 0 && j === 0) {
+                if(rowIdx === 0 && colIdx === 0) {
                     th.innerHTML = ""
                     tr.appendChild(th);
-                } else if (i === 0) {
-                    th.innerHTML = j - 1
+                } else if (rowIdx === 0) {
+                    th.innerHTML = colIdx - 1
                     tr.appendChild(th);
-                } else if (i > 0 && j === 0) {
-                    th.innerHTML = i - 1
+                } else if (rowIdx > 0 && colIdx === 0) {
+                    th.innerHTML = rowIdx - 1
                     tr.appendChild(th);
                 } else {
-                    td.id = `${j - 1}${i - 1}`;
+                    td.id = `${rowIdx - 1}${colIdx - 1}`;
                     td.classList.add("floor", "hall");
                     tr.appendChild(td);
                     // let square = this.game.board.grid[j-1][i-1];

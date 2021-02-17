@@ -6,8 +6,9 @@ class Game {
         this.board = new Board();
         this.grid = this.board.grid;
         this.currentPlayer = "noone";
-        this.player1 = [4, 8];
-        this.player2 = [4, 0];
+        /* this.player = [rowIdx, colIdx] */
+        this.player1 = [8, 4];
+        this.player2 = [0, 4];
         this.state = "not placing wall";
 
         this.movePlayer = this.movePlayer.bind(this);
@@ -25,12 +26,12 @@ class Game {
         let winner = null;
         for(let i = 0; i < this.grid[0].length; i++) {
             // document.getElementById(`${i + 1}1`).style.backgroundColor = "green";
-            if(this.grid[i][0].player === "player1") {
+            if(this.grid[0][i].player === "player1") {
                 winner = "player1"
             }
         }
         for(let i = 0; i < this.grid[8].length; i++) {
-            if(this.grid[i][8].player === "player2") {
+            if(this.grid[8][i].player === "player2") {
                 winner = "player2"
             }
         }
@@ -62,16 +63,17 @@ class Game {
 
     placeWall(dir, event, squareA, squareB) {
         /*
+        squareA & squareB = [colIdx, rowIdx]
         get Square and set the specific walls to true 
         get neighbors and sset specific walls to true... opposite wall
+        squarePos = this.grid[rowIdx, colIdx]
         */
         let sqrA = this.grid[squareA[1]][squareA[0]];
         let sqrB = this.grid[squareB[1]][squareB[0]];
-        let neighborsA = this.board.checkNeighbors([sqrA.x, sqrA.y]);
-        let neighborsB = this.board.checkNeighbors([sqrB.x, sqrB.y]);
+        let neighborsA = this.board.checkNeighbors([sqrA.colIdx, sqrA.rowIdx]);
+        let neighborsB = this.board.checkNeighbors([sqrB.colIdx, sqrB.rowIdx]);
 
         if(dir === "North"){
-            console.log(sqrA, sqrB);
             sqrA.walls.North = true;
             sqrB.walls.North = true;
             /* sets the north neighbors south wall to true */
@@ -106,40 +108,40 @@ class Game {
         // calculates future pos with dir
         let player;
         this.currentPlayer === "player1" ? player = this.player1 : player = this.player2
-        let newX;
-        let newY;
+        let newColIdx;
+        let newRowIdx;
         let valid;
         if (dir === "up") {
-            newX = player[0];
-            newY = player[1] - 1;
+            newColIdx = player[1];
+            newRowIdx = player[0] - 1;
         } else if (dir === "right") {
-            newX = player[0] + 1;
-            newY = player[1];
+            newColIdx = player[1] + 1;
+            newRowIdx = player[0];
         } else if (dir === "down") {
-            newX = player[0];
-            newY = player[1] + 1;
+            newColIdx = player[1];
+            newRowIdx = player[0] + 1;
         } else if (dir === "left") {
-            newX = player[0] - 1;
-            newY = player[1];
+            newColIdx = player[1] - 1;
+            newRowIdx = player[0];
         }
 
 
         // gives to this.board to validate
-        valid = Board.validPos(newX, newY);
+        valid = Board.validPos(newColIdx, newRowIdx);
         
         // if valid then sets player new x and y
         //    swaps turns
         if (valid) {
 
             let oldSquare = this.board.grid[player[0]][player[1]];
-            let newSquare = this.board.grid[newX][newY];
+            let newSquare = this.board.grid[newRowIdx][newColIdx];
 
             //validation to check for player collision         
             if (newSquare.player !== "empty") {
                 console.log("COLLSION");
             } else {
                 oldSquare.player = "empty";
-                this.setPlayerPos(this.currentPlayer, [newX, newY]);
+                this.setPlayerPos(this.currentPlayer, [newRowIdx, newColIdx]);
                 newSquare.player = this.currentPlayer;
                 this.swapTurn();
             }
