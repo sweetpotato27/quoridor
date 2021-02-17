@@ -87,7 +87,6 @@ class Board {
         Q.push(root);
         discovered.push(root.join(""));
         while (Q.length > 0) {
-            console.log(Q);
             let v = Q.shift(); // pos
             let id = v.join("");
             let square = this.grid[v[0]][v[1]]; //square
@@ -143,7 +142,6 @@ class Board {
     }
 
     traverseHashmap(hash, start) {
-        console.log("here");
         let node = hash.get(start);
         let path = [];
         while (node) {

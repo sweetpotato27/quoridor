@@ -73,7 +73,7 @@ class Game {
         let neighborsA = this.board.checkNeighbors([sqrA.rowIdx, sqrA.colIdx]);
         let neighborsB = this.board.checkNeighbors([sqrB.rowIdx, sqrB.colIdx]);
         let isValidWall;
-        if(dir === "North"){
+        if(dir === "North" && (!sqrA.walls.North && !sqrB.walls.North)){
             sqrA.walls.North = true;
             sqrB.walls.North = true;
             /* sets the north neighbors south wall to true */
@@ -89,7 +89,7 @@ class Game {
                 this.grid[neighborsB[0][0]][neighborsB[0][1]].walls.South = false;
             }
         }
-        if(dir === "East"){
+        if(dir === "East" && (!sqrA.walls.East && !sqrB.walls.East)){
             sqrA.walls.East = true;
             sqrB.walls.East = true;
             /* sets the East neighbors West wall to true */
@@ -105,7 +105,7 @@ class Game {
                 this.grid[neighborsB[1][0]][neighborsB[1][1]].walls.West = false;
             }
         }
-        if(dir === "South"){
+        if(dir === "South" && (!sqrA.walls.South && !sqrB.walls.South)){
             sqrA.walls.South = true;
             sqrB.walls.South = true;
             /* sets the South neighbors North wall to true */
@@ -121,7 +121,7 @@ class Game {
                 this.grid[neighborsB[2][0]][neighborsB[2][1]].walls.North = false;
             }
         }
-        if(dir === "West"){
+        if(dir === "West" && (!sqrA.walls.West && !sqrB.walls.West)){
             sqrA.walls.West = true;
             sqrB.walls.West = true;
             /* sets the West neighbors East wall to true */
@@ -221,7 +221,11 @@ class Game {
 
     }
 
+
     findPath() {
+        /* 
+        run the bfs
+         */
         return !!this.board.bfs(this.player1);
     }
 
