@@ -72,43 +72,72 @@ class Game {
         let sqrB = this.grid[squareB[0]][squareB[1]];
         let neighborsA = this.board.checkNeighbors([sqrA.rowIdx, sqrA.colIdx]);
         let neighborsB = this.board.checkNeighbors([sqrB.rowIdx, sqrB.colIdx]);
-        let isValidWall = true;
-        if(isValidWall) {
-            if(dir === "North"){
-                sqrA.walls.North = true;
-                sqrB.walls.North = true;
-                /* sets the north neighbors south wall to true */
-                this.grid[neighborsA[0][0]][neighborsA[0][1]].walls.South = true;
-                this.grid[neighborsB[0][0]][neighborsB[0][1]].walls.South = true;
+        let isValidWall;
+        if(dir === "North"){
+            sqrA.walls.North = true;
+            sqrB.walls.North = true;
+            /* sets the north neighbors south wall to true */
+            this.grid[neighborsA[0][0]][neighborsA[0][1]].walls.South = true;
+            this.grid[neighborsB[0][0]][neighborsB[0][1]].walls.South = true;
+            isValidWall = this.findPath();
+            if(isValidWall) {
                 this.swapTurn();
+            } else {
+                sqrA.walls.North = false;
+                sqrB.walls.North = false;
+                this.grid[neighborsA[0][0]][neighborsA[0][1]].walls.South = false;
+                this.grid[neighborsB[0][0]][neighborsB[0][1]].walls.South = false;
             }
-            if(dir === "East"){
-                sqrA.walls.East = true;
-                sqrB.walls.East = true;
-                /* sets the East neighbors West wall to true */
-                this.grid[neighborsA[1][0]][neighborsA[1][1]].walls.West = true;
-                this.grid[neighborsB[1][0]][neighborsB[1][1]].walls.West = true;
-                this.swapTurn();
-            }
-            if(dir === "South"){
-                sqrA.walls.South = true;
-                sqrB.walls.South = true;
-                /* sets the South neighbors North wall to true */
-                this.grid[neighborsA[2][0]][neighborsA[2][1]].walls.North = true;
-                this.grid[neighborsB[2][0]][neighborsB[2][1]].walls.North = true;
-                this.swapTurn();
-            }
-            if(dir === "West"){
-                sqrA.walls.West = true;
-                sqrB.walls.West = true;
-                /* sets the West neighbors East wall to true */
-                this.grid[neighborsA[3][0]][neighborsA[3][1]].walls.East = true;
-                this.grid[neighborsB[3][0]][neighborsB[3][1]].walls.East = true;
-                this.swapTurn();
-            }
-        } else {
-            console.log("cant place wall there");
         }
+        if(dir === "East"){
+            sqrA.walls.East = true;
+            sqrB.walls.East = true;
+            /* sets the East neighbors West wall to true */
+            this.grid[neighborsA[1][0]][neighborsA[1][1]].walls.West = true;
+            this.grid[neighborsB[1][0]][neighborsB[1][1]].walls.West = true;
+            isValidWall = this.findPath();
+            if(isValidWall) {
+                this.swapTurn();
+            } else {
+                sqrA.walls.East = false;
+                sqrB.walls.East = false;
+                this.grid[neighborsA[1][0]][neighborsA[1][1]].walls.West = false;
+                this.grid[neighborsB[1][0]][neighborsB[1][1]].walls.West = false;
+            }
+        }
+        if(dir === "South"){
+            sqrA.walls.South = true;
+            sqrB.walls.South = true;
+            /* sets the South neighbors North wall to true */
+            this.grid[neighborsA[2][0]][neighborsA[2][1]].walls.North = true;
+            this.grid[neighborsB[2][0]][neighborsB[2][1]].walls.North = true;
+            isValidWall = this.findPath();
+            if(isValidWall) {
+                this.swapTurn();
+            } else {
+                sqrA.walls.South = false;
+                sqrB.walls.South = false;
+                this.grid[neighborsA[2][0]][neighborsA[2][1]].walls.North = false;
+                this.grid[neighborsB[2][0]][neighborsB[2][1]].walls.North = false;
+            }
+        }
+        if(dir === "West"){
+            sqrA.walls.West = true;
+            sqrB.walls.West = true;
+            /* sets the West neighbors East wall to true */
+            this.grid[neighborsA[3][0]][neighborsA[3][1]].walls.East = true;
+            this.grid[neighborsB[3][0]][neighborsB[3][1]].walls.East = true;
+            isValidWall = this.findPath();
+            if(isValidWall) {
+                this.swapTurn();
+            } else {
+                sqrA.walls.West = false;
+                sqrB.walls.West = false;
+                this.grid[neighborsA[3][0]][neighborsA[3][1]].walls.East = false;
+                this.grid[neighborsB[3][0]][neighborsB[3][1]].walls.East = false;
+            }
+        }
+       
     }
 
     movePlayer(dir) {
@@ -193,7 +222,7 @@ class Game {
     }
 
     findPath() {
-        console.log(this.board.bfs(this.player1));
+        return !!this.board.bfs(this.player1);
     }
 
 }

@@ -139,8 +139,7 @@ class Board {
                 }
             }
         }
-        console.log(discovered);
-        return "no path found";
+        return false;
     }
 
     traverseHashmap(hash, start) {
