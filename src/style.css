@@ -88,7 +88,7 @@ table {
 .table th { padding: .5em; }
 .hall { 
 	border: 5px solid brown; 
-	width: 4em; height: 4em; 
+	/* width: 4em; height: 4em;  */
 	z-index: 5;
 }
 .table .floor { 
@@ -116,10 +116,7 @@ td {
 
 
 .player {
-	line-height: 60px;
-	text-align: center;
-}
-.boss {
-	line-height: 60px;
+	font-size: 2.5em;
+	line-height: 70px;
 	text-align: center;
 }

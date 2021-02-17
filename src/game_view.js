@@ -29,10 +29,13 @@ class GameView {
                 let id = (rowIdx).toString() + (colIdx).toString();
                 let ele = document.getElementById(id);
                 if(square.player === "player1") {
-                    ele.innerHTML = "X";
+                    ele.classList.add("player");
+                    ele.innerHTML = "&#9823";
                 } else if(square.player === "player2") {
-                    ele.innerHTML = "O";
+                    ele.classList.add("player");
+                    ele.innerHTML = "&#9817";
                 } else {
+                    ele.classList.remove("player");
                     ele.innerHTML = " ";
                 }
                 /* update walls */
