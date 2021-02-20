@@ -8,7 +8,8 @@ class GameView {
         this.grid = this.board.grid;
         this.squareA = null;
         this.squareB = null;
-        this.neighbors = null;
+        this.neighbors = null;  
+        this.availableMoves = [];
 
         this.setupBoard();
         this.setupEventListeners();
@@ -17,7 +18,8 @@ class GameView {
     show() {
         this.showBoard();
         if (this.game.isOver()) {
-            console.log("WINNER");
+            if (this.game.currentPlayer === "player2") console.log("PLAYER 1 IS THE WINNER");
+            if (this.game.currentPlayer === "player1") console.log("PLAYER 2 IS THE WINNER");
         }
     }
 
@@ -57,6 +59,20 @@ class GameView {
                 }
             }
         }
+        let wallCounters = document.getElementsByClassName("wall-counter");
+        let btn = document.getElementById("Place a wall");
+        wallCounters[0].innerHTML = `player 1 has ${this.game.player1Walls} walls left`
+        wallCounters[1].innerHTML = `player 2 has ${this.game.player2Walls} walls left`
+        if ((this.game.currentPlayer === "player1") && (this.game.player1Walls === 0)) {
+            btn.classList.add("hide");
+        } else if ((this.game.currentPlayer === "player2") && (this.game.player2Walls === 0)){
+            btn.classList.add("hide");
+        } else {
+            if (this.game.state === "not doing anything") {
+                if (btn.classList.contains("hide")) btn.classList.remove("hide");
+            }
+        }
+        document.getElementById("player-turn").innerHTML = `${this.game.currentPlayer}'s turn`;
     }
 
     setupEventListeners() {
@@ -75,30 +91,30 @@ class GameView {
 
         this.body.addEventListener("click", (event) => {
             /* 
-                The click event is used for a state machine.
-                Depending on the state of placing a wall dictates
-                what will happen when a click event triggers.
-                State is stored in this.game.state 
-                State Machine is:
-                [not placing wall] == clicks Place a wall >> [selecting squares] => [selecting wall type] => [not placing wall]
-                                                                                            ||
-                                                                                            \/
-                                                                                        {wall is created}
-                !! undeveloped !!
-                Player movement will be integrated into the state machine as well
-                *** maybe change [not placing wall] to [not doing anything]
+The click event is used for a state machine.
+Depending on the state of placing a wall dictates
+what will happen when a click event triggers.
+State is stored in this.game.state 
+State Machine is:
+[p1 not doing anything] == clicks Place a wall >> [selecting squares] => [selecting wall type] => [p1 not doing anything]
+                                                                            ||
+                                                                            \/
+                                                                        {wall is created} => [p2 not doing anything]
+!! undeveloped !!
+Player movement will be integrated into the state machine as well
+*** maybe change [not doing anything] to [not doing anything]
 
-                [not doing anything] == clicks Move character >> [select desired square]
-                                                                    ||
-                                                                    \/
-                                                                {move player}
+[p1 not doing anything] == clicks Move character >> [selecting desired move] => [p1 not doing anything]
+                                                                ||
+                                                                \/
+                                                            {move player} => [p2 not doing anything]
 
             */ 
 
             let state = this.game.state;
             let classList = event.target.classList;
             let innerHTML = event.target.innerHTML;
-            if (state === "not placing wall") {
+            if (state === "not doing anything") {
                 if (classList.contains("button")) {
                     if(innerHTML === "Place a wall") {
 
@@ -125,6 +141,18 @@ class GameView {
                     }
                 }
             }
+            if (state === "selecting desired move") {
+                if (this.availableMoves.includes(event.target)) {
+                    this.game.takeTurn("move", null, event)
+                    for (let i = 0; i < this.availableMoves.length; i++) {
+                        this.availableMoves[i].classList.remove("highlight");
+                    }
+                    this.game.state = "not doing anything";
+                    this.availableMoves = [];
+                    this.show();
+                } else {
+                }
+            }
         }, false);
     } 
 
@@ -134,6 +162,7 @@ class GameView {
         this.game.state = "selecting squares";
         let btn = event.target;
         this.body.getElementsByClassName("clickInstruct")[0].classList.remove("hide");
+        document.getElementById("Move character").classList.add("hide");
         btn.classList.add("hide");
     }
 
@@ -167,7 +196,6 @@ class GameView {
             this.body.getElementsByClassName("clickInstruct")[0].classList.add("hide");
             
             if(this.squareA.split("")[0] === this.squareB.split("")[0]) {
-                console.log("horizontal");
                 if(this.squareA.split("")[0] > 0) {
                     this.body.getElementsByClassName("north")[0].classList.remove("hide");
                 }
@@ -176,7 +204,6 @@ class GameView {
                 }
             }
             if(this.squareA.split("")[1] === this.squareB.split("")[1]) {
-                console.log("vertical");
                 if(this.squareA.split("")[1] > 0) {
                     this.body.getElementsByClassName("west")[0].classList.remove("hide");
                 }
@@ -193,7 +220,7 @@ class GameView {
         /* 
         calls this.game.takeTurn(action, dir, event);
         should remove wall type buttons and add place a wall button
-        switch state back to not placing wall here???
+        switch state back to not doing anything here???
         or in this.game
         WHERE DOES WALL PLACEMENT VALIDATION HAPPEN??????????????????????
         */
@@ -203,9 +230,10 @@ class GameView {
         this.body.getElementsByClassName("south")[0].classList.add("hide");
         this.body.getElementsByClassName("west")[0].classList.add("hide");
         this.body.getElementsByClassName("button")[0].classList.remove("hide");
+        document.getElementById("Move character").classList.remove("hide");
         this.squareA = null;
         this.squareB = null;
-        this.game.state = "not placing wall";
+        this.game.state = "not doing anything";
         this.show();
     }
 
@@ -214,12 +242,14 @@ class GameView {
         let player = this.game.currentPlayer === "player1" ? this.game.player1 : this.game.player2;
         let rowIdx = parseInt(player[0]);
         let colIdx = parseInt(player[1]);
-        availableMoves = this.board.checkNeighbors([rowIdx, colIdx]);
+        availableMoves = this.game.getAvailableMoves([rowIdx, colIdx]);
         for (let i = 0; i < availableMoves.length; i++) {
-            console.log(availableMoves[i]);
             let ele = document.getElementById(availableMoves[i].join(""));
-            ele.style.backgroundColor = "green";
+            ele.classList.add("highlight");
+            this.availableMoves.push(ele);
         }
+        /* set the state to check if an available move square is clicked. */
+        this.game.state = "selecting desired move";
     }
 
     highlight(array) {
@@ -240,6 +270,7 @@ class GameView {
         let btn = document.createElement("button");
         btn.innerHTML = innerText
         btn.classList.add('button');
+        btn.setAttribute("id", innerText);
         this.body.getElementsByClassName("controller-div")[0].appendChild(btn);
         return btn;
     }
@@ -251,9 +282,26 @@ class GameView {
         div.appendChild(board);
         div.classList.add("table");
         board.setAttribute("id" , "board");
+        let whosTurn = document.createElement("div");
+        whosTurn.classList.add("player-turn");
+        whosTurn.setAttribute("id", "player-turn");
+        whosTurn.innerHTML = "Player 1's Turn";
+        div.appendChild(whosTurn);
         let cntrlDiv = document.createElement("div");
         cntrlDiv.classList.add("controller-div");
         div.appendChild(cntrlDiv);
+        let wallCounterDiv = document.createElement("div");
+        wallCounterDiv.classList.add("wall-counter-div");
+        wallCounterDiv.setAttribute("id", "wall-counter");
+        let player1Walls = document.createElement("div");
+        let player2Walls = document.createElement("div");
+        player1Walls.classList.add("wall-counter");
+        player2Walls.classList.add("wall-counter");
+        player1Walls.innerHTML = "player 1 has 10 walls left";
+        player2Walls.innerHTML = "player 2 has 10 walls left";
+        wallCounterDiv.appendChild(player1Walls);
+        wallCounterDiv.appendChild(player2Walls);
+        div.appendChild(wallCounterDiv);
 
         //build walls button
         this.createButton("Place a wall");

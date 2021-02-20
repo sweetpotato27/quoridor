@@ -35,10 +35,10 @@ class Board {
         let neighbors = [];
         let colIdx = square[1];
         let rowIdx  = square[0];
-        if (rowIdx - 1 >= 0) neighbors.push([rowIdx - 1, colIdx]);  // north
-        if (colIdx + 1 <= 8) neighbors.push([rowIdx, colIdx + 1]);  // east
-        if (rowIdx + 1 <= 8) neighbors.push([rowIdx + 1, colIdx]);  // south
-        if (colIdx - 1 >= 0) neighbors.push([rowIdx, colIdx - 1]);  // west
+        (rowIdx - 1 >= 0) ? neighbors.push([rowIdx - 1, colIdx]) : neighbors.push([-1, -1]);  // north
+        (rowIdx + 1 <= 8) ? neighbors.push([rowIdx + 1, colIdx]) : neighbors.push([-1, -1]);  // south
+        (colIdx - 1 >= 0) ? neighbors.push([rowIdx, colIdx - 1]) : neighbors.push([-1, -1]);  // west
+        (colIdx + 1 <= 8) ? neighbors.push([rowIdx, colIdx + 1]) : neighbors.push([-1, -1]);  // east
         return neighbors;
     }
 
