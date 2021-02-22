@@ -30,6 +30,11 @@ article, aside, details, figcaption, figure,
 footer, header, hgroup, menu, nav, section {
 	display: block;
 }
+
+html {
+	background: #4D618B;
+}
+
 body {
 	line-height: 1;
 	display: flex;
@@ -50,6 +55,10 @@ q:before, q:after {
 /*
 */
 
+table {
+	margin-top: 20px;
+}
+
 .hide {
 	display: none;
 }
@@ -61,22 +70,22 @@ table {
 	border-spacing: 1;
 }
 .wall-top {
-	border-top: 5px solid #000;
+	border-top: 5px solid #FFB000;
 	z-index: 9;
 }
 
 .wall-bottom {
-	border-bottom: 5px solid #000;
+	border-bottom: 5px solid #FFB000;
 	z-index: 9;
 }
 
 .wall-right {
-	border-right: 5px solid #000;
+	border-right: 5px solid #FFB000;
 	z-index: 9;
 }
 
 .wall-left {
-	border-left: 5px solid #000;
+	border-left: 5px solid #FFB000;
 	z-index: 9;
 }
 
@@ -88,7 +97,7 @@ table {
 }
 .table th { padding: .5em; }
 .hall { 
-	border: 5px solid brown; 
+	/* border: 5px solid #3A638E;  */
 	/* width: 4em; height: 4em;  */
 	z-index: 5;
 }
@@ -97,14 +106,12 @@ table {
 	margin: 1px;
 }
 
-.table td:hover {
-	background: lightcoral;
-}
 
 td {
 	width: 74px;
 	height: 74px;
-	background: brown; 
+	border: 5px solid #4D618B;
+	background: #7686A8; 
 }
 
 .button {
@@ -124,7 +131,10 @@ td {
 }
 
 .highlight {
-	background: green;
+	background: #8DBB5E;
+}
+.highlight:hover{
+	background: #BDE297;
 }
 
 .player-turn {

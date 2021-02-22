@@ -93,6 +93,7 @@ class Board {
             if (goal.includes(id)) {
                 let path = [];
                 path = this.traverseHashmap(hashmap, v.join(""));
+                path.push(v.join(""));
                 return [v.join(""), path];
             }
             // finding all possible directions

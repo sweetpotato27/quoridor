@@ -24,6 +24,122 @@ class Game {
         }
     }
 
+    computerAiTurn() {
+        if(this.currentPlayer === "player2") {
+            let p2Path = this.board.bfs(this.player2, ["80","81","82","83","84","85","86","87","88"])
+            let p1Path = this.board.bfs(this.player1);
+            let random = Math.floor(Math.random() * 2);
+            console.log(random);
+            if ((p1Path[1].length <= p2Path[1].length) && (this.player2Walls > 0)) {
+                console.log("placing wall");
+                console.log("path => ", p1Path);
+                /* place wall if player1 is closer to goal */
+                for(let i = 0; i < p1Path[1].length; i++) {
+                    let rowIdx = p1Path[1][i].split("")[0];
+                    let colIdx = p1Path[1][i].split("")[1];   
+                    let nextRowIdx = p1Path[1][i + 1].split("")[0];
+                    let nextColIdx = p1Path[1][i + 1].split("")[1];
+                    let placedWall = false;
+                    let squareA = [parseInt(nextRowIdx), parseInt(nextColIdx)];
+                    let squareNeighbors = this.board.checkNeighbors(squareA);
+                    console.log("neighbors => ", squareNeighbors);
+                    let squareB;
+                    /* 
+                    left and up 
+                    placeWall(dir, event, squareA, squareB)
+                    dir = North, South, East, West
+                    event = null
+                    squareA = [rowIdx, colIdx]
+                    squareB = [rowIdx, colIdx]
+                    */
+                    console.log("row => ", rowIdx, nextRowIdx);
+                    console.log("col => ", colIdx, nextColIdx);
+                    if(colIdx === nextColIdx) {
+                        /*
+                        path is moving up or down
+                        check neighbors and set squareB to a valid one
+                        neighbors = [north, south, west, east]
+                        use random if you want
+                        squareA = next best pos of player1 (opponent)
+                        squareB = square to the west of squareA
+                         */
+                        if(random === 0) {
+                            if (squareNeighbors[2][0] !== -1) {
+                                squareB = squareNeighbors[2];
+                            } else {
+                                squareB = squareNeighbors[3];
+                            }
+                        } else {
+                            if (squareNeighbors[3][0] !== -1) {
+                                squareB = squareNeighbors[3];
+                            } else {
+                                squareB = squareNeighbors[2];
+                            }
+                        }
+                        console.log("squares => ", squareA, squareB);
+                        placedWall = this.placeWall("South", null, squareA, squareB);
+                        console.log("placedwall => ", placedWall);
+                        if (placedWall === true) {
+                            console.log("breaking");
+                            break;
+                        } else {
+                            // placedWall = this.placeWall("North", null, squareA, squareB);
+                            // console.log("placedwall => ", placedWall);
+                            // if (placedWall === true) {
+                            //     console.log("breaking");
+                            //     break;
+                            // } else {
+                            //     console.log("how did i end up here");
+                            // }
+                        }
+                    }
+                    if (rowIdx === nextRowIdx) {
+
+                        if(random === 0) {
+                            if (squareNeighbors[0][0] !== -1) {
+                                squareB = squareNeighbors[0];
+                            } else {
+                                squareB = squareNeighbors[1];
+                            }
+                        } else {
+                            if (squareNeighbors[1][0] !== -1) {
+                                squareB = squareNeighbors[1];
+                            } else {
+                                squareB = squareNeighbors[0];
+                            }
+                        }
+
+                        if (colIdx > nextColIdx) {
+                            console.log(squareA, squareB);
+                            placedWall = this.placeWall("East", null, squareA, squareB);
+                            console.log("placedwall => ", placedWall);
+                            if (placedWall === true) {
+                                console.log("breaking")
+                                break;
+                            }
+                        } else {
+                            console.log(squareA, squareB);
+                            placedWall = this.placeWall("West", null, squareA, squareB);
+                            console.log("placedwall => ", placedWall);
+                            if (placedWall === true) {
+                                console.log("breaking")
+                                break;
+                            }
+                        }
+                    }
+                }
+
+            } else {
+                /* move player2 towards goal */
+                let rowIdx = p2Path[1][1].split("")[0];
+                let colIdx = p2Path[1][1].split("")[1];
+                let nextMove = [rowIdx, colIdx];
+                this.movePlayer(nextMove);
+            }
+        }
+        console.log("END OF AI TURN");
+    }
+
     winner() {
         let winner = null;
         for(let i = 0; i < this.grid[0].length; i++) {
@@ -69,6 +185,12 @@ class Game {
         get neighbors and sset specific walls to true... opposite wall
         squarePos = this.grid[rowIdx, colIdx]
         */
+
+
+        if(squareA[0] > 8 || squareA[0] < 0 || squareB[0] > 8 || squareB[0] < 0
+            || squareA[1] > 8 || squareA[1] < 0 || squareB[1] > 8 || squareB[1] < 0) {
+                return false;
+        }
         let sqrA = this.grid[squareA[0]][squareA[1]];
         let sqrB = this.grid[squareB[0]][squareB[1]];
         let neighborsA = this.board.checkNeighbors([sqrA.rowIdx, sqrA.colIdx]);
@@ -89,11 +211,13 @@ class Game {
                     if (this.currentPlayer === "player1") this.player1Walls = this.player1Walls - 1;
                     if (this.currentPlayer === "player2") this.player2Walls = this.player2Walls - 1;
                     this.swapTurn();
+                    return true;
                 } else {
                     sqrA.walls.North = false;
                     sqrB.walls.North = false;
                     this.grid[neighborsA[0][0]][neighborsA[0][1]].walls.South = false;
                     this.grid[neighborsB[0][0]][neighborsB[0][1]].walls.South = false;
+                    
                 }
             }
             if(dir === "East" && (!sqrA.walls.East && !sqrB.walls.East)){
@@ -107,11 +231,13 @@ class Game {
                     if (this.currentPlayer === "player1") this.player1Walls = this.player1Walls - 1;
                     if (this.currentPlayer === "player2") this.player2Walls = this.player2Walls - 1;
                     this.swapTurn();
+                    return true;
                 } else {
                     sqrA.walls.East = false;
                     sqrB.walls.East = false;
                     this.grid[neighborsA[3][0]][neighborsA[3][1]].walls.West = false;
                     this.grid[neighborsB[3][0]][neighborsB[3][1]].walls.West = false;
+                    
                 }
             }
             if(dir === "South" && (!sqrA.walls.South && !sqrB.walls.South)){
@@ -125,11 +251,13 @@ class Game {
                     if (this.currentPlayer === "player1") this.player1Walls = this.player1Walls - 1;
                     if (this.currentPlayer === "player2") this.player2Walls = this.player2Walls - 1;
                     this.swapTurn();
+                    return true;
                 } else {
                     sqrA.walls.South = false;
                     sqrB.walls.South = false;
                     this.grid[neighborsA[1][0]][neighborsA[1][1]].walls.North = false;
                     this.grid[neighborsB[1][0]][neighborsB[1][1]].walls.North = false;
+                    
                 }
             }
             if(dir === "West" && (!sqrA.walls.West && !sqrB.walls.West)){
@@ -143,14 +271,17 @@ class Game {
                     if (this.currentPlayer === "player1") this.player1Walls = this.player1Walls - 1;
                     if (this.currentPlayer === "player2") this.player2Walls = this.player2Walls - 1;
                     this.swapTurn();
+                    return true;
                 } else {
                     sqrA.walls.West = false;
                     sqrB.walls.West = false;
                     this.grid[neighborsA[2][0]][neighborsA[2][1]].walls.East = false;
                     this.grid[neighborsB[2][0]][neighborsB[2][1]].walls.East = false;
+                    
                 }
             }
         }
+        return false;
     }
 
     movePlayer(dir) {

@@ -16,6 +16,7 @@ class GameView {
     }
 
     show() {
+        this.game.computerAiTurn();
         this.showBoard();
         if (this.game.isOver()) {
             if (this.game.currentPlayer === "player2") console.log("PLAYER 1 IS THE WINNER");
@@ -32,10 +33,10 @@ class GameView {
                 let ele = document.getElementById(id);
                 if(square.player === "player1") {
                     ele.classList.add("player");
-                    ele.innerHTML = "&#9823";
+                    ele.innerHTML = "&#x265F";
                 } else if(square.player === "player2") {
                     ele.classList.add("player");
-                    ele.innerHTML = "&#9817";
+                    ele.innerHTML = "&#x2659";
                 } else {
                     ele.classList.remove("player");
                     ele.innerHTML = " ";
@@ -182,6 +183,9 @@ Player movement will be integrated into the state machine as well
             this.neighbors = this.board.checkNeighbors(square);
             // for(let i = 0; i < this.neighbors.length; i++) {
             //     this.neighbors[i] = this.neighbors[i][0].toString() + this.neighbors[i][1].toString();
+            // }
+            // for(let i = 0; i < this.neighbors.length; i++) {
+            //     document.getElementById(this.neighbors[i].join("")).classList.add("highlight");
             // }
             this.highlight(this.neighbors);  // NEED TO CHANGE  SHOULD BE A CLASS TOGGLE
 
