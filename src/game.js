@@ -131,10 +131,18 @@ class Game {
 
             } else {
                 /* move player2 towards goal */
+                let currRow = p2Path[1][0].split("")[0];
+                let currCol = p2Path[1][0].split("")[1];
                 let rowIdx = p2Path[1][1].split("")[0];
                 let colIdx = p2Path[1][1].split("")[1];
                 let nextMove = [rowIdx, colIdx];
-                this.movePlayer(nextMove);
+                let moves = this.getAvailableMoves([parseInt(currRow), parseInt(currCol)]);
+                for (let i = 0; i < moves.length; i++) {
+                    let move = moves[i].join("");
+                    if (p2Path[1].includes(move)){
+                        this.movePlayer(moves[i]);
+                    }
+                }
             }
         }
         console.log("END OF AI TURN");
@@ -343,6 +351,8 @@ class Game {
     }
 
     getAvailableMoves(pos) {
+        /* pos = [row, col] */
+        console.log(pos);
         let player = this.currentPlayer === "player1" ? this.player1 : this.player2;
         let opponent = this.currentPlayer === "player1" ? this.player2 : this.player1;
         let moves = [];
