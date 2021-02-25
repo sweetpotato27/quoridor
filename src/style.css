@@ -148,3 +148,25 @@ td {
 .wall-counter {
 	margin: auto;
 }
+
+#restart-div {
+	position: fixed;
+	display: flex;
+	flex-direction: column;
+	font-size: 2em;
+	padding: 15px;
+	margin: 200px;
+	background-color: white;
+	width: 400px;
+	height: 200px;
+}
+
+#restart-div h1 {
+	margin: 10px auto;
+}
+
+#restart-div button {
+	margin: auto;
+	width: 30%;
+	height: 15%;
+}

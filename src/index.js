@@ -30,7 +30,6 @@ document.addEventListener("DOMContentLoaded", function () {
     let gameView = new GameView(game);
     game.start();
     gameView.show();
-
 });
 
 

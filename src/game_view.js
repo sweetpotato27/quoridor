@@ -1,5 +1,4 @@
 
-
 class GameView {
     constructor(game) {
         this.body = document.querySelector("body");
@@ -19,8 +18,17 @@ class GameView {
         this.game.computerAiTurn();
         this.showBoard();
         if (this.game.isOver()) {
-            if (this.game.currentPlayer === "player2") console.log("PLAYER 1 IS THE WINNER");
-            if (this.game.currentPlayer === "player1") console.log("PLAYER 2 IS THE WINNER");
+            let winner = "";
+            if (this.game.currentPlayer === "player2") winner = "Player 1";
+            if (this.game.currentPlayer === "player1") winner = "Player 2";
+            let table = document.getElementsByClassName("table")[0];
+            this.createRestartDiv(table, winner);
+            this.game.currentPlayer = "noone";
+            this.showBoard();
+            // table.remove();
+            let restart = document.createElement("div");
+
+            // location.reload();
         }
     }
 
@@ -61,7 +69,7 @@ class GameView {
             }
         }
         let wallCounters = document.getElementsByClassName("wall-counter");
-        let btn = document.getElementById("Place a wall");
+        let btn = document.getElementById("place");
         wallCounters[0].innerHTML = `player 1 has ${this.game.player1Walls} walls left`
         wallCounters[1].innerHTML = `player 2 has ${this.game.player2Walls} walls left`
         if ((this.game.currentPlayer === "player1") && (this.game.player1Walls === 0)) {
@@ -145,6 +153,7 @@ Player movement will be integrated into the state machine as well
             if (state === "selecting desired move") {
                 if (this.availableMoves.includes(event.target)) {
                     this.game.takeTurn("move", null, event)
+                    document.getElementById("back").classList.add("hide");
                     for (let i = 0; i < this.availableMoves.length; i++) {
                         this.availableMoves[i].classList.remove("highlight");
                     }
@@ -154,69 +163,85 @@ Player movement will be integrated into the state machine as well
                 } else {
                 }
             }
+            if (state !== "not doing anything") {
+                if (classList.contains("button")) {
+                    if (innerHTML === "back") {
+                        this.handleBackButton();
+                    }
+                }
+            }
+            if (innerHTML === "Restart") {
+                location.reload();
+            }
+
         }, false);
     } 
 
     handlePlaceWallButton(event) {
         // delete btn element and replace with instructions to
         // click two distinct squares
-        this.game.state = "selecting squares";
-        let btn = event.target;
-        this.body.getElementsByClassName("clickInstruct")[0].classList.remove("hide");
-        document.getElementById("Move character").classList.add("hide");
-        btn.classList.add("hide");
+        if (this.game.currentPlayer !== "noone") {
+            this.game.state = "selecting squares";
+            let btn = event.target;
+            document.getElementById("back").classList.remove("hide");
+            this.body.getElementsByClassName("clickInstruct")[0].classList.remove("hide");
+            document.getElementById("move").classList.add("hide");
+            btn.classList.add("hide");
+        }
     }
 
     handleSquareClick(event) {
-        //wait for client to click two valid squares
-        let target = event.target;
-
-        if ((target.classList.contains("floor")) && (this.squareA === null)) {
-            this.squareA = target.id;
-            //parse squareA
-            // squareA = "00" and needs to be [0, 0]
-            let square = this.squareA.split("");
-            square[0] = parseInt(square[0]);
-            square[1] = parseInt(square[1]);
-            //get neighbors
-            // returns [[north],[east],[south],[west]]
-            this.neighbors = this.board.checkNeighbors(square);
-            // for(let i = 0; i < this.neighbors.length; i++) {
-            //     this.neighbors[i] = this.neighbors[i][0].toString() + this.neighbors[i][1].toString();
-            // }
-            // for(let i = 0; i < this.neighbors.length; i++) {
-            //     document.getElementById(this.neighbors[i].join("")).classList.add("highlight");
-            // }
-            this.highlight(this.neighbors);  // NEED TO CHANGE  SHOULD BE A CLASS TOGGLE
-
-        } else if ((target.classList.contains("floor")) && (this.squareA !== null) && (this.squareB === null)) {
-            if(!!this.neighbors.includes(target.id)) {
-                this.squareB = target.id;
-            }
-        }
-
-        if (this.squareA !== null && this.squareB !== null) {
-            // should create two buttons depending on squareA and squareB orientation
-            this.body.getElementsByClassName("clickInstruct")[0].classList.add("hide");
-            
-            if(this.squareA.split("")[0] === this.squareB.split("")[0]) {
-                if(this.squareA.split("")[0] > 0) {
-                    this.body.getElementsByClassName("north")[0].classList.remove("hide");
-                }
-                if(this.squareA.split("")[0] < 8) {
-                    this.body.getElementsByClassName("south")[0].classList.remove("hide");
+        if (this.game.currentPlayer !== "noone") {
+            //wait for client to click two valid squares
+            let target = event.target;
+    
+            if ((target.classList.contains("floor")) && (this.squareA === null)) {
+                this.squareA = target.id;
+                //parse squareA
+                // squareA = "00" and needs to be [0, 0]
+                let square = this.squareA.split("");
+                square[0] = parseInt(square[0]);
+                square[1] = parseInt(square[1]);
+                //get neighbors
+                // returns [[north],[east],[south],[west]]
+                this.neighbors = this.board.checkNeighbors(square);
+                // for(let i = 0; i < this.neighbors.length; i++) {
+                //     this.neighbors[i] = this.neighbors[i][0].toString() + this.neighbors[i][1].toString();
+                // }
+                // for(let i = 0; i < this.neighbors.length; i++) {
+                //     document.getElementById(this.neighbors[i].join("")).classList.add("highlight");
+                // }
+                this.highlight(this.neighbors);  // NEED TO CHANGE  SHOULD BE A CLASS TOGGLE
+    
+            } else if ((target.classList.contains("floor")) && (this.squareA !== null) && (this.squareB === null)) {
+                if(!!this.neighbors.includes(target.id)) {
+                    this.squareB = target.id;
                 }
             }
-            if(this.squareA.split("")[1] === this.squareB.split("")[1]) {
-                if(this.squareA.split("")[1] > 0) {
-                    this.body.getElementsByClassName("west")[0].classList.remove("hide");
+    
+            if (this.squareA !== null && this.squareB !== null) {
+                // should create two buttons depending on squareA and squareB orientation
+                this.body.getElementsByClassName("clickInstruct")[0].classList.add("hide");
+                
+                if(this.squareA.split("")[0] === this.squareB.split("")[0]) {
+                    if(this.squareA.split("")[0] > 0) {
+                        this.body.getElementsByClassName("north")[0].classList.remove("hide");
+                    }
+                    if(this.squareA.split("")[0] < 8) {
+                        this.body.getElementsByClassName("south")[0].classList.remove("hide");
+                    }
                 }
-                if(this.squareA.split("")[1] < 8) {
-                    this.body.getElementsByClassName("east")[0].classList.remove("hide");
+                if(this.squareA.split("")[1] === this.squareB.split("")[1]) {
+                    if(this.squareA.split("")[1] > 0) {
+                        this.body.getElementsByClassName("west")[0].classList.remove("hide");
+                    }
+                    if(this.squareA.split("")[1] < 8) {
+                        this.body.getElementsByClassName("east")[0].classList.remove("hide");
+                    }
                 }
+                this.game.state = "selecting wall type";
+                
             }
-            this.game.state = "selecting wall type";
-            
         }
     }
 
@@ -234,7 +259,8 @@ Player movement will be integrated into the state machine as well
         this.body.getElementsByClassName("south")[0].classList.add("hide");
         this.body.getElementsByClassName("west")[0].classList.add("hide");
         this.body.getElementsByClassName("button")[0].classList.remove("hide");
-        document.getElementById("Move character").classList.remove("hide");
+        document.getElementById("back").classList.add("hide");
+        document.getElementById("move").classList.remove("hide");
         this.squareA = null;
         this.squareB = null;
         this.game.state = "not doing anything";
@@ -242,18 +268,43 @@ Player movement will be integrated into the state machine as well
     }
 
     handleMovementButton(event) {
-        let availableMoves;
-        let player = this.game.currentPlayer === "player1" ? this.game.player1 : this.game.player2;
-        let rowIdx = parseInt(player[0]);
-        let colIdx = parseInt(player[1]);
-        availableMoves = this.game.getAvailableMoves([rowIdx, colIdx]);
-        for (let i = 0; i < availableMoves.length; i++) {
-            let ele = document.getElementById(availableMoves[i].join(""));
-            ele.classList.add("highlight");
-            this.availableMoves.push(ele);
+        if(this.game.currentPlayer !== "noone") {
+            document.getElementById("back").classList.remove("hide");
+            document.getElementById("place").classList.add("hide");
+            let availableMoves;
+            let player = this.game.currentPlayer === "player1" ? this.game.player1 : this.game.player2;
+            let rowIdx = parseInt(player[0]);
+            let colIdx = parseInt(player[1]);
+            availableMoves = this.game.getAvailableMoves([rowIdx, colIdx]);
+            for (let i = 0; i < availableMoves.length; i++) {
+                let ele = document.getElementById(availableMoves[i].join(""));
+                ele.classList.add("highlight");
+                this.availableMoves.push(ele);
+            }
+            /* set the state to check if an available move square is clicked. */
+            this.game.state = "selecting desired move";
         }
-        /* set the state to check if an available move square is clicked. */
-        this.game.state = "selecting desired move";
+    }
+
+    handleBackButton() {
+        this.game.state = "not doing anything";
+        /* resets state */
+        let instructions = document.getElementsByClassName("controller-div")[0].childNodes;
+        for (let i = 0; i < instructions.length; i++) {
+            if (instructions[i].id === "place" || instructions[i].id === "move") {
+                instructions[i].classList.remove("hide");
+            } else {
+                instructions[i].classList.add("hide");
+            }
+        }
+        this.squareA = null;
+        this.squareB = null;
+        this.neighbors = null;  
+        for (let i = 0; i < this.availableMoves.length; i++){
+            this.availableMoves[i].classList.remove("highlight");
+        }
+        this.availableMoves = [];
+        this.show();
     }
 
     highlight(array) {
@@ -274,9 +325,32 @@ Player movement will be integrated into the state machine as well
         let btn = document.createElement("button");
         btn.innerHTML = innerText
         btn.classList.add('button');
-        btn.setAttribute("id", innerText);
+        if (innerText === "Place a wall") {
+            btn.setAttribute("id", "place");
+        } else if (innerText === "Move character") {
+            btn.setAttribute("id", "move");
+        } else {
+            btn.setAttribute("id", innerText);
+        }
         this.body.getElementsByClassName("controller-div")[0].appendChild(btn);
         return btn;
+    }
+
+    createRestartDiv(board, winner) {
+        let div = document.createElement("div");
+        let congrats = document.createElement("h1");
+        // let instruct = document.createElement("span");
+        let btn = document.createElement("button");
+        div.setAttribute("id", "restart-div");
+        btn.setAttribute("id", "restart");
+        congrats.innerHTML = `Congrats to ${winner}!!!!`;
+        // instruct.innerHTML = "Click button to restart the game."
+        btn.innerHTML = "Restart"
+
+        div.appendChild(congrats);
+        // div.appendChild(instruct);
+        div.appendChild(btn);
+        board.appendChild(div);
     }
 
     setupBoard() {
@@ -331,6 +405,11 @@ Player movement will be integrated into the state machine as well
         cntrlDiv.appendChild(south);
         cntrlDiv.appendChild(west);
         cntrlDiv.appendChild(east);
+
+        /* back button */
+        let back = this.createButton("back");
+        back.classList.add("hide");
+        cntrlDiv.appendChild(back);
 
         for(let rowIdx = 0; rowIdx < 10; rowIdx++) {
             let tr = document.createElement("tr");
