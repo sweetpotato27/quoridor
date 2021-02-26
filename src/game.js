@@ -1,7 +1,6 @@
-const MoveError = require("./moveError");
-const Board = require("./board");
+import Board from "./board";
 
-class Game {
+export default class Game {
     constructor() {
         this.board = new Board();
         this.grid = this.board.grid;
@@ -488,5 +487,3 @@ class Game {
     }
 
 }
-
-module.exports = Game;

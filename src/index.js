@@ -1,15 +1,19 @@
-import _, { throttle } from 'lodash';
+// import _, { throttle } from 'lodash';
 import './style.css';
 import Icon from './icon.png';
-const GameView = require("./game_view");
-const Game = require("./game");
+import GameView from "./game_view";
+import Game from "./game";
+const app = require('express')();
+const http = require('http').createServer(app);
 
-// const readline = require('readline');
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + '/dist/index.html');
+});
 
-// const reader = readline.createInterface({
-//     input: process.stdin,
-//     output: process.stdout
-// });
+http.listen(8080, () => {
+    console.log('listening on *:8080');
+})
+
 function iconComponent() {
     
     // Add the image to our existing div.
@@ -22,6 +26,7 @@ function iconComponent() {
 }
 
 document.head.appendChild(iconComponent());
+
 
 
 document.addEventListener("DOMContentLoaded", function () {

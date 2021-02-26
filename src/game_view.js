@@ -1,5 +1,4 @@
-
-class GameView {
+export default class GameView {
     constructor(game) {
         this.body = document.querySelector("body");
         this.game = game;
@@ -435,5 +434,3 @@ Player movement will be integrated into the state machine as well
         }
     }
 }
-
-module.exports = GameView;

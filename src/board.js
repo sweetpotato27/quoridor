@@ -1,7 +1,6 @@
-const MoveError = require("./moveError");
-const Square = require("./square");
+import Square from "./square";
 
-class Board {
+export default class Board {
     constructor() {
         this.width = 9;
         this.height = 9;
@@ -177,5 +176,3 @@ class Board {
     }
 
 }
-
-module.exports = Board;

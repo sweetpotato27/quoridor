@@ -1,4 +1,4 @@
-class Square {
+export default class Square {
     constructor(colIdx, rowIdx) {
         this.walls = {
             North: false,
@@ -38,5 +38,3 @@ class Square {
     //     bool ? this.walls.West = bool : this.walls.West = !bool;
     // }
 }
-
-module.exports = Square;
