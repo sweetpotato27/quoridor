@@ -6,9 +6,11 @@ export default class Board {
         this.height = 9;
         this.grid = Board.makeGrid(this.width, this.height);
         this.winner = false;
+        this.util;
     }
 
     setPlayers(player1, p1Pos, player2, p2Pos) {
+        this.util.trackFunctions("setPlayers");
         /* p1Pos & p2Pos = [row, col] */
         let gridSquare2 = this.grid[p2Pos[0]][p2Pos[1]];
         let gridSquare1 = this.grid[p1Pos[0]][p1Pos[1]];
@@ -27,6 +29,7 @@ export default class Board {
     }
 
     checkNeighbors(square) {
+        this.util.trackFunctions("checkNeighbors");
         /* 
         requires [[num][num]] 
         square = [rowIdx, colIdx]
@@ -42,6 +45,7 @@ export default class Board {
     }
 
     isWalled(dir, rowIdx, colIdx) {
+        this.util.trackFunctions("isWalled");
         /* 
          returns true if path is blocked by wall
          returns false if path is free
@@ -72,6 +76,7 @@ export default class Board {
 
 
     bfs(root, goal = ["00","01","02","03","04","05","06","07","08"]) {
+        this.util.trackFunctions("bfs");
         /* 
         root === [rowIdx, colIdx]
 
@@ -142,6 +147,7 @@ export default class Board {
     }
 
     traverseHashmap(hash, start) {
+        this.util.trackFunctions("traverseHashmap");
         let node = hash.get(start);
         let path = [];
         while (node) {

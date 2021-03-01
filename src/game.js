@@ -11,11 +11,14 @@ export default class Game {
         this.player1Walls = 10;
         this.player2Walls = 10;
         this.state = "not doing anything";
+        this.util;
+        
 
         this.movePlayer = this.movePlayer.bind(this);
     }
 
     isOver() {
+        this.util.trackFunctions("isOver");
         if (this.winner() !== null) {
             return true;
         } else {
@@ -24,14 +27,12 @@ export default class Game {
     }
 
     computerAiTurn() {
+        this.util.trackFunctions("computerAiTurn");
         if(this.currentPlayer === "player2") {
             let p2Path = this.board.bfs(this.player2, ["80","81","82","83","84","85","86","87","88"])
             let p1Path = this.board.bfs(this.player1);
             let random = Math.floor(Math.random() * 2);
-            console.log(random);
             if ((p1Path[1].length <= p2Path[1].length) && (this.player2Walls > 0)) {
-                console.log("placing wall");
-                console.log("path => ", p1Path);
                 /* place wall if player1 is closer to goal */
                 for(let i = 0; i < p1Path[1].length; i++) {
                     let rowIdx = p1Path[1][i].split("")[0];
@@ -41,7 +42,6 @@ export default class Game {
                     let placedWall = false;
                     let squareA = [parseInt(nextRowIdx), parseInt(nextColIdx)];
                     let squareNeighbors = this.board.checkNeighbors(squareA);
-                    console.log("neighbors => ", squareNeighbors);
                     let squareB;
                     /* 
                     left and up 
@@ -51,8 +51,6 @@ export default class Game {
                     squareA = [rowIdx, colIdx]
                     squareB = [rowIdx, colIdx]
                     */
-                    console.log("row => ", rowIdx, nextRowIdx);
-                    console.log("col => ", colIdx, nextColIdx);
                     if(colIdx === nextColIdx) {
                         /*
                         path is moving up or down
@@ -75,21 +73,10 @@ export default class Game {
                                 squareB = squareNeighbors[2];
                             }
                         }
-                        console.log("squares => ", squareA, squareB);
-                        placedWall = this.placeWall("South", null, squareA, squareB);
-                        console.log("placedwall => ", placedWall);
+                        placedWall = this.placeWall("South", squareA, squareB);
                         if (placedWall === true) {
-                            console.log("breaking");
                             break;
                         } else {
-                            // placedWall = this.placeWall("North", null, squareA, squareB);
-                            // console.log("placedwall => ", placedWall);
-                            // if (placedWall === true) {
-                            //     console.log("breaking");
-                            //     break;
-                            // } else {
-                            //     console.log("how did i end up here");
-                            // }
                         }
                     }
                     if (rowIdx === nextRowIdx) {
@@ -109,19 +96,13 @@ export default class Game {
                         }
 
                         if (colIdx > nextColIdx) {
-                            console.log(squareA, squareB);
-                            placedWall = this.placeWall("East", null, squareA, squareB);
-                            console.log("placedwall => ", placedWall);
+                            placedWall = this.placeWall("East", squareA, squareB);
                             if (placedWall === true) {
-                                console.log("breaking")
                                 break;
                             }
                         } else {
-                            console.log(squareA, squareB);
-                            placedWall = this.placeWall("West", null, squareA, squareB);
-                            console.log("placedwall => ", placedWall);
+                            placedWall = this.placeWall("West", squareA, squareB);
                             if (placedWall === true) {
-                                console.log("breaking")
                                 break;
                             }
                         }
@@ -132,9 +113,6 @@ export default class Game {
                 /* move player2 towards goal */
                 let currRow = p2Path[1][0].split("")[0];
                 let currCol = p2Path[1][0].split("")[1];
-                let rowIdx = p2Path[1][1].split("")[0];
-                let colIdx = p2Path[1][1].split("")[1];
-                let nextMove = [rowIdx, colIdx];
                 let moves = this.getAvailableMoves([parseInt(currRow), parseInt(currCol)]);
                 for (let i = 0; i < moves.length; i++) {
                     let move = moves[i].join("");
@@ -144,13 +122,12 @@ export default class Game {
                 }
             }
         }
-        console.log("END OF AI TURN");
     }
 
     winner() {
+        this.util.trackFunctions("winner");
         let winner = null;
         for(let i = 0; i < this.grid[0].length; i++) {
-            // document.getElementById(`${i + 1}1`).style.backgroundColor = "green";
             if(this.grid[0][i].player === "player1") {
                 winner = "player1"
             }
@@ -162,30 +139,23 @@ export default class Game {
     }
 
     takeTurn(action, dir = null, event, squareA = null, squareB = null) {
+        this.util.trackFunctions("takeTurn");
         // movement or wall placement?
 
         if (action === "move") {
-            if((dir === "up") || (dir === "right") || (dir === "down") || (dir === "left")) {
-                this.movePlayer(dir);
-            }
             if(dir === null) {
                 this.movePlayer(event.target.id.split(""));
             }
         }
 
         if (action === "placeWall") {
-            // calls this.placeWall()
-            this.placeWall(dir, event, squareA, squareB);
-            //    the previous solution to placing walls seems bloated but once its implemented its fluid...
-            //    I am thinking of having the place wall button morph into a north east south west button...
-            //       might be better if client selects the cells they wish to place a wall before button morphs
-            //       that way only north south or east west buttons will spawn
-            //    selecting cells will be fluid with mouse click or less fluid with key pressing coordinates
+            this.placeWall(dir, squareA, squareB);
         }
 
     }
 
-    placeWall(dir, event, squareA, squareB) {
+    placeWall(dir, squareA, squareB) {
+        this.util.trackFunctions("placeWall");
         /*
         squareA & squareB = [rowIdx, colIdx]
         get Square and set the specific walls to true 
@@ -292,6 +262,7 @@ export default class Game {
     }
 
     movePlayer(dir) {
+        this.util.trackFunctions("movePlayer");
         // takes current player current pos
         // calculates future pos with dir
         let player;
@@ -300,22 +271,9 @@ export default class Game {
         let newRowIdx;
         let isWalled;
         let isValid;
-        if (dir === "up") {
-            newColIdx = player[1];
-            newRowIdx = player[0] - 1;
-        } else if (dir === "right") {
-            newColIdx = player[1] + 1;
-            newRowIdx = player[0];
-        } else if (dir === "down") {
-            newColIdx = player[1];
-            newRowIdx = player[0] + 1;
-        } else if (dir === "left") {
-            newColIdx = player[1] - 1;
-            newRowIdx = player[0];
-        } else {
-            newRowIdx = parseInt(dir[0]);
-            newColIdx = parseInt(dir[1]);
-        }
+    
+        newRowIdx = parseInt(dir[0]);
+        newColIdx = parseInt(dir[1]);
 
         /*
         The below validation no longer works for clicking movement.  
@@ -350,8 +308,8 @@ export default class Game {
     }
 
     getAvailableMoves(pos) {
+        this.util.trackFunctions("getAvailableMoves");
         /* pos = [row, col] */
-        console.log(pos);
         let player = this.currentPlayer === "player1" ? this.player1 : this.player2;
         let opponent = this.currentPlayer === "player1" ? this.player2 : this.player1;
         let moves = [];
@@ -459,6 +417,7 @@ export default class Game {
 
 
     setPlayerPos(player, pos) {
+        this.util.trackFunctions("setPlayerPos");
         if (player === "player1") {
             this.player1 = pos;
         } else if (player === "player2") {
@@ -467,11 +426,13 @@ export default class Game {
     }
 
     start() {
+        this.util.trackFunctions("start");
         this.board.setPlayers(true, this.player1, false, this.player2);
         this.currentPlayer = "player1";
     }
 
     swapTurn() {
+        this.util.trackFunctions("swapTurn");
         if( this.currentPlayer === "player1" ) {
             this.currentPlayer = "player2";
         } else if( this.currentPlayer === "player2" ) {
@@ -480,6 +441,7 @@ export default class Game {
     }
 
     findPath() {
+        this.util.trackFunctions("findPath");
         /* 
         run the bfs
          */

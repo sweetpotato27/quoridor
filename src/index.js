@@ -3,16 +3,7 @@ import './style.css';
 import Icon from './icon.png';
 import GameView from "./game_view";
 import Game from "./game";
-const app = require('express')();
-const http = require('http').createServer(app);
 
-app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/dist/index.html');
-});
-
-http.listen(8080, () => {
-    console.log('listening on *:8080');
-})
 
 function iconComponent() {
     

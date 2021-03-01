@@ -137,6 +137,10 @@ td {
 	background: #BDE297;
 }
 
+.selectedWall {
+	background: #B02D1F;
+}
+
 .player-turn {
 	margin: 20px auto;
 }
@@ -170,3 +174,4 @@ td {
 	width: 30%;
 	height: 15%;
 }
+

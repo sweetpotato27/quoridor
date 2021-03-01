@@ -1,3 +1,5 @@
+import Util from './util';
+
 export default class GameView {
     constructor(game) {
         this.body = document.querySelector("body");
@@ -9,11 +11,15 @@ export default class GameView {
         this.neighbors = null;  
         this.availableMoves = [];
 
+        this.util = new Util();
+        this.game.util = this.util;
+        this.game.board.util = this.util;
         this.setupBoard();
         this.setupEventListeners();
     }
 
     show() {
+        this.util.trackFunctions("show");
         this.game.computerAiTurn();
         this.showBoard();
         if (this.game.isOver()) {
@@ -32,6 +38,7 @@ export default class GameView {
     }
 
     showBoard() {
+        this.util.trackFunctions("showBoard");
         for(let rowIdx = 0; rowIdx  < this.grid.length; rowIdx++) {
             for (let colIdx = 0; colIdx < this.grid[rowIdx].length; colIdx++)
             {
@@ -84,18 +91,7 @@ export default class GameView {
     }
 
     setupEventListeners() {
-        this.body.addEventListener("keyup", (event) => {
-            let code = event.code;
-            if (!this.game.placingWall) {
-                if ((code === "ArrowUp") || (code === "ArrowRight") || (code === "ArrowDown") || (code === "ArrowLeft")) {
-                    this.game.takeTurn("move", code.split("Arrow")[1].toLowerCase(), event);
-                }
-                this.show();
-            }
-            if(code === "Space") {
-                this.game.findPath();
-            }
-        });
+        this.util.trackFunctions("setupEventListeners");
 
         this.body.addEventListener("click", (event) => {
             /* 
@@ -177,6 +173,7 @@ Player movement will be integrated into the state machine as well
     } 
 
     handlePlaceWallButton(event) {
+        this.util.trackFunctions("handlePlaceWallButton");
         // delete btn element and replace with instructions to
         // click two distinct squares
         if (this.game.currentPlayer !== "noone") {
@@ -190,11 +187,14 @@ Player movement will be integrated into the state machine as well
     }
 
     handleSquareClick(event) {
+        this.util.trackFunctions("handleSquareClick");
+        console.log(event);
         if (this.game.currentPlayer !== "noone") {
             //wait for client to click two valid squares
             let target = event.target;
-    
+            
             if ((target.classList.contains("floor")) && (this.squareA === null)) {
+                event.target.classList.add("selectedWall");
                 this.squareA = target.id;
                 //parse squareA
                 // squareA = "00" and needs to be [0, 0]
@@ -204,13 +204,15 @@ Player movement will be integrated into the state machine as well
                 //get neighbors
                 // returns [[north],[east],[south],[west]]
                 this.neighbors = this.board.checkNeighbors(square);
-                // for(let i = 0; i < this.neighbors.length; i++) {
-                //     this.neighbors[i] = this.neighbors[i][0].toString() + this.neighbors[i][1].toString();
-                // }
-                // for(let i = 0; i < this.neighbors.length; i++) {
-                //     document.getElementById(this.neighbors[i].join("")).classList.add("highlight");
-                // }
-                this.highlight(this.neighbors);  // NEED TO CHANGE  SHOULD BE A CLASS TOGGLE
+
+                for(let i = 0; i < this.neighbors.length; i++) {
+                    if(this.neighbors[i][0] !== -1) {
+                        let id = this.neighbors[i].join("");
+                        console.log(id);
+                        document.getElementById(id).classList.add("highlight");
+                    }
+                }
+                this.changeNeighborsArrayToString(this.neighbors);  
     
             } else if ((target.classList.contains("floor")) && (this.squareA !== null) && (this.squareB === null)) {
                 if(!!this.neighbors.includes(target.id)) {
@@ -238,6 +240,16 @@ Player movement will be integrated into the state machine as well
                         this.body.getElementsByClassName("east")[0].classList.remove("hide");
                     }
                 }
+                
+                for(let i = 0; i < this.neighbors.length; i++) {
+                    if(!this.neighbors[i].includes("-")) {
+                        let id = this.neighbors[i];
+                        console.log(id);
+                        document.getElementById(id).classList.remove("highlight");
+                    }
+                }
+                this.neighbors = [];
+                event.target.classList.add("selectedWall");
                 this.game.state = "selecting wall type";
                 
             }
@@ -245,14 +257,20 @@ Player movement will be integrated into the state machine as well
     }
 
     handleWallTypeButton(dir, event) {
-        /* 
-        calls this.game.takeTurn(action, dir, event);
-        should remove wall type buttons and add place a wall button
-        switch state back to not doing anything here???
-        or in this.game
-        WHERE DOES WALL PLACEMENT VALIDATION HAPPEN??????????????????????
-        */
+        this.util.trackFunctions("handleWallTypeButton");
+
+        let selectedWalls = document.getElementsByClassName("selectedWall");
+        for (let i = 0; i < selectedWalls.length; i++) {
+            let wall = selectedWalls[i];
+            setTimeout(() => {
+                wall.classList.remove("selectedWall");
+            },0);
+        }
+
+        /* game logic */
         this.game.takeTurn("placeWall", dir, event, this.squareA, this.squareB);
+
+        /* stylize */
         this.body.getElementsByClassName("north")[0].classList.add("hide");
         this.body.getElementsByClassName("east")[0].classList.add("hide");
         this.body.getElementsByClassName("south")[0].classList.add("hide");
@@ -260,13 +278,20 @@ Player movement will be integrated into the state machine as well
         this.body.getElementsByClassName("button")[0].classList.remove("hide");
         document.getElementById("back").classList.add("hide");
         document.getElementById("move").classList.remove("hide");
+
+        /* resetting useful variables */
         this.squareA = null;
         this.squareB = null;
+
+        /* state change */
         this.game.state = "not doing anything";
+
+        /* renders */
         this.show();
     }
 
     handleMovementButton(event) {
+        this.util.trackFunctions("handleMovementButton");
         if(this.game.currentPlayer !== "noone") {
             document.getElementById("back").classList.remove("hide");
             document.getElementById("place").classList.add("hide");
@@ -286,6 +311,7 @@ Player movement will be integrated into the state machine as well
     }
 
     handleBackButton() {
+        this.util.trackFunctions("handleBackButton");
         this.game.state = "not doing anything";
         /* resets state */
         let instructions = document.getElementsByClassName("controller-div")[0].childNodes;
@@ -302,11 +328,19 @@ Player movement will be integrated into the state machine as well
         for (let i = 0; i < this.availableMoves.length; i++){
             this.availableMoves[i].classList.remove("highlight");
         }
+        let selectedWalls = document.getElementsByClassName("selectedWall");
+        for (let i = 0; i < selectedWalls.length; i++) {
+            let wall = selectedWalls[i];
+            setTimeout(() => {
+                wall.classList.remove("selectedWall");
+            },0);
+        }
         this.availableMoves = [];
         this.show();
     }
 
-    highlight(array) {
+    changeNeighborsArrayToString(array) {
+        this.util.trackFunctions("changeNeighborsArrayToString");
         //highlight and also changes this.neighbors to be able to be read as an array of strings
         for (let i = 0; i < array.length; i++) {
             // array[i][0] = array[i][0];
@@ -321,6 +355,7 @@ Player movement will be integrated into the state machine as well
     }
 
     createButton(innerText) {
+        this.util.trackFunctions("createButton");
         let btn = document.createElement("button");
         btn.innerHTML = innerText
         btn.classList.add('button');
@@ -336,6 +371,7 @@ Player movement will be integrated into the state machine as well
     }
 
     createRestartDiv(board, winner) {
+        this.util.trackFunctions("createRestartDiv");
         let div = document.createElement("div");
         let congrats = document.createElement("h1");
         // let instruct = document.createElement("span");
@@ -353,6 +389,7 @@ Player movement will be integrated into the state machine as well
     }
 
     setupBoard() {
+        this.util.trackFunctions("setupBoard");
         let div = document.createElement("div");
         this.body.appendChild(div);
         let board = document.createElement("table");
