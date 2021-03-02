@@ -19,13 +19,17 @@ app.get('/', (req, res) => {
 });
 
 io.on('connection', (socket) => {
+    const rooms = io.sockets.adapter.rooms;
+    const sids = io.of("/").adapter.sids;
     console.log('A USER CONNECTED: ', socket.id);
     socket.on('disconnect', () => {
-        console.log('user disconnected');
+        console.log(socket.rooms);
     })
 
-    socket.on('chat message', (msg) => {
-        io.emit('chat message', msg);
+    socket.on('room select', (roomID) => {
+        console.log("room ID => " + roomID);
+        socket.join(roomID);
+        if (rooms) console.log(rooms.get(roomID).size);
     });
 });
 

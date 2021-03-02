@@ -341,16 +341,11 @@ Player movement will be integrated into the state machine as well
 
     changeNeighborsArrayToString(array) {
         this.util.trackFunctions("changeNeighborsArrayToString");
-        //highlight and also changes this.neighbors to be able to be read as an array of strings
+        //changes this.neighbors to be able to be read as an array of strings
         for (let i = 0; i < array.length; i++) {
-            // array[i][0] = array[i][0];
-            // array[i][1] = array[i][1];
             let id = array[i].join("").toString();
             this.neighbors[i] = id;
             let ele = document.getElementById(`${id}`);
-            if (ele !== null) {
-                // ele.style.backgroundColor = "green";
-            }
         }
     }
 
@@ -374,16 +369,12 @@ Player movement will be integrated into the state machine as well
         this.util.trackFunctions("createRestartDiv");
         let div = document.createElement("div");
         let congrats = document.createElement("h1");
-        // let instruct = document.createElement("span");
         let btn = document.createElement("button");
         div.setAttribute("id", "restart-div");
         btn.setAttribute("id", "restart");
         congrats.innerHTML = `Congrats to ${winner}!!!!`;
-        // instruct.innerHTML = "Click button to restart the game."
         btn.innerHTML = "Restart"
-
         div.appendChild(congrats);
-        // div.appendChild(instruct);
         div.appendChild(btn);
         board.appendChild(div);
     }

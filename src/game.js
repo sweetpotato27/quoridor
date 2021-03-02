@@ -310,14 +310,29 @@ export default class Game {
     getAvailableMoves(pos) {
         this.util.trackFunctions("getAvailableMoves");
         /* pos = [row, col] */
-        let player = this.currentPlayer === "player1" ? this.player1 : this.player2;
-        let opponent = this.currentPlayer === "player1" ? this.player2 : this.player1;
         let moves = [];
         let currentSquare = this.grid[pos[0]][pos[1]];
         let square;
         let colIdx = pos[1];
         let rowIdx  = pos[0];
-        /* check for player */
+
+        /* 
+        pattern for these next four if statement blocks
+
+        if position is on the board and there is not wall
+            if position has no player on it
+            else if position has a player on it
+            *** getting the available move that hops the opponent ***
+                if no obstructions for a straight hop => add that move
+                else 
+                    tempsquare is destination of a staight hop
+                    if wall is an obstruction for a straight hop
+                        add a diagonal hop if not obstructed by a wall
+                    else if tempsquare is off the board
+                        add a diagonal hop if not obstructed by a wall
+
+         */
+
         if ((rowIdx - 1 >= 0) && (!currentSquare.walls.North)) {
             square = this.grid[rowIdx - 1][colIdx];
             if (square.player === "empty") {
@@ -402,16 +417,7 @@ export default class Game {
                 }
             }
         }
-        /* 
-        checkNeighbors returns an array of 
-        [north, east, south, west] positions
-        should now check to see if any of those positions collide 
-        with a wall or player and adjust moves
-         */
-        for (let i = 0; i < moves.length; i++) {
-            square = this.grid[moves[i][0]][moves[i][1]];
-        }
-
+        
         return moves;
     }
 

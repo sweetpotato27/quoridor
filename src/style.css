@@ -175,3 +175,41 @@ td {
 	height: 15%;
 }
 
+.buttonTest {
+	width: 300px;
+	height: 100px;
+}
+
+#roomForm {
+	background: rgba(0, 0, 0, 0.15);
+	margin: auto;
+}
+
+#formDiv {
+	margin: 30% auto;
+}
+
+#roomInput {
+	border: none; 
+	padding: 0 1rem;
+	flex-grow: 1;
+	border-radius: 2rem;
+	margin: 0.25rem;
+}
+
+#roomInput:focus {
+	outline: none;
+}
+
+#roomButton {
+	background: #333;
+	border: none;
+	padding: 0 1rem; 
+	margin: 0.25rem; 
+	border-radius: 3px; 
+	outline: none; 
+	color: #fff;
+}
+#roomButton:hover {
+	background: gray;
+}
