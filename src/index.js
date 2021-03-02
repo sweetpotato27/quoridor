@@ -17,6 +17,37 @@ function iconComponent() {
     return element;
 }
 
+function gameLobby(socket, room) {
+    const div = document.createElement("div");
+    const h1 = document.createElement("h1")
+    const ul = document.createElement("ul");
+    const form = document.createElement("form");
+    const input = document.createElement("input");
+    const button = document.createElement("button");
+    div.setAttribute("id", "lobby-div");
+    h1.innerHTML = room;
+    ul.setAttribute("id", "lobby-messages");
+    form.setAttribute("id", "lobby-form");
+    form.setAttribute("action", "");
+    input.setAttribute("id", "lobby-input");
+    input.setAttribute("autocomplete", "off");
+    button.innerHTML = "send";
+    form.appendChild(input);
+    form.appendChild(button);
+    ul.appendChild(form);
+    div.appendChild(h1);
+    div.appendChild(ul);
+    document.getElementsByTagName("body")[0].appendChild(div);
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if (input.value) {
+            socket.emit('lobby-message', input.value);
+            input.value = '';
+        }
+    });
+}
+
 document.head.appendChild(iconComponent());
 
 
@@ -51,13 +82,26 @@ document.addEventListener("DOMContentLoaded", function () {
     roomForm.addEventListener('submit', (e) => {
         e.preventDefault();
         if (roomInput.value) {
-            socket.emit('room select', roomInput.value);
+            socket.emit('room-select', roomInput.value);
             roomInput.value = '';
         }
     });
 
-    socket.on('room join', (roomID) => {
-        console.log(socket.id, " joined room: ", roomID);
+    socket.on('join-room', (roomID) => {
+        console.log("joining room");
+        formDiv.classList.add("hide");
+        gameLobby(socket, roomID);
+    });
+
+    socket.on('room-join-error', (msg) => {
+        console.log(msg);
+    })
+
+    socket.on('lobby-message', (msg) => {
+        let item = document.createElement('li');
+        item.textContent = msg;
+        document.getElementById('lobby-messages').appendChild(item);
+        window.scrollTo(0, document.body.scrollHeight);
     });
 
 });
