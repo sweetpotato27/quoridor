@@ -1,11 +1,13 @@
 import Board from "./board";
 
 export default class Game {
-    constructor() {
+    constructor(player1, player2) {
         this.board = new Board();
         this.grid = this.board.grid;
         this.currentPlayer = "noone";
         /* this.player = [rowIdx, colIdx] */
+        this.player1ID = '';
+        this.player2ID = '';
         this.player1 = [8, 4];
         this.player2 = [0, 4];
         this.player1Walls = 10;

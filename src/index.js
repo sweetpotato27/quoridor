@@ -18,34 +18,56 @@ function iconComponent() {
 }
 
 function gameLobby(socket, room) {
-    const div = document.createElement("div");
-    const h1 = document.createElement("h1")
-    const ul = document.createElement("ul");
-    const form = document.createElement("form");
-    const input = document.createElement("input");
-    const button = document.createElement("button");
-    div.setAttribute("id", "lobby-div");
-    h1.innerHTML = room;
-    ul.setAttribute("id", "lobby-messages");
-    form.setAttribute("id", "lobby-form");
-    form.setAttribute("action", "");
-    input.setAttribute("id", "lobby-input");
-    input.setAttribute("autocomplete", "off");
-    button.innerHTML = "send";
-    form.appendChild(input);
-    form.appendChild(button);
-    ul.appendChild(form);
-    div.appendChild(h1);
-    div.appendChild(ul);
-    document.getElementsByTagName("body")[0].appendChild(div);
+    if(!document.getElementById('lobby-div')) {
+        const div = document.createElement("div");
+        const h1 = document.createElement("h1")
+        const ul = document.createElement("ul");
+        const form = document.createElement("form");
+        const input = document.createElement("input");
+        const button = document.createElement("button");
+        const startGame = document.createElement("button");
+        div.setAttribute("id", "lobby-div");
+        h1.innerHTML = room;
+        h1.setAttribute("id", "lobby-id");
+        ul.setAttribute("id", "lobby-messages");
+        startGame.setAttribute("id", "lobby-start-game");
+        startGame.innerHTML = "Start Game!";
+        form.setAttribute("id", "lobby-form");
+        form.setAttribute("action", "");
+        input.setAttribute("id", "lobby-input");
+        input.setAttribute("autocomplete", "off");
+        button.innerHTML = "send";
+        form.appendChild(input);
+        form.appendChild(button);
+        ul.appendChild(form);
+        div.appendChild(h1);
+        div.appendChild(ul);
+        div.appendChild(startGame);
+        document.getElementsByTagName("body")[0].appendChild(div);
+        console.log(socket.id);
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (input.value) {
+                socket.emit('lobby-message', [room, input.value]);
+                input.value = '';
+            }
+        });
+        startGame.addEventListener('click', (e) => {
+            console.log(e);
+            socket.emit('start-game', [socket.id, room]);
+        })
+    }
+}
 
-    form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        if (input.value) {
-            socket.emit('lobby-message', input.value);
-            input.value = '';
-        }
-    });
+function gameTable(socket, room) {
+    console.log(socket);
+    console.log(room);
+    let players;
+    let game = new Game('','');
+    // setupBoard();
+    let gameView = new GameView(game);
+    game.start();
+    gameView.show();
 }
 
 document.head.appendChild(iconComponent());
@@ -90,6 +112,7 @@ document.addEventListener("DOMContentLoaded", function () {
     socket.on('join-room', (roomID) => {
         console.log("joining room");
         formDiv.classList.add("hide");
+        console.log(socket);
         gameLobby(socket, roomID);
     });
 
@@ -97,11 +120,22 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log(msg);
     })
 
-    socket.on('lobby-message', (msg) => {
+    socket.on('lobby-message', ([id, msg]) => {
         let item = document.createElement('li');
-        item.textContent = msg;
+        item.textContent = id + " -> " + msg;
         document.getElementById('lobby-messages').appendChild(item);
         window.scrollTo(0, document.body.scrollHeight);
+    });
+
+    socket.on('start-game', ([socket, room]) => {
+        console.log("starting game...");
+        console.log(socket);
+        console.log(room);
+        if(!document.getElementsByClassName('table')[0]) {
+            document.getElementById('lobby-div').classList.add("hide");
+            gameTable(socket, room);
+        }
+        
     });
 
 });
