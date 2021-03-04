@@ -7,7 +7,7 @@ const config = require('./webpack.config');
 const compiler = webpack(config);
 const httpServer = require('http').Server(app);
 const io = require('socket.io')(httpServer);
-const uuid = require('uuid/v1');
+const uuid = require('uuid');
 
 const PORT = process.env.PORT || 3000;
 
@@ -21,11 +21,10 @@ const rooms = {};
  */
 const joinRoom = (socket, room) => {
     room.sockets.push(socket);
-    socket.join(room.id), () => {
-        /** store the room id in the socket for future use */
-        socket.roomId = room.id;
-        console.log(socket.id, "Joined", room.id);
-    };
+    socket.join(room.id);
+    /** store the room id in the socket for future use */
+    socket.roomId = room.id;
+    console.log(socket.id, "Joined", room.id);
 };
 
 /**
@@ -48,11 +47,58 @@ const leaveRooms = (socket) => {
         }
     }
 
-    /** Delete all the empty rooms taht we found earlier */
+    /** Delete all the empty rooms that we found earlier */
     for (const room of roomsToDelete) {
         delete rooms[room.id];
     }
 };
+
+/**
+ * Will check to see if we have a game winner for the room.
+ * @param room an object that represents a room from the 'rooms' instance variable object
+ * @param sendMessage Whether or not to tell each socket if they've won or lost the game
+ * @returns {boolean} true if we/ve found a winner. false if we haven't found a winner
+ */
+
+ 
+const checkWinner = (room, sendMessage = false) => {
+    let winner = null;
+    for (const client of room.sockets) {
+        /** the game could emit a winner instead of the server..  */
+        // winner = client;
+    }
+
+    if (winner) {
+        if (sendMessage) {
+            for (const client of room.sockets) {
+                client.emit('gameOver', client.id === winner.id ? "You won the game!" : "You lost the game :(");
+            }
+        }
+
+        return true;
+    }
+    return false;
+}
+
+/**
+ * 
+ */
+const beginGame = (socket, id) => {
+
+    console.log(socket);
+    console.log(id);
+    /** Get the room */
+    const room = rooms[socket.roomId];
+    console.log(room);
+    if (!room) {
+        return;
+    }
+
+    /** If we/ve already found a game winner, we don't need to start a new round. */
+    if (checkScore(room)) {
+        return;
+    }
+}
 
 app.use(
     webpackDevMiddleware(compiler, {
@@ -65,26 +111,41 @@ app.get('/', (req, res) => {
 });
 
 io.on('connection', (socket) => {
-    const rooms = io.sockets.adapter.rooms;
-    const sids = io.of("/").adapter.sids;
+    /**
+     * give each socket a random identifier so that we can determine who is who when 
+     * we're sending messages back and forth!
+     */
+    // socket.id = uuid(); //I feel like socket.io already does this for us
     console.log('A USER CONNECTED: ', socket.id);
-    socket.on('disconnect', () => {
-        console.log("user disconnected")
-    });
 
-    socket.on('room-select', (roomID) => {
-        if(rooms.get(roomID)) {
-            if (rooms.get(roomID).size < 2) {
-                socket.join(roomID);
-                io.to(roomID).emit('join-room', roomID);
-            } else {
-                console.log("room is full!");
-                io.emit('room-join-error', "Room is full");
-            }
-        } else {
-            socket.join(roomID);
-            io.to(roomID).emit('join-room', roomID);
+    // socket.on('room-select', (roomID) => {
+    //     if(rooms.get(roomID)) {
+    //         if (rooms.get(roomID).size < 2) {
+    //             socket.join(roomID);
+    //             io.to(roomID).emit('join-room', roomID);
+    //         } else {
+    //             console.log("room is full!");
+    //             io.emit('room-join-error', "Room is full");
+    //         }
+    //     } else {
+    //         socket.join(roomID);
+    //         io.to(roomID).emit('join-room', roomID);
+    //     }
+    // });
+
+
+
+    /**
+     * Gets fired when someone wants to get the list of rooms.  respond with the list of room names.
+     */
+    socket.on('getRoomNames', (callback) => {
+        const roomNames = [];
+        for (const id in rooms) {
+            const {name} = rooms[id];
+            const room = {name, id};
+            roomNames.push(room);
         }
+        callback(roomNames);
     });
 
     /**
@@ -95,7 +156,7 @@ io.on('connection', (socket) => {
             /*
              generate a unique id for the new room, that way we don't need to deal with duplicates
              */ 
-            id: uuid(), 
+            id: uuid.v4(), 
             name: roomName, 
             sockets: []
         };
@@ -106,24 +167,10 @@ io.on('connection', (socket) => {
     });
 
     /**
-     * Gets fired when someone wants to get the list of rooms.  respond with the list of room names.
-     */
-    socket.on('getRoomNames', (data, callback) => {
-        const roomNames = [];
-        for (const id in rooms) {
-            const {name} = room[id];
-            const room = {name, id};
-            roomNames.push(room);
-        }
-
-        callback(roomNames);
-    });
-
-    /**
      * Gets fired when a player has joined a room.
      */
     socket.on('joinRoom', (roomId, callback) => {
-        const room = rooms[roomId];
+        const room = rooms[roomId];y
         joinRoom(socket, room);
         callback();
     });
@@ -135,15 +182,15 @@ io.on('connection', (socket) => {
         io.to(room).emit('lobby-message', [socket.id, msg]);
     });
 
-    socket.on('start-game', ([socket, room]) => {
-        console.log("starting game....");
-        console.log(socket);
-        console.log(room);
-        for (let key in io.sockets.adapter.rooms.get(room).keys()) {
-            console.log(key);
-        }
-        io.to(room).emit('start-game', [socket, room]);
-    });
+    // socket.on('start-game', ([socket, room]) => {
+    //     console.log("starting game....");
+    //     console.log(socket);
+    //     console.log(room);
+    //     for (let key in io.sockets.adapter.rooms.get(room).keys()) {
+    //         console.log(key);
+    //     }
+    //     io.to(room).emit('start-game', [socket, room]);
+    // });
 
     socket.on('ready', () => {
         console.log(socket.id, "is ready!");
@@ -193,7 +240,13 @@ io.on('connection', (socket) => {
         }, 5000);
     });
 
+    socket.on('leaveRoom', () => {
+        leaveRooms(socket);
+    });
    
+    socket.on('disconnect', () => {
+        console.log("user disconnected")
+    });
 
 });
 
