@@ -1,9 +1,11 @@
 import Square from "./square";
 
 export default class Board {
-    constructor() {
+    constructor(p1, p2) {
         this.width = 9;
         this.height = 9;
+        this.p1 = p1;
+        this.p2 = p2
         this.grid = Board.makeGrid(this.width, this.height);
         this.winner = false;
         this.util;
@@ -24,8 +26,8 @@ export default class Board {
         } else {
             gridSquare1.model = "ai";
         }
-        gridSquare2.player = "player2";
-        gridSquare1.player = "player1";
+        gridSquare2.player = this.p2;
+        gridSquare1.player = this.p1;
     }
 
     checkNeighbors(square) {

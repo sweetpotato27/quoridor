@@ -20,15 +20,27 @@ const rooms = {};
  * @param room An object that represents a room from the 'rooms' instance variable object
  */
 const joinRoom = (socket, room) => {
-    room.sockets.push(socket);
-    socket.join(room.id);
-    /** store the room id in the socket for future use */
-    socket.roomId = room.id;
-    console.log(socket.id, "Joined", room.id);
+    if (room) {
+        room.sockets.push(socket);
+        socket.join(room.id);
+        /** store the room id in the socket for future use */
+        socket.roomId = room.id;
+        if (room.player1 === '') {
+            room.player1 = socket.id;
+            console.log(socket.id, "Joined", room.id);
+        } else if (room.player2 === '') {
+            room.player2 = socket.id;
+            console.log(socket.id, "Joined", room.id);
+        } else {
+            console.log("room is full");
+        }
+    } else {
+        console.log("room does not exist, please refresh page.");
+    }
 };
 
 /**
- * Will make the socket leave any room sthat it is a part of 
+ * Will make the socket leave any rooms that it is a part of 
  * @param socket A connected socket.io socket
  */
 const leaveRooms = (socket) => {
@@ -142,7 +154,9 @@ io.on('connection', (socket) => {
         const roomNames = [];
         for (const id in rooms) {
             const {name} = rooms[id];
-            const room = {name, id};
+            const sockets = rooms[id].sockets.length;
+            const room = {name, id, sockets};
+            console.log(room);
             roomNames.push(room);
         }
         callback(roomNames);
@@ -158,7 +172,9 @@ io.on('connection', (socket) => {
              */ 
             id: uuid.v4(), 
             name: roomName, 
-            sockets: []
+            sockets: [],
+            player1: '',
+            player2: '',
         };
         rooms[room.id] = room;
         /** have the socket join the room they've just created. */
@@ -170,9 +186,13 @@ io.on('connection', (socket) => {
      * Gets fired when a player has joined a room.
      */
     socket.on('joinRoom', (roomId, callback) => {
-        const room = rooms[roomId];y
-        joinRoom(socket, room);
-        callback();
+        const room = rooms[roomId];
+        if (room.sockets.length < 2) {
+            joinRoom(socket, room);
+            callback();
+        } else {
+            console.log("room is full");
+        }
     });
 
     socket.on('lobby-message', ([room, msg]) => {
@@ -193,14 +213,24 @@ io.on('connection', (socket) => {
     // });
 
     socket.on('ready', () => {
-        console.log(socket.id, "is ready!");
         const room = rooms[socket.roomId];
         /** when we have two players... Start the game! */
-        if (room.sockets.length === 2) {
-            /** tell each player to start the game. */
-            for (const client of room.sockets) {
-                client.emit('initGame');
+        if (room) {
+            console.log(socket.id, "is ready!");
+            if (room.sockets.length === 2) {
+                console.log("starting the game");
+                /** tell each player to start the game. */
+                for (const client of room.sockets) {
+                    client.emit('initGame', JSON.stringify({
+                        id: room.id,
+                        name: room.name,
+                        player1: room.player1,
+                        player2: room.player2,
+                    }));
+                }
             }
+        } else {
+            console.log("room does not exist anymore.");
         }
     });
 
@@ -240,12 +270,24 @@ io.on('connection', (socket) => {
         }, 5000);
     });
 
+    socket.on('placeWall', (data) => {
+        console.log(data);
+        io.to(data.roomId).emit('placeWall', data)
+    });
+
+    socket.on('playerMove', (data) => {
+        console.log(data);
+        io.to(data.roomId).emit('playerMove', data);
+    });
+
     socket.on('leaveRoom', () => {
         leaveRooms(socket);
     });
    
     socket.on('disconnect', () => {
-        console.log("user disconnected")
+        console.log("user disconnected");
+        /** should probably remove from room and delete room if empty */
+        leaveRooms(socket);
     });
 
 });

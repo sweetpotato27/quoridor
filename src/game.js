@@ -1,13 +1,15 @@
 import Board from "./board";
 
 export default class Game {
-    constructor(player1, player2) {
-        this.board = new Board();
+    constructor(socket, room) {
+        this.socket = socket;
+        this.room = room;
+        /* this.player = [rowIdx, colIdx] */
+        this.player1ID = room.player1;
+        this.player2ID = room.player2;
+        this.board = new Board(this.player1ID, this.player2ID);
         this.grid = this.board.grid;
         this.currentPlayer = "noone";
-        /* this.player = [rowIdx, colIdx] */
-        this.player1ID = '';
-        this.player2ID = '';
         this.player1 = [8, 4];
         this.player2 = [0, 4];
         this.player1Walls = 10;
@@ -28,113 +30,113 @@ export default class Game {
         }
     }
 
-    computerAiTurn() {
-        this.util.trackFunctions("computerAiTurn");
-        if(this.currentPlayer === "player2") {
-            let p2Path = this.board.bfs(this.player2, ["80","81","82","83","84","85","86","87","88"])
-            let p1Path = this.board.bfs(this.player1);
-            let random = Math.floor(Math.random() * 2);
-            if ((p1Path[1].length <= p2Path[1].length) && (this.player2Walls > 0)) {
-                /* place wall if player1 is closer to goal */
-                for(let i = 0; i < p1Path[1].length; i++) {
-                    let rowIdx = p1Path[1][i].split("")[0];
-                    let colIdx = p1Path[1][i].split("")[1];   
-                    let nextRowIdx = p1Path[1][i + 1].split("")[0];
-                    let nextColIdx = p1Path[1][i + 1].split("")[1];
-                    let placedWall = false;
-                    let squareA = [parseInt(nextRowIdx), parseInt(nextColIdx)];
-                    let squareNeighbors = this.board.checkNeighbors(squareA);
-                    let squareB;
-                    /* 
-                    left and up 
-                    placeWall(dir, event, squareA, squareB)
-                    dir = North, South, East, West
-                    event = null
-                    squareA = [rowIdx, colIdx]
-                    squareB = [rowIdx, colIdx]
-                    */
-                    if(colIdx === nextColIdx) {
-                        /*
-                        path is moving up or down
-                        check neighbors and set squareB to a valid one
-                        neighbors = [north, south, west, east]
-                        use random if you want
-                        squareA = next best pos of player1 (opponent)
-                        squareB = square to the west of squareA
-                         */
-                        if(random === 0) {
-                            if (squareNeighbors[2][0] !== -1) {
-                                squareB = squareNeighbors[2];
-                            } else {
-                                squareB = squareNeighbors[3];
-                            }
-                        } else {
-                            if (squareNeighbors[3][0] !== -1) {
-                                squareB = squareNeighbors[3];
-                            } else {
-                                squareB = squareNeighbors[2];
-                            }
-                        }
-                        placedWall = this.placeWall("South", squareA, squareB);
-                        if (placedWall === true) {
-                            break;
-                        } else {
-                        }
-                    }
-                    if (rowIdx === nextRowIdx) {
+    // computerAiTurn() {
+    //     this.util.trackFunctions("computerAiTurn");
+    //     if(this.currentPlayer === "player2") {
+    //         let p2Path = this.board.bfs(this.player2, ["80","81","82","83","84","85","86","87","88"])
+    //         let p1Path = this.board.bfs(this.player1);
+    //         let random = Math.floor(Math.random() * 2);
+    //         if ((p1Path[1].length <= p2Path[1].length) && (this.player2Walls > 0)) {
+    //             /* place wall if player1 is closer to goal */
+    //             for(let i = 0; i < p1Path[1].length; i++) {
+    //                 let rowIdx = p1Path[1][i].split("")[0];
+    //                 let colIdx = p1Path[1][i].split("")[1];   
+    //                 let nextRowIdx = p1Path[1][i + 1].split("")[0];
+    //                 let nextColIdx = p1Path[1][i + 1].split("")[1];
+    //                 let placedWall = false;
+    //                 let squareA = [parseInt(nextRowIdx), parseInt(nextColIdx)];
+    //                 let squareNeighbors = this.board.checkNeighbors(squareA);
+    //                 let squareB;
+    //                 /* 
+    //                 left and up 
+    //                 placeWall(dir, event, squareA, squareB)
+    //                 dir = North, South, East, West
+    //                 event = null
+    //                 squareA = [rowIdx, colIdx]
+    //                 squareB = [rowIdx, colIdx]
+    //                 */
+    //                 if(colIdx === nextColIdx) {
+    //                     /*
+    //                     path is moving up or down
+    //                     check neighbors and set squareB to a valid one
+    //                     neighbors = [north, south, west, east]
+    //                     use random if you want
+    //                     squareA = next best pos of player1 (opponent)
+    //                     squareB = square to the west of squareA
+    //                      */
+    //                     if(random === 0) {
+    //                         if (squareNeighbors[2][0] !== -1) {
+    //                             squareB = squareNeighbors[2];
+    //                         } else {
+    //                             squareB = squareNeighbors[3];
+    //                         }
+    //                     } else {
+    //                         if (squareNeighbors[3][0] !== -1) {
+    //                             squareB = squareNeighbors[3];
+    //                         } else {
+    //                             squareB = squareNeighbors[2];
+    //                         }
+    //                     }
+    //                     placedWall = this.placeWall("South", squareA, squareB);
+    //                     if (placedWall === true) {
+    //                         break;
+    //                     } else {
+    //                     }
+    //                 }
+    //                 if (rowIdx === nextRowIdx) {
 
-                        if(random === 0) {
-                            if (squareNeighbors[0][0] !== -1) {
-                                squareB = squareNeighbors[0];
-                            } else {
-                                squareB = squareNeighbors[1];
-                            }
-                        } else {
-                            if (squareNeighbors[1][0] !== -1) {
-                                squareB = squareNeighbors[1];
-                            } else {
-                                squareB = squareNeighbors[0];
-                            }
-                        }
+    //                     if(random === 0) {
+    //                         if (squareNeighbors[0][0] !== -1) {
+    //                             squareB = squareNeighbors[0];
+    //                         } else {
+    //                             squareB = squareNeighbors[1];
+    //                         }
+    //                     } else {
+    //                         if (squareNeighbors[1][0] !== -1) {
+    //                             squareB = squareNeighbors[1];
+    //                         } else {
+    //                             squareB = squareNeighbors[0];
+    //                         }
+    //                     }
 
-                        if (colIdx > nextColIdx) {
-                            placedWall = this.placeWall("East", squareA, squareB);
-                            if (placedWall === true) {
-                                break;
-                            }
-                        } else {
-                            placedWall = this.placeWall("West", squareA, squareB);
-                            if (placedWall === true) {
-                                break;
-                            }
-                        }
-                    }
-                }
+    //                     if (colIdx > nextColIdx) {
+    //                         placedWall = this.placeWall("East", squareA, squareB);
+    //                         if (placedWall === true) {
+    //                             break;
+    //                         }
+    //                     } else {
+    //                         placedWall = this.placeWall("West", squareA, squareB);
+    //                         if (placedWall === true) {
+    //                             break;
+    //                         }
+    //                     }
+    //                 }
+    //             }
 
-            } else {
-                /* move player2 towards goal */
-                let currRow = p2Path[1][0].split("")[0];
-                let currCol = p2Path[1][0].split("")[1];
-                let moves = this.getAvailableMoves([parseInt(currRow), parseInt(currCol)]);
-                for (let i = 0; i < moves.length; i++) {
-                    let move = moves[i].join("");
-                    if (p2Path[1].includes(move)){
-                        this.movePlayer(moves[i]);
-                    }
-                }
-            }
-        }
-    }
+    //         } else {
+    //             /* move player2 towards goal */
+    //             let currRow = p2Path[1][0].split("")[0];
+    //             let currCol = p2Path[1][0].split("")[1];
+    //             let moves = this.getAvailableMoves([parseInt(currRow), parseInt(currCol)]);
+    //             for (let i = 0; i < moves.length; i++) {
+    //                 let move = moves[i].join("");
+    //                 if (p2Path[1].includes(move)){
+    //                     this.movePlayer(moves[i]);
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
 
     winner() {
         this.util.trackFunctions("winner");
         let winner = null;
         for(let i = 0; i < this.grid[0].length; i++) {
-            if(this.grid[0][i].player === "player1") {
-                winner = "player1"
+            if(this.grid[0][i].player === this.player1ID) {
+                winner = this.player1ID;
             }
-            if(this.grid[8][i].player === "player2") {
-                winner = "player2"
+            if(this.grid[8][i].player === this.player2ID) {
+                winner = this.player2ID;
             }
         }
         return winner;
@@ -176,7 +178,7 @@ export default class Game {
         let neighborsB = this.board.checkNeighbors([sqrB.rowIdx, sqrB.colIdx]);
         let isValidWall;
         let playerWalls;
-        this.currentPlayer === "player1" ? playerWalls = this.player1Walls : playerWalls = this.player2Walls
+        this.currentPlayer === this.player1ID ? playerWalls = this.player1Walls : playerWalls = this.player2Walls
         if (playerWalls > 0) {
 
             if(dir === "North" && (!sqrA.walls.North && !sqrB.walls.North)){
@@ -187,9 +189,16 @@ export default class Game {
                 this.grid[neighborsB[0][0]][neighborsB[0][1]].walls.South = true;
                 isValidWall = this.findPath();
                 if(isValidWall) {
-                    if (this.currentPlayer === "player1") this.player1Walls = this.player1Walls - 1;
-                    if (this.currentPlayer === "player2") this.player2Walls = this.player2Walls - 1;
-                    this.swapTurn();
+                    if (this.currentPlayer === this.player1ID) this.player1Walls = this.player1Walls - 1;
+                    if (this.currentPlayer === this.player2ID) this.player2Walls = this.player2Walls - 1;
+                    this.socket.emit('placeWall', { roomId: this.room.id, 
+                                                    dir: "north",
+                                                    wallA: [sqrA.rowIdx, sqrA.colIdx],
+                                                    wallB: [sqrB.rowIdx, sqrB.colIdx],
+                                                    wallC: [neighborsA[0][0], neighborsA[0][1]], 
+                                                    wallD: [neighborsB[0][0], neighborsB[0][1]], 
+                                                    player: this.currentPlayer});
+                    // this.swapTurn();
                     return true;
                 } else {
                     sqrA.walls.North = false;
@@ -207,9 +216,16 @@ export default class Game {
                 this.grid[neighborsB[3][0]][neighborsB[3][1]].walls.West = true;
                 isValidWall = this.findPath();
                 if(isValidWall) {
-                    if (this.currentPlayer === "player1") this.player1Walls = this.player1Walls - 1;
-                    if (this.currentPlayer === "player2") this.player2Walls = this.player2Walls - 1;
-                    this.swapTurn();
+                    if (this.currentPlayer === this.player1ID) this.player1Walls = this.player1Walls - 1;
+                    if (this.currentPlayer === this.player2ID) this.player2Walls = this.player2Walls - 1;
+                    this.socket.emit('placeWall', { roomId: this.room.id, 
+                                                    dir: "east",
+                                                    wallA: [sqrA.rowIdx, sqrA.colIdx],
+                                                    wallB: [sqrB.rowIdx, sqrB.colIdx],
+                                                    wallC: [neighborsA[3][0], neighborsA[3][1]], 
+                                                    wallD: [neighborsB[3][0], neighborsB[3][1]], 
+                                                    player: this.currentPlayer});
+                    // this.swapTurn();
                     return true;
                 } else {
                     sqrA.walls.East = false;
@@ -227,9 +243,16 @@ export default class Game {
                 this.grid[neighborsB[1][0]][neighborsB[1][1]].walls.North = true;
                 isValidWall = this.findPath();
                 if(isValidWall) {
-                    if (this.currentPlayer === "player1") this.player1Walls = this.player1Walls - 1;
-                    if (this.currentPlayer === "player2") this.player2Walls = this.player2Walls - 1;
-                    this.swapTurn();
+                    if (this.currentPlayer === this.player1ID) this.player1Walls = this.player1Walls - 1;
+                    if (this.currentPlayer === this.player2ID) this.player2Walls = this.player2Walls - 1;
+                    this.socket.emit('placeWall', { roomId: this.room.id, 
+                                                    dir: "south",
+                                                    wallA: [sqrA.rowIdx, sqrA.colIdx],
+                                                    wallB: [sqrB.rowIdx, sqrB.colIdx],
+                                                    wallC: [neighborsA[1][0], neighborsA[1][1]], 
+                                                    wallD: [neighborsB[1][0], neighborsB[1][1]], 
+                                                    player: this.currentPlayer});
+                    // this.swapTurn();
                     return true;
                 } else {
                     sqrA.walls.South = false;
@@ -247,9 +270,16 @@ export default class Game {
                 this.grid[neighborsB[2][0]][neighborsB[2][1]].walls.East = true;
                 isValidWall = this.findPath();
                 if(isValidWall) {
-                    if (this.currentPlayer === "player1") this.player1Walls = this.player1Walls - 1;
-                    if (this.currentPlayer === "player2") this.player2Walls = this.player2Walls - 1;
-                    this.swapTurn();
+                    if (this.currentPlayer === this.player1ID) this.player1Walls = this.player1Walls - 1;
+                    if (this.currentPlayer === this.player2ID) this.player2Walls = this.player2Walls - 1;
+                    this.socket.emit('placeWall', { roomId: this.room.id, 
+                                                    dir: "west",
+                                                    wallA: [sqrA.rowIdx, sqrA.colIdx],
+                                                    wallB: [sqrB.rowIdx, sqrB.colIdx],
+                                                    wallC: [neighborsA[2][0], neighborsA[2][1]], 
+                                                    wallD: [neighborsB[2][0], neighborsB[2][1]], 
+                                                    player: this.currentPlayer});
+                    // this.swapTurn();
                     return true;
                 } else {
                     sqrA.walls.West = false;
@@ -268,7 +298,7 @@ export default class Game {
         // takes current player current pos
         // calculates future pos with dir
         let player;
-        this.currentPlayer === "player1" ? player = this.player1 : player = this.player2
+        this.currentPlayer === this.player1ID ? player = this.player1 : player = this.player2
         let newColIdx;
         let newRowIdx;
         let isWalled;
@@ -298,7 +328,11 @@ export default class Game {
                 oldSquare.player = "empty";
                 this.setPlayerPos(this.currentPlayer, [newRowIdx, newColIdx]);
                 newSquare.player = this.currentPlayer;
-                this.swapTurn();
+                this.socket.emit('playerMove', {roomId: this.room.id, 
+                                                oldPos: [oldSquare.rowIdx, oldSquare.colIdx], 
+                                                newPos: [newSquare.rowIdx, newSquare.colIdx], 
+                                                player: this.currentPlayer})
+                // this.swapTurn();
             }
 
 
@@ -339,7 +373,7 @@ export default class Game {
             square = this.grid[rowIdx - 1][colIdx];
             if (square.player === "empty") {
                 moves.push([rowIdx - 1, colIdx]);  // north
-            } else if (["player1", "player2"].includes(square.player)){
+            } else if ([this.player1ID, this.player2ID].includes(square.player)){
                 if ((rowIdx - 2 >= 0) && (!square.walls.North)) {
                     moves.push([rowIdx - 2, colIdx]);
                 } else {
@@ -360,7 +394,7 @@ export default class Game {
             square = this.grid[rowIdx][colIdx + 1];
             if (square.player === "empty") {
                 moves.push([rowIdx, colIdx + 1]);  // east
-            } else if (["player1", "player2"].includes(square.player)){
+            } else if ([this.player1ID, this.player2ID].includes(square.player)){
                 if ((colIdx + 2 <= 8) && (!square.walls.East)) {
                     moves.push([rowIdx, colIdx + 2]);
                 } else {
@@ -381,7 +415,7 @@ export default class Game {
             square = this.grid[rowIdx + 1][colIdx];
             if (square.player === "empty") {
                 moves.push([rowIdx + 1, colIdx]);  // south
-            } else if (["player1", "player2"].includes(square.player)){
+            } else if ([this.player1ID, this.player2ID].includes(square.player)){
                 if ((rowIdx + 2 <= 8) && (!square.walls.South)) {
                     moves.push([rowIdx + 2, colIdx]);
                 } else {
@@ -402,7 +436,7 @@ export default class Game {
             square = this.grid[rowIdx][colIdx - 1];
             if (square.player === "empty") {
                 moves.push([rowIdx, colIdx - 1]);  // west
-            } else if (["player1", "player2"].includes(square.player)){
+            } else if ([this.player1ID, this.player2ID].includes(square.player)){
                 if ((colIdx - 2 >= 0) && (!square.walls.West)) {
                     moves.push([rowIdx, colIdx - 2]);
                 } else {
@@ -426,25 +460,27 @@ export default class Game {
 
     setPlayerPos(player, pos) {
         this.util.trackFunctions("setPlayerPos");
-        if (player === "player1") {
+        if (player === this.player1ID) {
             this.player1 = pos;
-        } else if (player === "player2") {
+        } else if (player === this.player2ID) {
             this.player2 = pos;
         }
     }
 
     start() {
         this.util.trackFunctions("start");
-        this.board.setPlayers(true, this.player1, false, this.player2);
-        this.currentPlayer = "player1";
+        this.board.setPlayers(true, this.player1, true, this.player2);
+        this.currentPlayer = this.player1ID;
     }
 
     swapTurn() {
         this.util.trackFunctions("swapTurn");
-        if( this.currentPlayer === "player1" ) {
-            this.currentPlayer = "player2";
-        } else if( this.currentPlayer === "player2" ) {
-            this.currentPlayer = "player1";
+        if( this.currentPlayer === this.player1ID ) {
+            console.log("player 2's turn");
+            this.currentPlayer = this.player2ID;
+        } else if( this.currentPlayer === this.player2ID ) {
+            console.log("player 1's turn");
+            this.currentPlayer = this.player1ID;
         }
     }
 

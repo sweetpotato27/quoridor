@@ -37,14 +37,38 @@ function lobbySplash(socket) {
     });
     joinRoom.addEventListener('click', () => {
         /** emits getRoomNames and make the room names buttons */
+        div.remove();
         const callback = (roomNames) => {
-            for (let i = 0; i < roomNames.length; i++) {
-                console.log(roomNames[i]);
-            }
+            lobbyRoomsList(socket, roomNames);
         };
         socket.emit('getRoomNames', callback);
     });
 
+    document.getElementsByTagName('body')[0].appendChild(div);
+}
+
+function lobbyRoomsList(socket, roomNames) {
+    const div = document.createElement('div');
+    div.setAttribute('id', 'lobby-rooms-list-div');
+    const ul = document.createElement('ul');
+    const callback = () => {
+        console.log("room joined");
+        socket.emit('ready');
+    };
+    for (let i = 0; i < roomNames.length; i++) {
+        if (roomNames[i].sockets < 2) {
+            const li = document.createElement('li');
+            const button = document.createElement('button');
+            li.appendChild(button);
+            button.innerHTML = roomNames[i].name;
+            button.addEventListener('click', (e) => {
+                div.remove();
+                socket.emit('joinRoom', roomNames[i].id, callback);
+            });
+            ul.appendChild(li);
+        }
+    }
+    div.appendChild(ul);
     document.getElementsByTagName('body')[0].appendChild(div);
 }
 
@@ -73,6 +97,8 @@ function createRoomForm(socket) {
         if (roomInput.value) {
             const callback = () => {
                 console.log("room created");
+                formDiv.remove();
+                socket.emit('ready');
             };
             socket.emit('createRoom', roomInput.value, callback);
             roomInput.value = '';
@@ -151,15 +177,62 @@ function gameLobby(socket, room) {
     }
 }
 
-function gameTable(socket, room) {
-    console.log(socket);
-    console.log(room);
-    let players;
-    let game = new Game('','');
+function gameTable(socket, JSONroom) {
+    const room = JSON.parse(JSONroom);
+    const game = new Game(socket, room);
     // setupBoard();
-    let gameView = new GameView(game);
+    const gameView = new GameView(socket, room, game);
     game.start();
     gameView.show();
+
+    socket.on('playerMove', (data) => {
+        console.log(data);
+        let oldRow = data.oldPos[0];
+        let oldCol = data.oldPos[1];
+        let newRow = data.newPos[0];
+        let newCol = data.newPos[1];
+        game.board.grid[oldRow][oldCol].player = "empty";
+        game.board.grid[newRow][newCol].player = data.player;
+        game.swapTurn();
+        gameView.show();
+    });
+
+    socket.on('placeWall', (data) => {
+        console.log(data);
+        const posA = data.wallA;
+        const posB = data.wallB;
+        const posC = data.wallC;
+        const posD = data.wallD;
+        const sqrA = game.board.grid[posA[0]][posA[1]];
+        const sqrB = game.board.grid[posB[0]][posB[1]];
+        const sqrC = game.board.grid[posC[0]][posC[1]];
+        const sqrD = game.board.grid[posD[0]][posD[1]];
+        if ( data.dir === "north" ) {
+            sqrA.walls.North = true;
+            sqrB.walls.North = true;
+            sqrC.walls.South = true;
+            sqrD.walls.South = true;
+        } else if (data.dir === "south" ) {
+            sqrA.walls.South = true;
+            sqrB.walls.South = true;
+            sqrC.walls.North = true;
+            sqrD.walls.North = true;
+        } else if (data.dir === "east" ) {
+            sqrA.walls.East = true;
+            sqrB.walls.East = true;
+            sqrC.walls.West = true;
+            sqrD.walls.West = true;
+        } else if (data.dir === "west" ) {
+            sqrA.walls.West = true;
+            sqrB.walls.West = true;
+            sqrC.walls.East = true;
+            sqrD.walls.East = true;
+        } else {
+            console.log('dir is invalid');
+        }
+        game.swapTurn();
+        gameView.show();
+    });
 }
 
 document.head.appendChild(iconComponent());
@@ -176,6 +249,12 @@ document.addEventListener("DOMContentLoaded", function () {
     const socket = io();
 
     lobbySplash(socket);
+
+    socket.on('initGame', (room) => {
+        console.log(`starting the game for ${socket.id}`);
+        console.log(`you are in room ${room}`);
+        gameTable(socket, room);
+    });
 
 });
 

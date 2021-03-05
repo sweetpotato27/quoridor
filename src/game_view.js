@@ -1,7 +1,9 @@
 import Util from './util';
 
 export default class GameView {
-    constructor(game) {
+    constructor(socket, room, game) {
+        this.socket = socket;
+        this.room = room;
         this.body = document.querySelector("body");
         this.game = game;
         this.board = this.game.board;
@@ -20,18 +22,19 @@ export default class GameView {
 
     show() {
         this.util.trackFunctions("show");
-        this.game.computerAiTurn();
+        // this.game.computerAiTurn();
         this.showBoard();
         if (this.game.isOver()) {
             let winner = "";
-            if (this.game.currentPlayer === "player2") winner = "Player 1";
-            if (this.game.currentPlayer === "player1") winner = "Player 2";
-            let table = document.getElementsByClassName("table")[0];
-            this.createRestartDiv(table, winner);
-            this.game.currentPlayer = "noone";
-            this.showBoard();
+            console.log("winner");
+            if (this.game.currentPlayer === this.game.player2ID) winner = "Player 1";
+            if (this.game.currentPlayer === this.game.player1ID) winner = "Player 2";
+            // let table = document.getElementsByClassName("table")[0];
+            // this.createRestartDiv(table, winner);
+            // this.game.currentPlayer = "noone";
+            // this.showBoard();
             // table.remove();
-            let restart = document.createElement("div");
+            // let restart = document.createElement("div");
 
             // location.reload();
         }
@@ -45,10 +48,10 @@ export default class GameView {
                 let square = this.grid[rowIdx][colIdx];
                 let id = (rowIdx).toString() + (colIdx).toString();
                 let ele = document.getElementById(id);
-                if(square.player === "player1") {
+                if(square.player === this.game.player1ID) {
                     ele.classList.add("player");
                     ele.innerHTML = "&#x265F";
-                } else if(square.player === "player2") {
+                } else if(square.player === this.game.player2ID) {
                     ele.classList.add("player");
                     ele.innerHTML = "&#x2659";
                 } else {
@@ -78,9 +81,9 @@ export default class GameView {
         let btn = document.getElementById("place");
         wallCounters[0].innerHTML = `player 1 has ${this.game.player1Walls} walls left`
         wallCounters[1].innerHTML = `player 2 has ${this.game.player2Walls} walls left`
-        if ((this.game.currentPlayer === "player1") && (this.game.player1Walls === 0)) {
+        if ((this.game.currentPlayer === this.game.player1ID) && (this.game.player1Walls === 0)) {
             btn.classList.add("hide");
-        } else if ((this.game.currentPlayer === "player2") && (this.game.player2Walls === 0)){
+        } else if ((this.game.currentPlayer === this.game.player2ID) && (this.game.player2Walls === 0)){
             btn.classList.add("hide");
         } else {
             if (this.game.state === "not doing anything") {
@@ -94,81 +97,85 @@ export default class GameView {
         this.util.trackFunctions("setupEventListeners");
 
         this.body.addEventListener("click", (event) => {
-            /* 
-The click event is used for a state machine.
-Depending on the state of placing a wall dictates
-what will happen when a click event triggers.
-State is stored in this.game.state 
-State Machine is:
-[p1 not doing anything] == clicks Place a wall >> [selecting squares] => [selecting wall type] => [p1 not doing anything]
-                                                                            ||
-                                                                            \/
-                                                                        {wall is created} => [p2 not doing anything]
-!! undeveloped !!
-Player movement will be integrated into the state machine as well
-*** maybe change [not doing anything] to [not doing anything]
-
-[p1 not doing anything] == clicks Move character >> [selecting desired move] => [p1 not doing anything]
-                                                                ||
-                                                                \/
-                                                            {move player} => [p2 not doing anything]
-
-            */ 
-
-            let state = this.game.state;
-            let classList = event.target.classList;
-            let innerHTML = event.target.innerHTML;
-            if (state === "not doing anything") {
-                if (classList.contains("button")) {
-                    if(innerHTML === "Place a wall") {
-
-                        this.handlePlaceWallButton(event);
-                    }
-
-                    if(innerHTML === "Move character") {
-                        this.handleMovementButton(event);
+            if (this.socket.id === this.game.currentPlayer) {
+                console.log("valid turn");
+                /* 
+    The click event is used for a state machine.
+    Depending on the state of placing a wall dictates
+    what will happen when a click event triggers.
+    State is stored in this.game.state 
+    State Machine is:
+    [p1 not doing anything] == clicks Place a wall >> [selecting squares] => [selecting wall type] => [p1 not doing anything]
+                                                                                ||
+                                                                                \/
+                                                                            {wall is created} => [p2 not doing anything]
+    !! undeveloped !!
+    Player movement will be integrated into the state machine as well
+    *** maybe change [not doing anything] to [not doing anything]
+    
+    [p1 not doing anything] == clicks Move character >> [selecting desired move] => [p1 not doing anything]
+                                                                    ||
+                                                                    \/
+                                                                {move player} => [p2 not doing anything]
+    
+                */ 
+    
+                let state = this.game.state;
+                let classList = event.target.classList;
+                let innerHTML = event.target.innerHTML;
+                if (state === "not doing anything") {
+                    if (classList.contains("button")) {
+                        if(innerHTML === "Place a wall") {
+    
+                            this.handlePlaceWallButton(event);
+                        }
+    
+                        if(innerHTML === "Move character") {
+                            this.handleMovementButton(event);
+                        }
+                    } 
+                }
+                if (state === "selecting squares") {
+                    if (classList.contains("floor")) {
+    
+                        this.handleSquareClick(event);
                     }
                 } 
-            }
-            if (state === "selecting squares") {
-                if (classList.contains("floor")) {
-
-                    this.handleSquareClick(event);
-                }
-            } 
-            if (state === "selecting wall type") {
-                if (classList.contains("button")) {
-                    if((innerHTML === "North") || (innerHTML === "East")
-                       || (innerHTML === "South") || (innerHTML === "West")) {
-
-                        this.handleWallTypeButton(innerHTML, event);
+                if (state === "selecting wall type") {
+                    if (classList.contains("button")) {
+                        if((innerHTML === "North") || (innerHTML === "East")
+                           || (innerHTML === "South") || (innerHTML === "West")) {
+    
+                            this.handleWallTypeButton(innerHTML, event);
+                        }
                     }
                 }
-            }
-            if (state === "selecting desired move") {
-                if (this.availableMoves.includes(event.target)) {
-                    this.game.takeTurn("move", null, event)
-                    document.getElementById("back").classList.add("hide");
-                    for (let i = 0; i < this.availableMoves.length; i++) {
-                        this.availableMoves[i].classList.remove("highlight");
-                    }
-                    this.game.state = "not doing anything";
-                    this.availableMoves = [];
-                    this.show();
-                } else {
-                }
-            }
-            if (state !== "not doing anything") {
-                if (classList.contains("button")) {
-                    if (innerHTML === "back") {
-                        this.handleBackButton();
+                if (state === "selecting desired move") {
+                    if (this.availableMoves.includes(event.target)) {
+                        this.game.takeTurn("move", null, event)
+                        document.getElementById("back").classList.add("hide");
+                        for (let i = 0; i < this.availableMoves.length; i++) {
+                            this.availableMoves[i].classList.remove("highlight");
+                        }
+                        this.game.state = "not doing anything";
+                        this.availableMoves = [];
+                        this.show();
+                    } else {
                     }
                 }
+                if (state !== "not doing anything") {
+                    if (classList.contains("button")) {
+                        if (innerHTML === "back") {
+                            this.handleBackButton();
+                        }
+                    }
+                }
+                if (innerHTML === "Restart") {
+                    location.reload();
+                }
+            } else {
+                console.log("not your turn");
             }
-            if (innerHTML === "Restart") {
-                location.reload();
-            }
-
         }, false);
     } 
 
@@ -296,7 +303,7 @@ Player movement will be integrated into the state machine as well
             document.getElementById("back").classList.remove("hide");
             document.getElementById("place").classList.add("hide");
             let availableMoves;
-            let player = this.game.currentPlayer === "player1" ? this.game.player1 : this.game.player2;
+            let player = this.game.currentPlayer === this.game.player1ID ? this.game.player1 : this.game.player2;
             let rowIdx = parseInt(player[0]);
             let colIdx = parseInt(player[1]);
             availableMoves = this.game.getAvailableMoves([rowIdx, colIdx]);
