@@ -1,5 +1,5 @@
 // import _, { throttle } from 'lodash';
-import './style.css';
+import './style.scss';
 import Icon from './icon.png';
 import GameView from './game_view';
 import Game from './game';
@@ -24,8 +24,10 @@ function lobbySplash(socket) {
     div.setAttribute('id', 'splash-div');
     createRoom.setAttribute('id', 'create-room-button');
     createRoom.innerHTML = "Create A Room";
+    createRoom.classList.add("btn");
     joinRoom.setAttribute('id', 'join-room-button');
     joinRoom.innerHTML = "Join A Room";
+    joinRoom.classList.add("btn");
     div.appendChild(createRoom);
     div.appendChild(joinRoom);
 
@@ -78,11 +80,12 @@ function createRoomForm(socket) {
     const formDiv = document.createElement("div");
     const roomInput = document.createElement("input");
     const roomButton = document.createElement("button");
-    roomForm.setAttribute("id", "roomForm");
-    formDiv.setAttribute("id", "formDiv");
-    roomInput.setAttribute("id", "roomInput");
+    roomForm.setAttribute("id", "room-form");
+    formDiv.setAttribute("id", "form-div");
+    roomInput.setAttribute("id", "room-input");
     roomInput.setAttribute("placeholder", "Enter room name...");
-    roomButton.setAttribute("id", "roomButton");
+    roomButton.setAttribute("id", "room-button");
+    roomButton.classList.add("btn");
     roomButton.innerHTML = "Go!"
 
     formDiv.appendChild(roomForm);
