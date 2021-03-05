@@ -352,6 +352,29 @@ td {
  	margin: auto;
 }
 
+/* lobby rooms list */
+#lobby-rooms-list-div {
+	background: #A6B1C9;
+	width: 21em;
+	margin: 15em auto auto auto;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	box-shadow: 
+		0 2.8px 2.2px rgba(0, 0, 0, 0.034),
+		0 6.7px 5.3px rgba(0, 0, 0, 0.048),
+		0 15.5px 10px rgba(0, 0, 0, 0.06),
+		0 22.3px 17.9px rgba(0, 0, 0, 0.086),
+		0 100px 80px rgba(0, 0, 0, 0.12);
+
+}
+
+#lobby-rooms-list-div > ul > li > button {
+	margin: 1.3em;
+}
+
+
 
 
 

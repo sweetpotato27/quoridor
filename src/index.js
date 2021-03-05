@@ -39,9 +39,9 @@ function lobbySplash(socket) {
     });
     joinRoom.addEventListener('click', () => {
         /** emits getRoomNames and make the room names buttons */
-        div.remove();
         const callback = (roomNames) => {
-            lobbyRoomsList(socket, roomNames);
+            const numberOfRooms = lobbyRoomsList(socket, roomNames);
+            if (numberOfRooms > 0) div.remove();
         };
         socket.emit('getRoomNames', callback);
     });
@@ -63,6 +63,7 @@ function lobbyRoomsList(socket, roomNames) {
             const button = document.createElement('button');
             li.appendChild(button);
             button.innerHTML = roomNames[i].name;
+            button.classList.add("btn");
             button.addEventListener('click', (e) => {
                 div.remove();
                 socket.emit('joinRoom', roomNames[i].id, callback);
@@ -72,6 +73,7 @@ function lobbyRoomsList(socket, roomNames) {
     }
     div.appendChild(ul);
     document.getElementsByTagName('body')[0].appendChild(div);
+    return roomNames.length;
 }
 
 function createRoomForm(socket) {
@@ -83,7 +85,7 @@ function createRoomForm(socket) {
     roomForm.setAttribute("id", "room-form");
     formDiv.setAttribute("id", "form-div");
     roomInput.setAttribute("id", "room-input");
-    roomInput.setAttribute("placeholder", "Enter room name...");
+    roomInput.setAttribute("placeholder", "Type room name");
     roomButton.setAttribute("id", "room-button");
     roomButton.classList.add("btn");
     roomButton.innerHTML = "Go!"
