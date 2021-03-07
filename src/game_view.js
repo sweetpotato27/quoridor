@@ -445,25 +445,13 @@ export default class GameView {
         back.classList.add("hide");
         cntrlDiv.appendChild(back);
 
-        for(let rowIdx = 0; rowIdx < 10; rowIdx++) {
+        for(let rowIdx = 0; rowIdx < 9; rowIdx++) {
             let tr = document.createElement("tr");
-            for(let colIdx = 0; colIdx < 10; colIdx++) {
-                let th = document.createElement("th");
+            for(let colIdx = 0; colIdx < 9; colIdx++) {
                 let td = document.createElement("td");
-                if(rowIdx === 0 && colIdx === 0) {
-                    th.innerHTML = ""
-                    tr.appendChild(th);
-                } else if (rowIdx === 0) {
-                    th.innerHTML = colIdx - 1
-                    tr.appendChild(th);
-                } else if (rowIdx > 0 && colIdx === 0) {
-                    th.innerHTML = rowIdx - 1
-                    tr.appendChild(th);
-                } else {
-                    td.id = `${rowIdx - 1}${colIdx - 1}`;
-                    td.classList.add("floor", "hall");
-                    tr.appendChild(td);
-                }
+                td.id = `${rowIdx}${colIdx}`;
+                td.classList.add("floor", "hall");
+                tr.appendChild(td);
             }
             board.appendChild(tr);
         }

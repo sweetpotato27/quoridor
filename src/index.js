@@ -245,13 +245,16 @@ document.head.appendChild(iconComponent());
 
 
 document.addEventListener("DOMContentLoaded", function () {
-    // let game = new Game();
-    // // setupBoard();
-    // let gameView = new GameView(game);
-    // game.start();
-    // gameView.show();
-
+    
     const socket = io();
+    // const room = {
+    //     id: "xxxxxxx", 
+    //     name: "room", 
+    //     sockets: ["test1", "test2"],
+    //     player1: 'test1',
+    //     player2: 'test2',
+    // };
+    // gameTable(socket, JSON.stringify(room));
 
     lobbySplash(socket);
 
