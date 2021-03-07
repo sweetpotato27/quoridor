@@ -97,7 +97,8 @@ export default class GameView {
         this.util.trackFunctions("setupEventListeners");
 
         this.body.addEventListener("click", (event) => {
-            if (this.socket.id === this.game.currentPlayer) {
+            // if (this.socket.id === this.game.currentPlayer) {
+            if (true) { // testing purposes
                 console.log("valid turn");
                 /* 
     The click event is used for a state machine.
@@ -368,6 +369,7 @@ export default class GameView {
         } else {
             btn.setAttribute("id", innerText);
         }
+        btn.classList.add('controller-btn');
         this.body.getElementsByClassName("controller-div")[0].appendChild(btn);
         return btn;
     }
