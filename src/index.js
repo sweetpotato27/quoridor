@@ -240,22 +240,22 @@ document.head.appendChild(iconComponent());
 document.addEventListener("DOMContentLoaded", function () {
     
     const socket = io();
-    const room = {
-        id: "xxxxxxx", 
-        name: "room", 
-        sockets: ["test1", "test2"],
-        player1: 'test1',
-        player2: 'test2',
-    };
-    gameTable(socket, JSON.stringify(room));
+    // const room = {
+    //     id: "xxxxxxx", 
+    //     name: "room", 
+    //     sockets: ["test1", "test2"],
+    //     player1: 'test1',
+    //     player2: 'test2',
+    // };
+    // gameTable(socket, JSON.stringify(room));
 
-    // lobbySplash(socket);
+    lobbySplash(socket);
 
-    // socket.on('initGame', (room) => {
-    //     console.log(`starting the game for ${socket.id}`);
-    //     console.log(`you are in room ${room}`);
-    //     gameTable(socket, room);
-    // });
+    socket.on('initGame', (room) => {
+        console.log(`starting the game for ${socket.id}`);
+        console.log(`you are in room ${room}`);
+        gameTable(socket, room);
+    });
 
 });
 
