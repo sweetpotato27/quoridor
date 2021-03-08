@@ -1304,3 +1304,20 @@ q:before, q:after {
   
 //   &:focus { outline: 2px dotted #4D618C; }
 }
+
+#winner-div {
+	background: #A6B1C9;
+	width: 30vw;
+	height: 30vw;
+	margin: auto;
+	position: relative;
+}
+#winner-message {
+	color: #403174;
+	font-family: 'Quantico', sans-serif;
+	font-size: 3em;
+	font-weight: bold;
+	text-align: center;
+	position: absolute;
+	bottom: 50%;
+}

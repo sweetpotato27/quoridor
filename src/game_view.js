@@ -13,6 +13,8 @@ export default class GameView {
         this.neighbors = null;  
         this.availableMoves = [];
 
+        this.winner = null;
+
         this.util = new Util();
         this.game.util = this.util;
         this.game.board.util = this.util;
@@ -25,18 +27,21 @@ export default class GameView {
         // this.game.computerAiTurn();
         this.showBoard();
         if (this.game.isOver()) {
-            let winner = "";
-            console.log("winner");
-            if (this.game.currentPlayer === this.game.player2ID) winner = "Player 1";
-            if (this.game.currentPlayer === this.game.player1ID) winner = "Player 2";
-            // let table = document.getElementsByClassName("table")[0];
-            // this.createRestartDiv(table, winner);
-            // this.game.currentPlayer = "noone";
-            // this.showBoard();
-            // table.remove();
-            // let restart = document.createElement("div");
-
-            // location.reload();
+            if(this.game.currentPlayer !== "noone") {
+                if (!this.winner) {
+                    if (this.game.currentPlayer === this.game.player2ID) this.winner = this.room.player1;
+                    if (this.game.currentPlayer === this.game.player1ID) this.winner = this.room.player2;
+                    this.socket.emit('winner', this.room.id, this.winner);
+                    // let table = document.getElementsByClassName("table")[0];
+                    // this.createRestartDiv(table, winner);
+                    // this.game.currentPlayer = "noone";
+                    // this.showBoard();
+                    // table.remove();
+                    // let restart = document.createElement("div");
+        
+                    // location.reload();
+                }
+            }
         }
     }
 
@@ -90,7 +95,8 @@ export default class GameView {
                 if (btn.classList.contains("hide")) btn.classList.remove("hide");
             }
         }
-        document.getElementById("player-turn").innerHTML = `${this.game.currentPlayer}'s turn`;
+        const playersTurn = this.game.currentPlayer === this.socket.id ? 'Your' : "Opponent's";
+        document.getElementById("player-turn").innerHTML = `${playersTurn} turn`;
     }
 
     setupEventListeners() {

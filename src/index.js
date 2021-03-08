@@ -180,6 +180,7 @@ function gameLobby(socket, room) {
 function gameTable(socket, JSONroom) {
     const room = JSON.parse(JSONroom);
     const game = new Game(socket, room);
+    let winner = null;
     // setupBoard();
     const gameView = new GameView(socket, room, game);
     game.start();
@@ -231,6 +232,37 @@ function gameTable(socket, JSONroom) {
         game.swapTurn();
         gameView.show();
     });
+
+    socket.on('gameOver', (id) => {
+        game.currentPlayer = "noone";
+        let table = document.getElementsByClassName('table')[0];
+        if (table) {
+            table.remove();
+        } 
+        if (!winner) {
+            winner = id;
+            gameOver(socket.id, id);
+        }
+    });
+}
+
+/**
+ * 
+ * @param {winner} winner Is an ID of the winner of the game.
+ * Displays the winner and then reloads the page. 
+ */
+function gameOver(socketId, winner) {
+    console.log("winner is " + winner);
+    const div = document.createElement('div');
+    div.setAttribute("id", "winner-div");
+    const message = document.createElement('h1');
+    message.setAttribute("id", "winner-message");
+    message.innerHTML = socketId === winner ? "CONGRATS YOU WON!!!" : "sucks to suck.. try again next time";
+    div.appendChild(message);
+    document.getElementsByTagName("body")[0].appendChild(div);
+    setTimeout(() => {
+        location.reload();
+    },5000);
 }
 
 document.head.appendChild(iconComponent());

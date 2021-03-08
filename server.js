@@ -65,49 +65,6 @@ const leaveRooms = (socket) => {
     }
 };
 
-/**
- * Will check to see if we have a game winner for the room.
- * @param room an object that represents a room from the 'rooms' instance variable object
- * @param sendMessage Whether or not to tell each socket if they've won or lost the game
- * @returns {boolean} true if we/ve found a winner. false if we haven't found a winner
- */
-
- 
-const checkWinner = (room, sendMessage = false) => {
-    let winner = null;
-    for (const client of room.sockets) {
-        /** the game could emit a winner instead of the server..  */
-        // winner = client;
-    }
-
-    if (winner) {
-        if (sendMessage) {
-            for (const client of room.sockets) {
-                client.emit('gameOver', client.id === winner.id ? "You won the game!" : "You lost the game :(");
-            }
-        }
-
-        return true;
-    }
-    return false;
-}
-
-/**
- * 
- */
-const beginGame = (socket, id) => {
-
-    /** Get the room */
-    const room = rooms[socket.roomId];
-    if (!room) {
-        return;
-    }
-
-    /** If we/ve already found a game winner, we don't need to start a new round. */
-    if (checkScore(room)) {
-        return;
-    }
-}
 
 app.use(
     webpackDevMiddleware(compiler, {
@@ -124,24 +81,7 @@ io.on('connection', (socket) => {
      * give each socket a random identifier so that we can determine who is who when 
      * we're sending messages back and forth!
      */
-    // socket.id = uuid(); //I feel like socket.io already does this for us
     console.log('A USER CONNECTED: ');
-
-    // socket.on('room-select', (roomID) => {
-    //     if(rooms.get(roomID)) {
-    //         if (rooms.get(roomID).size < 2) {
-    //             socket.join(roomID);
-    //             io.to(roomID).emit('join-room', roomID);
-    //         } else {
-    //             console.log("room is full!");
-    //             io.emit('room-join-error', "Room is full");
-    //         }
-    //     } else {
-    //         socket.join(roomID);
-    //         io.to(roomID).emit('join-room', roomID);
-    //     }
-    // });
-
 
 
     /**
@@ -197,16 +137,6 @@ io.on('connection', (socket) => {
          */
         io.to(room).emit('lobby-message', [socket.id, msg]);
     });
-
-    // socket.on('start-game', ([socket, room]) => {
-    //     console.log("starting game....");
-    //     console.log(socket);
-    //     console.log(room);
-    //     for (let key in io.sockets.adapter.rooms.get(room).keys()) {
-    //         console.log(key);
-    //     }
-    //     io.to(room).emit('start-game', [socket, room]);
-    // });
 
     socket.on('ready', () => {
         const room = rooms[socket.roomId];
@@ -264,6 +194,10 @@ io.on('connection', (socket) => {
         setTimeout(() => {
             beginRound(socket, null);
         }, 5000);
+    });
+
+    socket.on('winner', (roomId, id) => {
+        io.to(roomId).emit('gameOver', id);
     });
 
     socket.on('placeWall', (data) => {
