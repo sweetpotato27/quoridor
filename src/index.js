@@ -113,7 +113,6 @@ function createRoomForm(socket) {
     socket.on('join-room', (roomID) => {
         console.log("joining room");
         formDiv.classList.add("hide");
-        console.log(socket);
         gameLobby(socket, roomID);
     });
 
@@ -130,8 +129,6 @@ function createRoomForm(socket) {
 
     socket.on('start-game', ([socket, room]) => {
         console.log("starting game...");
-        console.log(socket);
-        console.log(room);
         if(!document.getElementsByClassName('table')[0]) {
             document.getElementById('lobby-div').classList.add("hide");
             gameTable(socket, room);
@@ -167,7 +164,6 @@ function gameLobby(socket, room) {
         div.appendChild(ul);
         div.appendChild(startGame);
         document.getElementsByTagName("body")[0].appendChild(div);
-        console.log(socket.id);
         form.addEventListener('submit', (e) => {
             e.preventDefault();
             if (input.value) {
@@ -176,7 +172,6 @@ function gameLobby(socket, room) {
             }
         });
         startGame.addEventListener('click', (e) => {
-            console.log(e);
             socket.emit('start-game', [socket.id, room]);
         })
     }
@@ -191,7 +186,6 @@ function gameTable(socket, JSONroom) {
     gameView.show();
 
     socket.on('playerMove', (data) => {
-        console.log(data);
         let oldRow = data.oldPos[0];
         let oldCol = data.oldPos[1];
         let newRow = data.newPos[0];
@@ -203,7 +197,6 @@ function gameTable(socket, JSONroom) {
     });
 
     socket.on('placeWall', (data) => {
-        console.log(data);
         const posA = data.wallA;
         const posB = data.wallB;
         const posC = data.wallC;

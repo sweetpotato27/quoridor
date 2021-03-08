@@ -97,8 +97,8 @@ export default class GameView {
         this.util.trackFunctions("setupEventListeners");
 
         this.body.addEventListener("click", (event) => {
-            // if (this.socket.id === this.game.currentPlayer) {
-            if (true) { // testing purposes
+            if (this.socket.id === this.game.currentPlayer) {
+            // if (true) { // testing purposes
                 console.log("valid turn");
                 /* 
     The click event is used for a state machine.
@@ -196,7 +196,6 @@ export default class GameView {
 
     handleSquareClick(event) {
         this.util.trackFunctions("handleSquareClick");
-        console.log(event);
         if (this.game.currentPlayer !== "noone") {
             //wait for client to click two valid squares
             let target = event.target;
@@ -216,7 +215,6 @@ export default class GameView {
                 for(let i = 0; i < this.neighbors.length; i++) {
                     if(this.neighbors[i][0] !== -1) {
                         let id = this.neighbors[i].join("");
-                        console.log(id);
                         document.getElementById(id).classList.add("highlight");
                     }
                 }
@@ -252,7 +250,6 @@ export default class GameView {
                 for(let i = 0; i < this.neighbors.length; i++) {
                     if(!this.neighbors[i].includes("-")) {
                         let id = this.neighbors[i];
-                        console.log(id);
                         document.getElementById(id).classList.remove("highlight");
                     }
                 }
@@ -391,9 +388,11 @@ export default class GameView {
     setupBoard() {
         this.util.trackFunctions("setupBoard");
         let div = document.createElement("div");
+        let boardDiv = document.createElement("div");
         this.body.appendChild(div);
         let board = document.createElement("table");
-        div.appendChild(board);
+        boardDiv.appendChild(board);
+        div.appendChild(boardDiv);
         div.classList.add("table");
         board.setAttribute("id" , "board");
         let whosTurn = document.createElement("div");

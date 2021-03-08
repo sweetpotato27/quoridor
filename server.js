@@ -97,11 +97,8 @@ const checkWinner = (room, sendMessage = false) => {
  */
 const beginGame = (socket, id) => {
 
-    console.log(socket);
-    console.log(id);
     /** Get the room */
     const room = rooms[socket.roomId];
-    console.log(room);
     if (!room) {
         return;
     }
@@ -128,7 +125,7 @@ io.on('connection', (socket) => {
      * we're sending messages back and forth!
      */
     // socket.id = uuid(); //I feel like socket.io already does this for us
-    console.log('A USER CONNECTED: ', socket.id);
+    console.log('A USER CONNECTED: ');
 
     // socket.on('room-select', (roomID) => {
     //     if(rooms.get(roomID)) {
@@ -156,7 +153,6 @@ io.on('connection', (socket) => {
             const {name} = rooms[id];
             const sockets = rooms[id].sockets.length;
             const room = {name, id, sockets};
-            console.log(room);
             roomNames.push(room);
         }
         callback(roomNames);
@@ -271,12 +267,10 @@ io.on('connection', (socket) => {
     });
 
     socket.on('placeWall', (data) => {
-        console.log(data);
         io.to(data.roomId).emit('placeWall', data)
     });
 
     socket.on('playerMove', (data) => {
-        console.log(data);
         io.to(data.roomId).emit('playerMove', data);
     });
 
