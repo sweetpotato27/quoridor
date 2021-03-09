@@ -58,7 +58,6 @@ function lobbyRoomsList(socket, roomNames) {
     div.setAttribute('id', 'lobby-rooms-list-div');
     const ul = document.createElement('ul');
     const callback = () => {
-        console.log("room joined");
         socket.emit('ready');
     };
     for (let i = 0; i < roomNames.length; i++) {
@@ -106,7 +105,6 @@ function createRoomForm(socket) {
         if (roomInput.value) {
             const callback = (bool) => {
                 if(bool) {
-                    console.log("room created");
                     formDiv.remove();
                     socket.emit('ready');
                 } else {
@@ -122,14 +120,9 @@ function createRoomForm(socket) {
     });
 
     socket.on('join-room', (roomID) => {
-        console.log("joining room");
         formDiv.classList.add("hide");
         gameLobby(socket, roomID);
     });
-
-    socket.on('room-join-error', (msg) => {
-        console.log(msg);
-    })
 
     socket.on('lobby-message', ([id, msg]) => {
         let item = document.createElement('li');
@@ -139,7 +132,6 @@ function createRoomForm(socket) {
     });
 
     socket.on('start-game', ([socket, room]) => {
-        console.log("starting game...");
         if(!document.getElementsByClassName('table')[0]) {
             document.getElementById('lobby-div').classList.add("hide");
             gameTable(socket, room);
@@ -238,7 +230,6 @@ function gameTable(socket, JSONroom) {
             sqrC.walls.East = true;
             sqrD.walls.East = true;
         } else {
-            console.log('dir is invalid');
         }
         game.swapTurn();
         gameView.show();
@@ -263,7 +254,6 @@ function gameTable(socket, JSONroom) {
  * Displays the winner and then reloads the page. 
  */
 function gameOver(socketId, winner) {
-    console.log("winner is " + winner);
     const div = document.createElement('div');
     div.setAttribute("id", "winner-div");
     const message = document.createElement('h1');
@@ -295,8 +285,6 @@ document.addEventListener("DOMContentLoaded", function () {
     lobbySplash(socket);
 
     socket.on('initGame', (room) => {
-        console.log(`starting the game for ${socket.id}`);
-        console.log(`you are in room ${room}`);
         gameTable(socket, room);
     });
 

@@ -105,7 +105,6 @@ export default class GameView {
         this.body.addEventListener("click", (event) => {
             if (this.socket.id === this.game.currentPlayer) {
             // if (true) { // testing purposes
-                console.log("valid turn");
                 /* 
     The click event is used for a state machine.
     Depending on the state of placing a wall dictates
@@ -181,7 +180,6 @@ export default class GameView {
                     location.reload();
                 }
             } else {
-                console.log("not your turn");
             }
         }, false);
     } 

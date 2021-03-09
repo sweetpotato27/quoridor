@@ -27,15 +27,11 @@ const joinRoom = (socket, room) => {
         socket.roomId = room.id;
         if (room.player1 === '') {
             room.player1 = socket.id;
-            console.log(socket.id, "Joined", room.id);
         } else if (room.player2 === '') {
             room.player2 = socket.id;
-            console.log(socket.id, "Joined", room.id);
         } else {
-            console.log("room is full");
         }
     } else {
-        console.log("room does not exist, please refresh page.");
     }
 };
 
@@ -81,7 +77,6 @@ io.on('connection', (socket) => {
      * give each socket a random identifier so that we can determine who is who when 
      * we're sending messages back and forth!
      */
-    console.log('A USER CONNECTED: ');
 
 
     /**
@@ -102,7 +97,6 @@ io.on('connection', (socket) => {
      * Gets fired when a user wants to create a new room.
      */
     socket.on('createRoom', (roomName, callback) => {
-        console.log(Object.keys(rooms).length);
         if (Object.keys(rooms).length < 29) {
             const room = {
                 /*
@@ -132,7 +126,6 @@ io.on('connection', (socket) => {
             joinRoom(socket, room);
             callback();
         } else {
-            console.log("room is full");
         }
     });
 
@@ -147,9 +140,7 @@ io.on('connection', (socket) => {
         const room = rooms[socket.roomId];
         /** when we have two players... Start the game! */
         if (room) {
-            console.log(socket.id, "is ready!");
             if (room.sockets.length === 2) {
-                console.log("starting the game");
                 /** tell each player to start the game. */
                 for (const client of room.sockets) {
                     client.emit('initGame', JSON.stringify({
@@ -161,7 +152,6 @@ io.on('connection', (socket) => {
                 }
             }
         } else {
-            console.log("room does not exist anymore.");
         }
     });
 
@@ -218,7 +208,6 @@ io.on('connection', (socket) => {
     });
    
     socket.on('disconnect', () => {
-        console.log("user disconnected");
         /** should probably remove from room and delete room if empty */
         leaveRooms(socket);
     });
@@ -226,5 +215,4 @@ io.on('connection', (socket) => {
 });
 
 httpServer.listen(PORT, () => {
-    console.log(`Example app listening on port *:${PORT}!!!!\n`);
 });

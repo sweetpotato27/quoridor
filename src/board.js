@@ -47,7 +47,6 @@ export default class Board {
     }
 
     checkCrossWall(neighbors) {
-        // console.log(neighbors);
         return neighbors;
     }
 

@@ -476,10 +476,8 @@ export default class Game {
     swapTurn() {
         this.util.trackFunctions("swapTurn");
         if( this.currentPlayer === this.player1ID ) {
-            console.log("player 2's turn");
             this.currentPlayer = this.player2ID;
         } else if( this.currentPlayer === this.player2ID ) {
-            console.log("player 1's turn");
             this.currentPlayer = this.player1ID;
         }
     }
