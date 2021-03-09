@@ -888,30 +888,30 @@ q:before, q:after {
 	}
 
 	#board {
-		width: 1080px;
-		height: 1080px;
+		width: 720px;
+		height: 720px;
 		margin-top: 3em;
 		margin-left: auto;
 		margin-right: auto;
 	}
 	
 	.wall-top {
-		border-top: 10px solid #FFB000;
+		border-top: 5px solid #FFB000;
 		z-index: 9;
 	}
 	
 	.wall-bottom {
-		border-bottom: 10px solid #FFB000;
+		border-bottom: 5px solid #FFB000;
 		z-index: 9;
 	}
 	
 	.wall-right {
-		border-right: 10px solid #FFB000;
+		border-right: 5px solid #FFB000;
 		z-index: 9;
 	}
 	
 	.wall-left {
-		border-left: 10px solid #FFB000;
+		border-left: 5px solid #FFB000;
 		z-index: 9;
 	}
 	
@@ -926,13 +926,13 @@ q:before, q:after {
 	}
 	
 	td {
-		width: 100px;
-		height: 100px;
-		border: 10px solid #4D618B;
+		width: 70px;
+		height: 70px;
+		border: 5px solid #4D618B;
 		background: #7686A8; 
 	}
 	tr {
-		height: 120px;
+		height: 80px;
 	}
 	
 	.button {
@@ -980,7 +980,7 @@ q:before, q:after {
 	
 	.player {
 		font-size: 3em;
-		line-height: 100px;
+		line-height: 80px;
 		text-align: center;
 	}
 	

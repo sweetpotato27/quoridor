@@ -102,20 +102,25 @@ io.on('connection', (socket) => {
      * Gets fired when a user wants to create a new room.
      */
     socket.on('createRoom', (roomName, callback) => {
-        const room = {
-            /*
-             generate a unique id for the new room, that way we don't need to deal with duplicates
-             */ 
-            id: uuid.v4(), 
-            name: roomName, 
-            sockets: [],
-            player1: '',
-            player2: '',
-        };
-        rooms[room.id] = room;
-        /** have the socket join the room they've just created. */
-        joinRoom(socket, room);
-        callback();
+        console.log(Object.keys(rooms).length);
+        if (Object.keys(rooms).length < 29) {
+            const room = {
+                /*
+                 generate a unique id for the new room, that way we don't need to deal with duplicates
+                 */ 
+                id: uuid.v4(), 
+                name: roomName, 
+                sockets: [],
+                player1: '',
+                player2: '',
+            };
+            rooms[room.id] = room;
+            /** have the socket join the room they've just created. */
+            joinRoom(socket, room);
+            callback(true);
+        } else {
+            callback(false);
+        }
     });
 
     /**

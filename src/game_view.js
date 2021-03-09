@@ -235,6 +235,9 @@ export default class GameView {
             if (this.squareA !== null && this.squareB !== null) {
                 // should create two buttons depending on squareA and squareB orientation
                 this.body.getElementsByClassName("clickInstruct")[0].classList.add("hide");
+
+                const A = this.grid[this.squareA.split("")[0]][this.squareA.split("")[1]];
+                const B = this.grid[this.squareB.split("")[0]][this.squareB.split("")[1]];
                 
                 if(this.squareA.split("")[0] === this.squareB.split("")[0]) {
                     if(this.squareA.split("")[0] > 0) {

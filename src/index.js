@@ -41,7 +41,11 @@ function lobbySplash(socket) {
         /** emits getRoomNames and make the room names buttons */
         const callback = (roomNames) => {
             const numberOfRooms = lobbyRoomsList(socket, roomNames);
-            if (numberOfRooms > 0) div.remove();
+            if (numberOfRooms > 0) {
+                div.remove();
+            } else {
+                document.getElementById('lobby-rooms-list-div').remove();
+            }
         };
         socket.emit('getRoomNames', callback);
     });
@@ -100,10 +104,17 @@ function createRoomForm(socket) {
     roomForm.addEventListener('submit', (e) => {
         e.preventDefault();
         if (roomInput.value) {
-            const callback = () => {
-                console.log("room created");
-                formDiv.remove();
-                socket.emit('ready');
+            const callback = (bool) => {
+                if(bool) {
+                    console.log("room created");
+                    formDiv.remove();
+                    socket.emit('ready');
+                } else {
+                    roomInput.setAttribute("placeholder", "Room List is full");
+                    setTimeout(() => {
+                        location.reload();
+                    }, 3000);
+                }
             };
             socket.emit('createRoom', roomInput.value, callback);
             roomInput.value = '';
