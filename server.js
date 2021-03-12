@@ -61,16 +61,26 @@ const leaveRooms = (socket) => {
     }
 };
 
+if (process.env.NODE_ENV === 'production') {
+    app.use(
+        webpackDevMiddleware(compiler, {
+            publicPath: config.output.publicPath,
+        })
+    );
 
-app.use(
-    webpackDevMiddleware(compiler, {
-        publicPath: config.output.publicPath,
-    })
-);
+    app.get('/', (req, res) => {
+        res.sendFile(__dirname + 'index.html');
+    });
+}
+// app.use(
+//     webpackDevMiddleware(compiler, {
+//         publicPath: config.output.publicPath,
+//     })
+// );
 
-app.get('/', (req, res) => {
-    res.sendFile(__dirname + 'index.html');
-});
+// app.get('/', (req, res) => {
+//     res.sendFile(__dirname + 'index.html');
+// });
 
 io.on('connection', (socket) => {
     /**
