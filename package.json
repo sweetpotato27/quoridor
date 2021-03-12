@@ -9,14 +9,18 @@
     "watch": "webpack --watch",
     "start": "webpack serve --open",
     "deploy": "gh-pages -d dist",
-    "server": "node server.js"
+    "server": "node server.js",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install && npm run build"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sweetpotato27/quoridor.git"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "example",
+    "heroku"
+  ],
+  "author": "Dylan Matthews",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/sweetpotato27/quoridor/issues"
@@ -41,5 +45,8 @@
     "socket.io": "^3.1.2",
     "socket.io-client": "^3.1.2",
     "uuid": "^8.3.2"
+  },
+  "engines": {
+    "node": "12.18.3"
   }
 }
