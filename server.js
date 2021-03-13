@@ -60,10 +60,10 @@ const leaveRooms = (socket) => {
 };
 
 if (process.env.NODE_ENV === 'production') {
-    app.use(express.static({publicPath: config.output.publicPath}));
+    app.use(express.static({publicPath: config.output.path}));
 
     app.get('/', (req, res) => {
-        res.sendFile(path.resolve(__dirname, 'index.html'));
+        res.sendFile(path.resolve(__dirname + 'index.html'));
     });
 }
 // app.use(
