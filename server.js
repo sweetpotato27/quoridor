@@ -60,7 +60,7 @@ const leaveRooms = (socket) => {
 };
 
 if (process.env.NODE_ENV === 'production') {
-    app.use(config.output.path);
+    app.useStaticAssets(join(__dirname, '..', '/'));
 
     app.get('/', (req, res) => {
         res.sendFile(path.resolve(__dirname + 'index.html'));

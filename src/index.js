@@ -1,21 +1,11 @@
 // import _, { throttle } from 'lodash';
 import './style.scss';
-import Icon from './icon.png';
 import GameView from './game_view';
 import Game from './game';
 import { io } from 'socket.io-client';
 
 
-function iconComponent() {
-    
-    // Add the image to our existing div.
-    const element = document.createElement('link');
-    element.rel = "icon";
-    element.href = Icon;
-    element.type = 'image/png';
 
-    return element;
-}
 
 function lobbySplash(socket) {
     const div = document.createElement('div');
@@ -265,10 +255,6 @@ function gameOver(socketId, winner) {
         location.reload();
     },5000);
 }
-
-document.head.appendChild(iconComponent());
-
-
 
 document.addEventListener("DOMContentLoaded", function () {
     
