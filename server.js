@@ -1,10 +1,8 @@
 const express = require('express');
 const webpack = require('webpack');
-const webpackDevMiddleware = require('webpack-dev-middleware');
 
 const app = express();
 const config = require('./webpack.config');
-const compiler = webpack(config);
 const httpServer = require('http').Server(app);
 const io = require('socket.io')(httpServer);
 const uuid = require('uuid');
