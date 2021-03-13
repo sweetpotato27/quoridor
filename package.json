@@ -4,7 +4,7 @@
   "description": "",
   "private": true,
   "scripts": {
-    "start": "webpack serve --open --configt webpack.dev.js",
+    "startDev": "webpack serve --open --configt webpack.dev.js",
     "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install && npm run build",
     "build": "webpack --config webpack.prod.js",
     "postinstall": "webpack"
