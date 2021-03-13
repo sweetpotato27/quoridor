@@ -4,6 +4,10 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = {
     entry: {
         index: './src/index.js',
+        gameview: './src/game_view.js',
+        game: './src/game.js',
+        board: './src/board.js',
+        square: './src/square.js',
     },
     plugins: [
         new HtmlWebpackPlugin({
@@ -13,6 +17,7 @@ module.exports = {
     output: {
         filename: '[name].bundle.js',
         path: path.resolve(__dirname, 'dist'),
+        publicPath: "/",
         clean: true,
     },
     module:{
