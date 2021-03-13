@@ -62,14 +62,10 @@ const leaveRooms = (socket) => {
 };
 
 if (process.env.NODE_ENV === 'production') {
-    app.use(
-        webpackDevMiddleware(compiler, {
-            publicPath: config.output.publicPath,
-        })
-    );
+    app.use(express.static({publicPath: config.output.publicPath}));
 
     app.get('/', (req, res) => {
-        res.sendFile(__dirname + 'index.html');
+        res.sendFile(path.resolve(__dirname, 'index.html'));
     });
 }
 // app.use(

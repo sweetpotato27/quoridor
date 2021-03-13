@@ -5,7 +5,9 @@
   "private": true,
   "scripts": {
     "start": "node server.js",
-    "heroku-postbuild": "webpack"
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix frontend && npm run build --prefix frontend",
+    "build": "webpack",
+    "postinstall": "webpack"
   },
   "repository": {
     "type": "git",
