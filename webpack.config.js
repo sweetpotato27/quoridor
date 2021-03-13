@@ -3,7 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = {
-    mode: 'development',
+    mode: 'production',
     entry: {
         index: './src/index.js',
         gameview: './src/game_view.js',
@@ -14,7 +14,7 @@ module.exports = {
     plugins: [
         new CleanWebpackPlugin({ cleanStaleWebpackAssets: false }),
         new HtmlWebpackPlugin({
-            title: 'Development',
+            title: 'Quoridor',
         }),
     ],
     devtool: 'inline-source-map',
