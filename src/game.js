@@ -12,8 +12,9 @@ export default class Game {
         this.currentPlayer = "noone";
         this.player1 = [8, 4];
         this.player2 = [0, 4];
-        this.player1Walls = 10;
-        this.player2Walls = 10;
+        this.playerWalls = new Map();
+        this.playerWalls[this.player1ID] = 10;
+        this.playerWalls[this.player2ID] = 10;
         this.state = "not doing anything";
         this.util;
         
@@ -177,9 +178,7 @@ export default class Game {
         let neighborsA = this.board.checkNeighbors([sqrA.rowIdx, sqrA.colIdx]);
         let neighborsB = this.board.checkNeighbors([sqrB.rowIdx, sqrB.colIdx]);
         let isValidWall;
-        let playerWalls;
-        this.currentPlayer === this.player1ID ? playerWalls = this.player1Walls : playerWalls = this.player2Walls
-        if (playerWalls > 0) {
+        if (this.playerWalls[this.currentPlayer] > 0) {
 
             if(dir === "North" && (!sqrA.walls.North && !sqrB.walls.North)){
                 sqrA.walls.North = true;
@@ -291,6 +290,15 @@ export default class Game {
             }
         }
         return false;
+    }
+
+    subtractWallCount(playerId) {
+        console.log(playerId);
+        console.log("before => ", this.playerWalls);
+        if (!!this.playerWalls[playerId]) {
+            this.playerWalls[playerId] = this.playerWalls[playerId] - 1;
+            console.log("after => ", this.playerWalls);
+        }
     }
 
     movePlayer(dir) {

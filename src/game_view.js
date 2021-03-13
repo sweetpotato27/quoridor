@@ -84,8 +84,8 @@ export default class GameView {
         }
         let wallCounters = document.getElementsByClassName("wall-counter");
         let btn = document.getElementById("place");
-        wallCounters[0].innerHTML = `player 1 has ${this.game.player1Walls} walls left`
-        wallCounters[1].innerHTML = `player 2 has ${this.game.player2Walls} walls left`
+        wallCounters[0].innerHTML = `player 1 has ${this.game.playerWalls[this.game.player1ID]} walls left`
+        wallCounters[1].innerHTML = `player 2 has ${this.game.playerWalls[this.game.player2ID]} walls left`
         if ((this.game.currentPlayer === this.game.player1ID) && (this.game.player1Walls === 0)) {
             btn.classList.add("hide");
         } else if ((this.game.currentPlayer === this.game.player2ID) && (this.game.player2Walls === 0)){
@@ -151,7 +151,6 @@ export default class GameView {
                     if (classList.contains("button")) {
                         if((innerHTML === "North") || (innerHTML === "East")
                            || (innerHTML === "South") || (innerHTML === "West")) {
-    
                             this.handleWallTypeButton(innerHTML, event);
                         }
                     }

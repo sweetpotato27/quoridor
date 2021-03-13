@@ -221,6 +221,7 @@ function gameTable(socket, JSONroom) {
             sqrD.walls.East = true;
         } else {
         }
+        game.subtractWallCount(data.player);
         game.swapTurn();
         gameView.show();
     });
