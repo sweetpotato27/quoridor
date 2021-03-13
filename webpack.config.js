@@ -1,5 +1,4 @@
 const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
     mode: 'production',
@@ -10,11 +9,6 @@ module.exports = {
         board: './src/board.js',
         square: './src/square.js',
     },
-    plugins: [
-        new HtmlWebpackPlugin({
-            title: 'Quoridor',
-        }),
-    ],
     devtool: 'inline-source-map',
     devServer: {
         contentBase: './dist',
