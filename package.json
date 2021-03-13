@@ -4,13 +4,8 @@
   "description": "",
   "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack",
-    "watch": "webpack --watch",
-    "start": "webpack serve --open",
-    "deploy": "gh-pages -d dist",
-    "server": "node server.js",
-    "postinstall": "webpack"
+    "start": "node server.js",
+    "heroku-postbuild": "webpack"
   },
   "repository": {
     "type": "git",
