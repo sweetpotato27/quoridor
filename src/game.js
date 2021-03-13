@@ -16,14 +16,12 @@ export default class Game {
         this.playerWalls[this.player1ID] = 10;
         this.playerWalls[this.player2ID] = 10;
         this.state = "not doing anything";
-        this.util;
         
 
         this.movePlayer = this.movePlayer.bind(this);
     }
 
     isOver() {
-        this.util.trackFunctions("isOver");
         if (this.winner() !== null) {
             return true;
         } else {
@@ -32,7 +30,6 @@ export default class Game {
     }
 
     // computerAiTurn() {
-    //     this.util.trackFunctions("computerAiTurn");
     //     if(this.currentPlayer === "player2") {
     //         let p2Path = this.board.bfs(this.player2, ["80","81","82","83","84","85","86","87","88"])
     //         let p1Path = this.board.bfs(this.player1);
@@ -130,7 +127,6 @@ export default class Game {
     // }
 
     winner() {
-        this.util.trackFunctions("winner");
         let winner = null;
         for(let i = 0; i < this.grid[0].length; i++) {
             if(this.grid[0][i].player === this.player1ID) {
@@ -144,7 +140,6 @@ export default class Game {
     }
 
     takeTurn(action, dir = null, event, squareA = null, squareB = null) {
-        this.util.trackFunctions("takeTurn");
         // movement or wall placement?
 
         if (action === "move") {
@@ -160,7 +155,6 @@ export default class Game {
     }
 
     placeWall(dir, squareA, squareB) {
-        this.util.trackFunctions("placeWall");
         /*
         squareA & squareB = [rowIdx, colIdx]
         get Square and set the specific walls to true 
@@ -197,7 +191,6 @@ export default class Game {
                                                     wallC: [neighborsA[0][0], neighborsA[0][1]], 
                                                     wallD: [neighborsB[0][0], neighborsB[0][1]], 
                                                     player: this.currentPlayer});
-                    // this.swapTurn();
                     return true;
                 } else {
                     sqrA.walls.North = false;
@@ -224,7 +217,6 @@ export default class Game {
                                                     wallC: [neighborsA[3][0], neighborsA[3][1]], 
                                                     wallD: [neighborsB[3][0], neighborsB[3][1]], 
                                                     player: this.currentPlayer});
-                    // this.swapTurn();
                     return true;
                 } else {
                     sqrA.walls.East = false;
@@ -251,7 +243,6 @@ export default class Game {
                                                     wallC: [neighborsA[1][0], neighborsA[1][1]], 
                                                     wallD: [neighborsB[1][0], neighborsB[1][1]], 
                                                     player: this.currentPlayer});
-                    // this.swapTurn();
                     return true;
                 } else {
                     sqrA.walls.South = false;
@@ -278,7 +269,6 @@ export default class Game {
                                                     wallC: [neighborsA[2][0], neighborsA[2][1]], 
                                                     wallD: [neighborsB[2][0], neighborsB[2][1]], 
                                                     player: this.currentPlayer});
-                    // this.swapTurn();
                     return true;
                 } else {
                     sqrA.walls.West = false;
@@ -293,16 +283,12 @@ export default class Game {
     }
 
     subtractWallCount(playerId) {
-        console.log(playerId);
-        console.log("before => ", this.playerWalls);
         if (!!this.playerWalls[playerId]) {
             this.playerWalls[playerId] = this.playerWalls[playerId] - 1;
-            console.log("after => ", this.playerWalls);
         }
     }
 
     movePlayer(dir) {
-        this.util.trackFunctions("movePlayer");
         // takes current player current pos
         // calculates future pos with dir
         let player;
@@ -340,7 +326,6 @@ export default class Game {
                                                 oldPos: [oldSquare.rowIdx, oldSquare.colIdx], 
                                                 newPos: [newSquare.rowIdx, newSquare.colIdx], 
                                                 player: this.currentPlayer})
-                // this.swapTurn();
             }
 
 
@@ -352,7 +337,6 @@ export default class Game {
     }
 
     getAvailableMoves(pos) {
-        this.util.trackFunctions("getAvailableMoves");
         /* pos = [row, col] */
         let moves = [];
         let currentSquare = this.grid[pos[0]][pos[1]];
@@ -467,7 +451,6 @@ export default class Game {
 
 
     setPlayerPos(player, pos) {
-        this.util.trackFunctions("setPlayerPos");
         if (player === this.player1ID) {
             this.player1 = pos;
         } else if (player === this.player2ID) {
@@ -476,13 +459,11 @@ export default class Game {
     }
 
     start() {
-        this.util.trackFunctions("start");
         this.board.setPlayers(true, this.player1, true, this.player2);
         this.currentPlayer = this.player1ID;
     }
 
     swapTurn() {
-        this.util.trackFunctions("swapTurn");
         if( this.currentPlayer === this.player1ID ) {
             this.currentPlayer = this.player2ID;
         } else if( this.currentPlayer === this.player2ID ) {
@@ -491,7 +472,6 @@ export default class Game {
     }
 
     findPath() {
-        this.util.trackFunctions("findPath");
         /* 
         run the bfs
          */

@@ -260,14 +260,6 @@ function gameOver(socketId, winner) {
 document.addEventListener("DOMContentLoaded", function () {
     
     const socket = io();
-    // const room = {
-    //     id: "xxxxxxx", 
-    //     name: "room", 
-    //     sockets: ["test1", "test2"],
-    //     player1: 'test1',
-    //     player2: 'test2',
-    // };
-    // gameTable(socket, JSON.stringify(room));
 
     lobbySplash(socket);
 

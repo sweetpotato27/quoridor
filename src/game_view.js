@@ -1,4 +1,3 @@
-import Util from './util';
 
 export default class GameView {
     constructor(socket, room, game) {
@@ -14,16 +13,11 @@ export default class GameView {
         this.availableMoves = [];
 
         this.winner = null;
-
-        this.util = new Util();
-        this.game.util = this.util;
-        this.game.board.util = this.util;
         this.setupBoard();
         this.setupEventListeners();
     }
 
     show() {
-        this.util.trackFunctions("show");
         // this.game.computerAiTurn();
         this.showBoard();
         if (this.game.isOver()) {
@@ -46,7 +40,6 @@ export default class GameView {
     }
 
     showBoard() {
-        this.util.trackFunctions("showBoard");
         for(let rowIdx = 0; rowIdx  < this.grid.length; rowIdx++) {
             for (let colIdx = 0; colIdx < this.grid[rowIdx].length; colIdx++)
             {
@@ -100,11 +93,9 @@ export default class GameView {
     }
 
     setupEventListeners() {
-        this.util.trackFunctions("setupEventListeners");
 
         this.body.addEventListener("click", (event) => {
             if (this.socket.id === this.game.currentPlayer) {
-            // if (true) { // testing purposes
                 /* 
     The click event is used for a state machine.
     Depending on the state of placing a wall dictates
@@ -184,7 +175,6 @@ export default class GameView {
     } 
 
     handlePlaceWallButton(event) {
-        this.util.trackFunctions("handlePlaceWallButton");
         // delete btn element and replace with instructions to
         // click two distinct squares
         if (this.game.currentPlayer !== "noone") {
@@ -198,7 +188,6 @@ export default class GameView {
     }
 
     handleSquareClick(event) {
-        this.util.trackFunctions("handleSquareClick");
         if (this.game.currentPlayer !== "noone") {
             //wait for client to click two valid squares
             let target = event.target;
@@ -268,7 +257,6 @@ export default class GameView {
     }
 
     handleWallTypeButton(dir, event) {
-        this.util.trackFunctions("handleWallTypeButton");
 
         let selectedWalls = document.getElementsByClassName("selectedWall");
         for (let i = 0; i < selectedWalls.length; i++) {
@@ -302,7 +290,6 @@ export default class GameView {
     }
 
     handleMovementButton(event) {
-        this.util.trackFunctions("handleMovementButton");
         if(this.game.currentPlayer !== "noone") {
             document.getElementById("back").classList.remove("hide");
             document.getElementById("place").classList.add("hide");
@@ -322,7 +309,6 @@ export default class GameView {
     }
 
     handleBackButton() {
-        this.util.trackFunctions("handleBackButton");
         this.game.state = "not doing anything";
         /* resets state */
         let instructions = document.getElementsByClassName("controller-div")[0].childNodes;
@@ -351,7 +337,6 @@ export default class GameView {
     }
 
     changeNeighborsArrayToString(array) {
-        this.util.trackFunctions("changeNeighborsArrayToString");
         //changes this.neighbors to be able to be read as an array of strings
         for (let i = 0; i < array.length; i++) {
             let id = array[i].join("").toString();
@@ -361,7 +346,6 @@ export default class GameView {
     }
 
     createButton(innerText) {
-        this.util.trackFunctions("createButton");
         let btn = document.createElement("button");
         btn.innerHTML = innerText
         btn.classList.add('button');
@@ -378,7 +362,6 @@ export default class GameView {
     }
 
     createRestartDiv(board, winner) {
-        this.util.trackFunctions("createRestartDiv");
         let div = document.createElement("div");
         let congrats = document.createElement("h1");
         let btn = document.createElement("button");
@@ -392,7 +375,6 @@ export default class GameView {
     }
 
     setupBoard() {
-        this.util.trackFunctions("setupBoard");
         let div = document.createElement("div");
         let boardDiv = document.createElement("div");
         this.body.appendChild(div);
