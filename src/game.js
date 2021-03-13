@@ -22,8 +22,9 @@ export default class Game {
     }
 
     isOver() {
-        if (this.winner() !== null) {
-            return true;
+        let winner = this.winner();
+        if (winner !== null) {
+            return winner;
         } else {
             return false;
         }

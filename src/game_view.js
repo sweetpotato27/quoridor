@@ -20,21 +20,10 @@ export default class GameView {
     show() {
         // this.game.computerAiTurn();
         this.showBoard();
-        if (this.game.isOver()) {
+        this.winner = this.game.isOver();
+        if (!!this.winner) {
             if(this.game.currentPlayer !== "noone") {
-                if (!this.winner) {
-                    if (this.game.currentPlayer === this.game.player2ID) this.winner = this.room.player1;
-                    if (this.game.currentPlayer === this.game.player1ID) this.winner = this.room.player2;
-                    this.socket.emit('winner', this.room.id, this.winner);
-                    // let table = document.getElementsByClassName("table")[0];
-                    // this.createRestartDiv(table, winner);
-                    // this.game.currentPlayer = "noone";
-                    // this.showBoard();
-                    // table.remove();
-                    // let restart = document.createElement("div");
-        
-                    // location.reload();
-                }
+                this.socket.emit('winner', this.room.id, this.winner);
             }
         }
     }

@@ -245,6 +245,7 @@ function gameTable(socket, JSONroom) {
  * Displays the winner and then reloads the page. 
  */
 function gameOver(socketId, winner) {
+    console.log(socketId, winner);
     const div = document.createElement('div');
     div.setAttribute("id", "winner-div");
     const message = document.createElement('h1');
